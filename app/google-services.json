@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "355697728960",
+    "firebase_url": "https://rspl-so-sfa.firebaseio.com",
+    "project_id": "rspl-so-sfa",
+    "storage_bucket": "rspl-so-sfa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:355697728960:android:9a13c856bf8c02a7",
+        "android_client_info": {
+          "package_name": "project.astix.com.rsplsosfaindirect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "355697728960-crrpbvgpp8j87r0ds885p08vi7toors9.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "355697728960-dnvinq0t9kpeeljrs2v1bkhidpja4qkn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA50si5DD-RZtpBbOeI2iVIMvtGUZmfeCU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
