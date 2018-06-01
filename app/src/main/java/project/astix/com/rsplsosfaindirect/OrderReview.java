@@ -345,6 +345,10 @@ GoogleApiClient.OnConnectionFailedListener{
 		   
 		 //hmapProductVolumePer= key =ProductID         value=Per
 		   HashMap<String, String> hmapProductVolumePer=new HashMap<String, String>();
+
+	HashMap<String, String> hmapPrdctFreeQtyFinal=new HashMap<String, String>();
+	HashMap<String, String> hmapProductDiscountPercentageGiveFinal=new HashMap<String, String>();
+	HashMap<String, String> hmapProductVolumePerFinal=new HashMap<String, String>();
 		   
 		   //hmapProductDiscountPercentageGive= key =ProductID         value=DiscountPercentageGivenOnProduct
 		   HashMap<String, String> hmapProductDiscountPercentageGive=new HashMap<String, String>();
@@ -4912,13 +4916,26 @@ public void loadPurchaseProductDefault()
 
 		isbtnExceptionVisible=0;
 
-		if(hmapProductRelatedSchemesList.containsKey(ProductIdOnClickedControl123))
+		if(hmapProductRelatedSchemesList.containsKey(ProductIdOnClickedControl123) || hmapProductAddOnSchemesList.containsKey(ProductIdOnClickedControl123))
 		{
 
-			String SchIdsCompleteSchemeIdListOnProductID=hmapProductRelatedSchemesList.get(ProductIdOnClickedControl123);
+			String SchIdsCompleteSchemeIdListOnProductID="";
+			if(hmapProductRelatedSchemesList.containsKey(ProductIdOnClickedControl123))
+			{
+				SchIdsCompleteSchemeIdListOnProductID=hmapProductRelatedSchemesList.get(ProductIdOnClickedControl123);
+			}
+
 			if(hmapProductAddOnSchemesList.containsKey(ProductIdOnClickedControl123))
 			{
-				SchIdsCompleteSchemeIdListOnProductID=SchIdsCompleteSchemeIdListOnProductID+"#"+hmapProductAddOnSchemesList.get(ProductIdOnClickedControl123);
+				if(!TextUtils.isEmpty(SchIdsCompleteSchemeIdListOnProductID))
+				{
+					SchIdsCompleteSchemeIdListOnProductID=SchIdsCompleteSchemeIdListOnProductID+"#"+hmapProductAddOnSchemesList.get(ProductIdOnClickedControl123);
+				}
+				else
+				{
+					SchIdsCompleteSchemeIdListOnProductID =  hmapProductAddOnSchemesList.get(ProductIdOnClickedControl123);
+				}
+
 			}
 			fnDeletePreviousEntriesSchemeIDsAppliedOverProductAfterValueChange(SchIdsCompleteSchemeIdListOnProductID,ProductIdOnClickedControl123);
 
@@ -4930,7 +4947,13 @@ public void loadPurchaseProductDefault()
 			String SchIdsCompleteSchemeIdListOnProductID=hmapProductRelatedSchemesList.get(productIdAgaingtFreeProductId);
 			if(hmapProductAddOnSchemesList.containsKey(productIdAgaingtFreeProductId))
 			{
-				SchIdsCompleteSchemeIdListOnProductID=SchIdsCompleteSchemeIdListOnProductID+"#"+hmapProductAddOnSchemesList.get(productIdAgaingtFreeProductId);
+				if((!SchIdsCompleteSchemeIdListOnProductID.equals("null")) && (!SchIdsCompleteSchemeIdListOnProductID.equals("")) && (SchIdsCompleteSchemeIdListOnProductID!=null)) {
+					SchIdsCompleteSchemeIdListOnProductID = SchIdsCompleteSchemeIdListOnProductID + "#" + hmapProductAddOnSchemesList.get(productIdAgaingtFreeProductId);
+				}
+				else
+				{
+					SchIdsCompleteSchemeIdListOnProductID =  hmapProductAddOnSchemesList.get(productIdAgaingtFreeProductId);
+				}
 			}
 			fnDeletePreviousEntriesSchemeIDsAppliedOverProductAfterValueChange(SchIdsCompleteSchemeIdListOnProductID,productIdAgaingtFreeProductId);
 		}
@@ -4950,307 +4973,318 @@ public void loadPurchaseProductDefault()
 		//Example :-1075_1_0_1!1026$1^1|1^23^1^10^0@1025$1^1|1^22^1^20^0@1022$1^1|1^19^5^5^0@1020$1^1|1^17^3^4^0@1019$1^1|1^16^1^12^0@1018$1^1|1^15^1^10^0@1017$1^1|1^14^1^12^0
 		String valForVolumetQTYToMultiply="0";
 		productFullFilledSlabGlobal=new ArrayList<String>();
-		String[] arrSchIdsListOnProductID=SchIdsCompleteListOnProductID.split("#");
-		for(int pSchIdsAppliCount=0;pSchIdsAppliCount<arrSchIdsListOnProductID.length;pSchIdsAppliCount++)
+		if(SchIdsCompleteListOnProductID!=null)
 		{
-			//35_1_0_2 where 35=shcemId, 1= SchAppRule, 2= schemeTypeId
-			String schOverviewDetails=arrSchIdsListOnProductID[pSchIdsAppliCount].split("!")[0];   //Example :-1075_1_0_1
-			String schOverviewOtherDetails=arrSchIdsListOnProductID[pSchIdsAppliCount].split("!")[1]; //Example :-1026$1^1|1^23^1^10^0@1025$1^1|1^22^1^20^0@1022$1^1|1^19^5^5^0@1020$1^1|1^17^3^4^0@1019$1^1|1^16^1^12^0@1018$1^1|1^15^1^10^0@1017$1^1|1^14^1^12^0
-			int schId=Integer.parseInt(schOverviewDetails.split("_")[0]);                           //Example :-1075
-			int schAppRule=Integer.parseInt(schOverviewDetails.split("_")[1]);                                                                                        //Example :-1
-			int schApplicationId=Integer.parseInt(schOverviewDetails.split("_")[2]);                                                              //Example :-0
-			int SchTypeId=Integer.parseInt(schOverviewDetails.split("_")[3]);                                                                                           //Example :-1 // 1=Check Combined Skus, 2=Bundle,3=Simple with Check on Individual SKU
-			String[] arrschSlbIDsOnSchIdBasis=schOverviewOtherDetails.split("@");   //Split for multiple slabs Example :-1026$1^1|1^23^1^10^0, 1025$1^1|1^22^1^20^0
-			boolean bucketCndtnSchemeFullFill=false;
-			int exitWhenSlabToExit=0;
-
-			if(hmapSchemeIdStoreID.containsKey(""+schId))
+			String[] arrSchIdsListOnProductID=SchIdsCompleteListOnProductID.split("#");
+			for(int pSchIdsAppliCount=0;pSchIdsAppliCount<arrSchIdsListOnProductID.length;pSchIdsAppliCount++)
 			{
-				boolean bucketCndtnFullFillisReally=false;
-				for(int pSchSlbCount=0;pSchSlbCount<arrschSlbIDsOnSchIdBasis.length;pSchSlbCount++)
+				//35_1_0_2 where 35=shcemId, 1= SchAppRule, 2= schemeTypeId
+				String schOverviewDetails=arrSchIdsListOnProductID[pSchIdsAppliCount].split("!")[0];   //Example :-1075_1_0_1
+				String schOverviewOtherDetails=arrSchIdsListOnProductID[pSchIdsAppliCount].split("!")[1]; //Example :-1026$1^1|1^23^1^10^0@1025$1^1|1^22^1^20^0@1022$1^1|1^19^5^5^0@1020$1^1|1^17^3^4^0@1019$1^1|1^16^1^12^0@1018$1^1|1^15^1^10^0@1017$1^1|1^14^1^12^0
+				int schId=Integer.parseInt(schOverviewDetails.split("_")[0]);                           //Example :-1075
+				int schAppRule=Integer.parseInt(schOverviewDetails.split("_")[1]);                                                                                        //Example :-1
+				int schApplicationId=Integer.parseInt(schOverviewDetails.split("_")[2]);                                                              //Example :-0
+				int SchTypeId=Integer.parseInt(schOverviewDetails.split("_")[3]);                                                                                           //Example :-1 // 1=Check Combined Skus, 2=Bundle,3=Simple with Check on Individual SKU
+				String[] arrschSlbIDsOnSchIdBasis=schOverviewOtherDetails.split("@");   //Split for multiple slabs Example :-1026$1^1|1^23^1^10^0, 1025$1^1|1^22^1^20^0
+				boolean bucketCndtnSchemeFullFill=false;
+				int exitWhenSlabToExit=0;
+
+				if(hmapSchemeIdStoreID.containsKey(""+schId))
 				{
-					//Exmaple Slab:- 1026$1^1|1^23^1^10^0
-					int schSlabId=Integer.parseInt((arrschSlbIDsOnSchIdBasis[pSchSlbCount]).split(Pattern.quote("$"))[0]); //Exmaple Slab ID:- 1026
-					String schSlabOtherDetails=arrschSlbIDsOnSchIdBasis[pSchSlbCount].split(Pattern.quote("$"))[1]; //Exmaple Slab OtherDetails:- 1^1|1^23^1^10^0
-					String[] arrSchSlabBuckWiseDetails=schSlabOtherDetails.split(Pattern.quote("~")); //Example Split For Multiple Buckets (OR Condition)
-					for(int pSchSlbBuckCnt=0;pSchSlbBuckCnt<arrSchSlabBuckWiseDetails.length;pSchSlbBuckCnt++)
+					boolean bucketCndtnFullFillisReally=false;
+					for(int pSchSlbCount=0;pSchSlbCount<arrschSlbIDsOnSchIdBasis.length;pSchSlbCount++)
 					{
-						String schSlbBuckDetails=arrSchSlabBuckWiseDetails[pSchSlbBuckCnt].split(Pattern.quote("|"))[0]; // Eaxmple:-1^1
-						String schSlbBuckOtherDetails=arrSchSlabBuckWiseDetails[pSchSlbBuckCnt].split(Pattern.quote("|"))[1];  // Eaxmple:-1^23^1^10^0
-						int schSlbBuckId=Integer.parseInt(schSlbBuckDetails.split(Pattern.quote("^"))[0]);  //Exmaple Slab Bucket ID:- 1
-						int schSlbBuckCnt=Integer.parseInt(schSlbBuckDetails.split(Pattern.quote("^"))[1]);            //Example Number of Buckets under this Slab, Count:-1
-
-						String[] arrSubBucketDetails=schSlbBuckOtherDetails.split(Pattern.quote("*"));  //Example Split For Multiple Sub Buckets(AND Condition)
-						String[] arrMaintainDetailsOfBucketConditionsAgainstBuckId=new String[schSlbBuckCnt];  //Example Length of Buckes in Slab and which condition is true in case of OR
-						// variables for calculating total sub bucket
-						ArrayList<String> productFullFilledSlab=new ArrayList<String>();
-						ArrayList<String> schSlabRowIdFullFilledSlab=new ArrayList<String>();
-						ArrayList<String> productFullFilledSlabForInvoice=new ArrayList<String>();
-						int totalProductQnty=0;
-						double totalProductVol=0.0;
-
-						double totalProductVal=0.0;
-						int totalProductLine=0;
-						double totalInvoice=0.0;
-
-						//product invoice
-						for(Entry<String, String> entryProduct:hmapPrdctOdrQty.entrySet())
+						//Exmaple Slab:- 1026$1^1|1^23^1^10^0
+						int schSlabId=Integer.parseInt((arrschSlbIDsOnSchIdBasis[pSchSlbCount]).split(Pattern.quote("$"))[0]); //Exmaple Slab ID:- 1026
+						String schSlabOtherDetails=arrschSlbIDsOnSchIdBasis[pSchSlbCount].split(Pattern.quote("$"))[1]; //Exmaple Slab OtherDetails:- 1^1|1^23^1^10^0
+						String[] arrSchSlabBuckWiseDetails=schSlabOtherDetails.split(Pattern.quote("~")); //Example Split For Multiple Buckets (OR Condition)
+						for(int pSchSlbBuckCnt=0;pSchSlbBuckCnt<arrSchSlabBuckWiseDetails.length;pSchSlbBuckCnt++)
 						{
-							if(hmapPrdctOdrQty.containsKey(entryProduct.getKey()))
+							String schSlbBuckDetails=arrSchSlabBuckWiseDetails[pSchSlbBuckCnt].split(Pattern.quote("|"))[0]; // Eaxmple:-1^1
+							String schSlbBuckOtherDetails=arrSchSlabBuckWiseDetails[pSchSlbBuckCnt].split(Pattern.quote("|"))[1];  // Eaxmple:-1^23^1^10^0
+							int schSlbBuckId=Integer.parseInt(schSlbBuckDetails.split(Pattern.quote("^"))[0]);  //Exmaple Slab Bucket ID:- 1
+							int schSlbBuckCnt=Integer.parseInt(schSlbBuckDetails.split(Pattern.quote("^"))[1]);            //Example Number of Buckets under this Slab, Count:-1
+
+							String[] arrSubBucketDetails=schSlbBuckOtherDetails.split(Pattern.quote("*"));  //Example Split For Multiple Sub Buckets(AND Condition)
+							String[] arrMaintainDetailsOfBucketConditionsAgainstBuckId=new String[schSlbBuckCnt];  //Example Length of Buckes in Slab and which condition is true in case of OR
+							// variables for calculating total sub bucket
+							ArrayList<String> productFullFilledSlab=new ArrayList<String>();
+							ArrayList<String> schSlabRowIdFullFilledSlab=new ArrayList<String>();
+							ArrayList<String> productFullFilledSlabForInvoice=new ArrayList<String>();
+							int totalProductQnty=0;
+							double totalProductVol=0.0;
+
+							double totalProductVal=0.0;
+							int totalProductLine=0;
+							double totalInvoice=0.0;
+
+							//product invoice
+							for(Entry<String, String> entryProduct:hmapPrdctOdrQty.entrySet())
 							{
-								if(Integer.parseInt(hmapPrdctOdrQty.get(entryProduct.getKey()))>(0))
+								if(hmapPrdctOdrQty.containsKey(entryProduct.getKey()))
 								{
-									int curntProdQty = Integer.parseInt(entryProduct.getValue()) ;
-									String curntProdVolumeRate = hmapPrdctVolRatTax.get(entryProduct.getKey());
-									Double curntProdRate=Double.parseDouble(curntProdVolumeRate.split(Pattern.quote("^"))[1]);
-
-									Double currentProductOverAllPriceQtywise=curntProdRate * curntProdQty;
-									totalInvoice=totalInvoice+currentProductOverAllPriceQtywise;
-									productFullFilledSlabForInvoice.add(entryProduct.getKey());
-								}
-							}
-
-						}
-						// end product invoice
-						//sub bucket starts here
-						LinkedHashMap<String, String> hmapSubBucketDetailsData=new LinkedHashMap<String, String>();
-						LinkedHashMap<String, String> hmapSubBucketTotalQntty=new LinkedHashMap<String, String>();
-						LinkedHashMap<String, String> hmapSubBucketTotalValue=new LinkedHashMap<String, String>();
-						LinkedHashMap<String, String> hmapSubBucketTotalVolume=new LinkedHashMap<String, String>();
-
-						for(int cntSubBucket=0;cntSubBucket<arrSubBucketDetails.length;cntSubBucket++)
-						{
-							// Eaxmple:-1^23^1^10^0
-							int schSlbSubBuckID=Integer.parseInt(arrSubBucketDetails[cntSubBucket].split(Pattern.quote("^"))[0]); //Slab Sub BucketID Eaxmple:-1  subBucketId
-							int schSlbSubRowID=Integer.parseInt(arrSubBucketDetails[cntSubBucket].split(Pattern.quote("^"))[1]);  //Slab Sub Bucket RowID Eaxmple:-23  rowid
-							int schSlabSubBucketType=Integer.parseInt(arrSubBucketDetails[cntSubBucket].split(Pattern.quote("^"))[2]);  ///Slab Sub Bucket Type Eaxmple:-1
-
-							Double schSlabSubBucketValue=Double.parseDouble(arrSubBucketDetails[cntSubBucket].split(Pattern.quote("^"))[3]);  ///Slab Sub Bucket Value Eaxmple:-10
-							int schSubBucketValType=Integer.parseInt(arrSubBucketDetails[cntSubBucket].split(Pattern.quote("^"))[4]); ///Slab Sub Bucket Value Type Eaxmple:-0
-
-
-							int totalOderQtyProductsAgainstRowId=0;
-							Double totalVolProductsAgainstRowId=0.0;
-							Double totalValProductsAgainstRowId=0.0;
-
-
-
-
-
-
-							//String[] productFullFilledSlab=new String[arrProductIDMappedInSchSlbSubBukRowId.length];
-							int positionOfProductHavingQntty=0;
-							ArrayList<String> arrProductIDMappedInSchSlbSubBukRowId=new ArrayList<String>();
-
-							//IF SchTypeID==1 OR SchTypeID==2 OR SchTypeID==3  Code Starts Here To Check the Products
-
-							if(SchTypeId==1 || SchTypeId==2)
-							{
-								arrProductIDMappedInSchSlbSubBukRowId=dbengine.fectProductIDMappedInSchSlbSubBukRowIdTemp(schSlbSubRowID);
-							}
-							if(SchTypeId==3)
-							{
-								arrProductIDMappedInSchSlbSubBukRowId.add(ProductIdOnClicked);
-							}
-
-							//IF SchTypeID==1 OR SchTypeID==2 OR SchTypeID==3  Code Ends Here To Check the Products
-							//SlabSubBucketValType
-							//I           =Invoice Value                  Order Value After Tax
-							//G         =Gross Value                     Order Value Before Tax
-							//N         =Net Value                                         Order Value After Tax
-
-
-							if(arrProductIDMappedInSchSlbSubBukRowId.size()>0)
-							{
-
-
-								for(String productMappedWithScheme:arrProductIDMappedInSchSlbSubBukRowId)
-								{
-									schSlabRowIdFullFilledSlab.add(productMappedWithScheme+"^"+schSlbSubRowID);
-									productFullFilledSlab.add(productMappedWithScheme+"^"+schId);// productLine
-
-									String hmapSubBucketDetailsData_Value=	schId+"^"+schSlabId+"^"+schSlbBuckId+"^"+schSlabSubBucketValue+"^"+schSubBucketValType+"^"+schSlabSubBucketType+"^"+ProductIdOnClicked +"^"+valForVolumetQTYToMultiply+"^"+schSlbSubRowID+"^"+SchTypeId;
-									hmapSubBucketDetailsData.put(productMappedWithScheme+"^"+schSlbSubRowID,hmapSubBucketDetailsData_Value );
-									if(hmapPrdctOdrQty.containsKey(productMappedWithScheme))
+									if(Integer.parseInt(hmapPrdctOdrQty.get(entryProduct.getKey()))>(0))
 									{
-										if(Integer.parseInt(hmapPrdctOdrQty.get(productMappedWithScheme))>(0))
+										int curntProdQty = Integer.parseInt(entryProduct.getValue()) ;
+										String curntProdVolumeRate = hmapPrdctVolRatTax.get(entryProduct.getKey());
+										Double curntProdRate=Double.parseDouble(curntProdVolumeRate.split(Pattern.quote("^"))[1]);
+
+										Double currentProductOverAllPriceQtywise=curntProdRate * curntProdQty;
+										totalInvoice=totalInvoice+currentProductOverAllPriceQtywise;
+										productFullFilledSlabForInvoice.add(entryProduct.getKey());
+									}
+								}
+
+							}
+							// end product invoice
+							//sub bucket starts here
+							LinkedHashMap<String, String> hmapSubBucketDetailsData=new LinkedHashMap<String, String>();
+							LinkedHashMap<String, String> hmapSubBucketTotalQntty=new LinkedHashMap<String, String>();
+							LinkedHashMap<String, String> hmapSubBucketTotalValue=new LinkedHashMap<String, String>();
+							LinkedHashMap<String, String> hmapSubBucketTotalVolume=new LinkedHashMap<String, String>();
+
+							for(int cntSubBucket=0;cntSubBucket<arrSubBucketDetails.length;cntSubBucket++)
+							{
+								// Eaxmple:-1^23^1^10^0
+								int schSlbSubBuckID=Integer.parseInt(arrSubBucketDetails[cntSubBucket].split(Pattern.quote("^"))[0]); //Slab Sub BucketID Eaxmple:-1  subBucketId
+								int schSlbSubRowID=Integer.parseInt(arrSubBucketDetails[cntSubBucket].split(Pattern.quote("^"))[1]);  //Slab Sub Bucket RowID Eaxmple:-23  rowid
+								int schSlabSubBucketType=Integer.parseInt(arrSubBucketDetails[cntSubBucket].split(Pattern.quote("^"))[2]);  ///Slab Sub Bucket Type Eaxmple:-1
+
+								Double schSlabSubBucketValue=Double.parseDouble(arrSubBucketDetails[cntSubBucket].split(Pattern.quote("^"))[3]);  ///Slab Sub Bucket Value Eaxmple:-10
+								int schSubBucketValType=Integer.parseInt(arrSubBucketDetails[cntSubBucket].split(Pattern.quote("^"))[4]); ///Slab Sub Bucket Value Type Eaxmple:-0
+
+
+								int totalOderQtyProductsAgainstRowId=0;
+								Double totalVolProductsAgainstRowId=0.0;
+								Double totalValProductsAgainstRowId=0.0;
+
+
+
+
+
+
+								//String[] productFullFilledSlab=new String[arrProductIDMappedInSchSlbSubBukRowId.length];
+								int positionOfProductHavingQntty=0;
+								ArrayList<String> arrProductIDMappedInSchSlbSubBukRowId=new ArrayList<String>();
+
+								//IF SchTypeID==1 OR SchTypeID==2 OR SchTypeID==3  Code Starts Here To Check the Products
+
+								if(SchTypeId==1 || SchTypeId==2)
+								{
+									arrProductIDMappedInSchSlbSubBukRowId=dbengine.fectProductIDMappedInSchSlbSubBukRowIdTemp(schSlbSubRowID);
+								}
+								if(SchTypeId==3)
+								{
+									arrProductIDMappedInSchSlbSubBukRowId.add(ProductIdOnClicked);
+								}
+
+								//IF SchTypeID==1 OR SchTypeID==2 OR SchTypeID==3  Code Ends Here To Check the Products
+								//SlabSubBucketValType
+								//I           =Invoice Value                  Order Value After Tax
+								//G         =Gross Value                     Order Value Before Tax
+								//N         =Net Value                                         Order Value After Tax
+
+
+								if(arrProductIDMappedInSchSlbSubBukRowId.size()>0)
+								{
+
+
+									for(String productMappedWithScheme:arrProductIDMappedInSchSlbSubBukRowId)
+									{
+										schSlabRowIdFullFilledSlab.add(productMappedWithScheme+"^"+schSlbSubRowID);
+										productFullFilledSlab.add(productMappedWithScheme+"^"+schId);// productLine
+
+										String hmapSubBucketDetailsData_Value=	schId+"^"+schSlabId+"^"+schSlbBuckId+"^"+schSlabSubBucketValue+"^"+schSubBucketValType+"^"+schSlabSubBucketType+"^"+ProductIdOnClicked +"^"+valForVolumetQTYToMultiply+"^"+schSlbSubRowID+"^"+SchTypeId;
+										hmapSubBucketDetailsData.put(productMappedWithScheme+"^"+schSlbSubRowID,hmapSubBucketDetailsData_Value );
+										if(hmapPrdctOdrQty.containsKey(productMappedWithScheme))
 										{
-											//1. Product Quantity
+											if(Integer.parseInt(hmapPrdctOdrQty.get(productMappedWithScheme))>(0))
+											{
+												//1. Product Quantity
 
 
-											int oderQtyOnProd=Integer.parseInt(hmapPrdctOdrQty.get(productMappedWithScheme));
+												int oderQtyOnProd=Integer.parseInt(hmapPrdctOdrQty.get(productMappedWithScheme));
 
-											totalProductQnty=totalProductQnty+oderQtyOnProd;
-											totalOderQtyProductsAgainstRowId=totalOderQtyProductsAgainstRowId+oderQtyOnProd;
+												totalProductQnty=totalProductQnty+oderQtyOnProd;
+												totalOderQtyProductsAgainstRowId=totalOderQtyProductsAgainstRowId+oderQtyOnProd;
 
-											hmapSubBucketTotalQntty.put(""+schSlbSubRowID,""+totalOderQtyProductsAgainstRowId);
-											// product volume
-											Double prodVolume= Double.parseDouble(hmapPrdctVolRatTax.get(productMappedWithScheme).split(Pattern.quote("^"))[0]);
-											Double oderVolumeOfCurrentMapedProduct=prodVolume * oderQtyOnProd;
-											totalProductVol=totalProductVol + oderVolumeOfCurrentMapedProduct;
-											totalVolProductsAgainstRowId=totalVolProductsAgainstRowId+oderVolumeOfCurrentMapedProduct;
+												hmapSubBucketTotalQntty.put(""+schSlbSubRowID,""+totalOderQtyProductsAgainstRowId);
+												// product volume
+												Double prodVolume= Double.parseDouble(hmapPrdctVolRatTax.get(productMappedWithScheme).split(Pattern.quote("^"))[0]);
+												Double oderVolumeOfCurrentMapedProduct=prodVolume * oderQtyOnProd;
+												totalProductVol=totalProductVol + oderVolumeOfCurrentMapedProduct;
+												totalVolProductsAgainstRowId=totalVolProductsAgainstRowId+oderVolumeOfCurrentMapedProduct;
 
-											hmapSubBucketTotalVolume.put(""+schSlbSubRowID,""+totalVolProductsAgainstRowId);
-											//product value
+												hmapSubBucketTotalVolume.put(""+schSlbSubRowID,""+totalVolProductsAgainstRowId);
+												//product value
 
-											Double prodRate= Double.parseDouble(hmapPrdctVolRatTax.get(productMappedWithScheme).split(Pattern.quote("^"))[1]);
-											Double oderRateOfCurrentMapedProduct=prodRate * oderQtyOnProd;
-											//oderRateOnProduct=oderRateOnProduct + oderRateOfCurrentMapedProduct;
-											totalProductVal=totalProductVal+oderRateOfCurrentMapedProduct;
-											totalValProductsAgainstRowId=totalValProductsAgainstRowId+oderRateOfCurrentMapedProduct;
-											hmapSubBucketTotalValue.put(""+schSlbSubRowID,""+totalValProductsAgainstRowId);
+												Double prodRate= Double.parseDouble(hmapPrdctVolRatTax.get(productMappedWithScheme).split(Pattern.quote("^"))[1]);
+												Double oderRateOfCurrentMapedProduct=prodRate * oderQtyOnProd;
+												//oderRateOnProduct=oderRateOnProduct + oderRateOfCurrentMapedProduct;
+												totalProductVal=totalProductVal+oderRateOfCurrentMapedProduct;
+												totalValProductsAgainstRowId=totalValProductsAgainstRowId+oderRateOfCurrentMapedProduct;
+												hmapSubBucketTotalValue.put(""+schSlbSubRowID,""+totalValProductsAgainstRowId);
+
+
+											}
+
 
 
 										}
 
 
-
-									}
-
-
-								}// for loops ends here productMappedWithScheme:arrProductIDMappedInSchSlbSubBukRowId
+									}// for loops ends here productMappedWithScheme:arrProductIDMappedInSchSlbSubBukRowId
 
 
-							}// ends if(arrProductIDMappedInSchSlbSubBukRowId.size()>0)
+								}// ends if(arrProductIDMappedInSchSlbSubBukRowId.size()>0)
 
 
 
-						} //sub bucket ends here
+							} //sub bucket ends here
 
-						//schSlabSubBucketType
-						//1. Product Quantity
-						//5. Product Volume
-						//2. Invoice Value
-						//3. Product Lines
-						//4. Product Value
-						boolean bucketCndtnFullFill=true;
-						String stringValHmap="";
-						String stringValHmapInvoice="";
-						ArrayList<String> listStrValHmapForSchm2=new ArrayList<String>();
-						if(productFullFilledSlabForInvoice!=null && productFullFilledSlabForInvoice.size()>0)
-						{
-							for(String productIdFullFilledSlabInvoiceWithQty:productFullFilledSlabForInvoice)
+							//schSlabSubBucketType
+							//1. Product Quantity
+							//5. Product Volume
+							//2. Invoice Value
+							//3. Product Lines
+							//4. Product Value
+							boolean bucketCndtnFullFill=true;
+							String stringValHmap="";
+							String stringValHmapInvoice="";
+							ArrayList<String> listStrValHmapForSchm2=new ArrayList<String>();
+							if(productFullFilledSlabForInvoice!=null && productFullFilledSlabForInvoice.size()>0)
 							{
-								if(hmapSubBucketDetailsData.containsKey(productIdFullFilledSlabInvoiceWithQty))
+								for(String productIdFullFilledSlabInvoiceWithQty:productFullFilledSlabForInvoice)
 								{
-									stringValHmapInvoice=hmapSubBucketDetailsData.get(productIdFullFilledSlabInvoiceWithQty);
-									String schSlabSubBucketType=stringValHmapInvoice.split(Pattern.quote("^"))[5];
-									Double schSlabSubBucketVal=Double.valueOf(stringValHmapInvoice.split(Pattern.quote("^"))[3]);
-									if(schSlabSubBucketType.equals("2"))
+									if(hmapSubBucketDetailsData.containsKey(productIdFullFilledSlabInvoiceWithQty))
 									{
-										if(totalInvoice>=schSlabSubBucketVal)
+										stringValHmapInvoice=hmapSubBucketDetailsData.get(productIdFullFilledSlabInvoiceWithQty);
+										String schSlabSubBucketType=stringValHmapInvoice.split(Pattern.quote("^"))[5];
+										Double schSlabSubBucketVal=Double.valueOf(stringValHmapInvoice.split(Pattern.quote("^"))[3]);
+										if(schSlabSubBucketType.equals("2"))
 										{
-											dbengine.insertProductMappedWithSchemApplied(storeID, productIdFullFilledSlabInvoiceWithQty,""+schSlabId,""+schId,strGlobalOrderID);
-											break;
+											if(totalInvoice>=schSlabSubBucketVal)
+											{
+												dbengine.insertProductMappedWithSchemApplied(storeID, productIdFullFilledSlabInvoiceWithQty,""+schSlabId,""+schId,strGlobalOrderID);
+												break;
+											}
+											else
+											{
+												dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
+												bucketCndtnFullFill=false;
+												stringValHmapInvoice="";
+												break;
+											}
+
 										}
 										else
 										{
-											dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
-											bucketCndtnFullFill=false;
 											stringValHmapInvoice="";
-											break;
 										}
+									}
 
-									}
-									else
-									{
-										stringValHmapInvoice="";
-									}
 								}
-
 							}
-						}
-						if(schSlabRowIdFullFilledSlab!=null && schSlabRowIdFullFilledSlab.size()>0)
-						{
-							for(String productIdRowIDFullFilledSlabWithQty:schSlabRowIdFullFilledSlab)
+							if(schSlabRowIdFullFilledSlab!=null && schSlabRowIdFullFilledSlab.size()>0)
 							{
-								String productIdFullFilledSlabWithQty=productIdRowIDFullFilledSlabWithQty.split(Pattern.quote("^"))[0];
-								String RowIDFullFilledSlabWithQty=productIdRowIDFullFilledSlabWithQty.split(Pattern.quote("^"))[1];
-								stringValHmap=hmapSubBucketDetailsData.get(productIdRowIDFullFilledSlabWithQty);
-								String schSlabSubBucketType=stringValHmap.split(Pattern.quote("^"))[5];
-								Double schSlabSubBucketVal=Double.valueOf(stringValHmap.split(Pattern.quote("^"))[3]);
-								if(SchTypeId==1 || SchTypeId==3 )
+								for(String productIdRowIDFullFilledSlabWithQty:schSlabRowIdFullFilledSlab)
 								{
-
-
-									if(schSlabSubBucketType.equals("1"))
+									String productIdFullFilledSlabWithQty=productIdRowIDFullFilledSlabWithQty.split(Pattern.quote("^"))[0];
+									String RowIDFullFilledSlabWithQty=productIdRowIDFullFilledSlabWithQty.split(Pattern.quote("^"))[1];
+									stringValHmap=hmapSubBucketDetailsData.get(productIdRowIDFullFilledSlabWithQty);
+									String schSlabSubBucketType=stringValHmap.split(Pattern.quote("^"))[5];
+									Double schSlabSubBucketVal=Double.valueOf(stringValHmap.split(Pattern.quote("^"))[3]);
+									if(SchTypeId==1 || SchTypeId==3 )
 									{
-										if(totalProductQnty>=schSlabSubBucketVal)
-										{
-											dbengine.insertProductMappedWithSchemApplied(storeID, productIdFullFilledSlabWithQty,""+schSlabId,""+schId,strGlobalOrderID);
 
-										}
-										else
-										{
 
-											dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
-											bucketCndtnFullFill=false;
-											stringValHmap="";
-											break;
-										}
-
-									}
-									//Product Line
-									if(schSlabSubBucketType.equals("3"))
-									{
-										if(productFullFilledSlab.size()>=schSlabSubBucketVal)
+										if(schSlabSubBucketType.equals("1"))
 										{
-											dbengine.insertProductMappedWithSchemApplied(storeID, productIdFullFilledSlabWithQty,""+schSlabId,""+schId,strGlobalOrderID);
-										}
-										else
-										{
-											dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
-											bucketCndtnFullFill=false;
-											stringValHmap="";
-											break;
-										}
-									}
-									//product Value
-									if(schSlabSubBucketType.equals("4"))
-									{
-										if(totalProductVal>=schSlabSubBucketVal)
-										{
-											dbengine.insertProductMappedWithSchemApplied(storeID, productIdFullFilledSlabWithQty,""+schSlabId,""+schId,strGlobalOrderID);
-										}
-										else
-										{
-											dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
-											bucketCndtnFullFill=false;
-											stringValHmap="";
-											break;
-										}
-
-									}
-									//product volume
-									if(schSlabSubBucketType.equals("5"))
-									{
-										if(totalProductVol>=(schSlabSubBucketVal*1000))
-										{
-											dbengine.insertProductMappedWithSchemApplied(storeID, productIdFullFilledSlabWithQty,""+schSlabId,""+schId,strGlobalOrderID);
-										}
-										else
-										{
-											dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
-											bucketCndtnFullFill=false;
-											stringValHmap="";
-											break;
-										}
-									}
-
-								}
-								else // scheme typeid=2
-								{
-
-									if(schSlabSubBucketType.equals("1"))
-									{
-										if(hmapSubBucketTotalQntty.containsKey(RowIDFullFilledSlabWithQty))
-										{
-											int quantity=Integer.parseInt(hmapSubBucketTotalQntty.get(RowIDFullFilledSlabWithQty));
-											if(quantity>=schSlabSubBucketVal)
+											if(totalProductQnty>=schSlabSubBucketVal)
 											{
 												dbengine.insertProductMappedWithSchemApplied(storeID, productIdFullFilledSlabWithQty,""+schSlabId,""+schId,strGlobalOrderID);
-												listStrValHmapForSchm2.add(stringValHmap);
+
 											}
+											else
+											{
+
+												dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
+												bucketCndtnFullFill=false;
+												stringValHmap="";
+												break;
+											}
+
+										}
+										//Product Line
+										if(schSlabSubBucketType.equals("3"))
+										{
+											if(productFullFilledSlab.size()>=schSlabSubBucketVal)
+											{
+												dbengine.insertProductMappedWithSchemApplied(storeID, productIdFullFilledSlabWithQty,""+schSlabId,""+schId,strGlobalOrderID);
+											}
+											else
+											{
+												dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
+												bucketCndtnFullFill=false;
+												stringValHmap="";
+												break;
+											}
+										}
+										//product Value
+										if(schSlabSubBucketType.equals("4"))
+										{
+											if(totalProductVal>=schSlabSubBucketVal)
+											{
+												dbengine.insertProductMappedWithSchemApplied(storeID, productIdFullFilledSlabWithQty,""+schSlabId,""+schId,strGlobalOrderID);
+											}
+											else
+											{
+												dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
+												bucketCndtnFullFill=false;
+												stringValHmap="";
+												break;
+											}
+
+										}
+										//product volume
+										if(schSlabSubBucketType.equals("5"))
+										{
+											if(totalProductVol>=(schSlabSubBucketVal*1000))
+											{
+												dbengine.insertProductMappedWithSchemApplied(storeID, productIdFullFilledSlabWithQty,""+schSlabId,""+schId,strGlobalOrderID);
+											}
+											else
+											{
+												dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
+												bucketCndtnFullFill=false;
+												stringValHmap="";
+												break;
+											}
+										}
+
+									}
+									else // scheme typeid=2
+									{
+
+										if(schSlabSubBucketType.equals("1"))
+										{
+											if(hmapSubBucketTotalQntty.containsKey(RowIDFullFilledSlabWithQty))
+											{
+												int quantity=Integer.parseInt(hmapSubBucketTotalQntty.get(RowIDFullFilledSlabWithQty));
+												if(quantity>=schSlabSubBucketVal)
+												{
+													dbengine.insertProductMappedWithSchemApplied(storeID, productIdFullFilledSlabWithQty,""+schSlabId,""+schId,strGlobalOrderID);
+													listStrValHmapForSchm2.add(stringValHmap);
+												}
+												else
+												{
+													dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
+													bucketCndtnFullFill=false;
+													listStrValHmapForSchm2.clear();
+													break;
+												}
+											}
+
 											else
 											{
 												dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
@@ -5258,15 +5292,6 @@ public void loadPurchaseProductDefault()
 												listStrValHmapForSchm2.clear();
 												break;
 											}
-										}
-
-										else
-										{
-											dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
-											bucketCndtnFullFill=false;
-											listStrValHmapForSchm2.clear();
-											break;
-										}
 										/*if(hmapPrdctOdrQty.containsKey(productIdFullFilledSlabWithQty))
 										{
 											if(Integer.parseInt(hmapPrdctOdrQty.get(productIdFullFilledSlabWithQty))>=schSlabSubBucketVal)
@@ -5292,41 +5317,49 @@ public void loadPurchaseProductDefault()
 											break;
 										}
 */
-									}
-
-									if(schSlabSubBucketType.equals("3"))
-									{
-
-										if(productFullFilledSlab.size()>=schSlabSubBucketVal)
-										{
-											listStrValHmapForSchm2.add(stringValHmap);
-											dbengine.insertProductMappedWithSchemApplied(storeID, productIdFullFilledSlabWithQty,""+schSlabId,""+schId,strGlobalOrderID);
 										}
-										else
+
+										if(schSlabSubBucketType.equals("3"))
 										{
-											dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
-											bucketCndtnFullFill=false;
-											listStrValHmapForSchm2.clear();
-											break;
-										}
-									}
-									if(schSlabSubBucketType.equals("4"))
-									{
-										Double singleProdRate= Double.parseDouble(hmapPrdctVolRatTax.get(productIdFullFilledSlabWithQty).split(Pattern.quote("^"))[1]);
-										Double singlePrdctOderRate=singleProdRate * Integer.parseInt(hmapPrdctOdrQty.get(productIdFullFilledSlabWithQty));
-										if(hmapSubBucketTotalValue.containsKey(RowIDFullFilledSlabWithQty))
-										{
-											Double prdctVal=Double.parseDouble(hmapSubBucketTotalValue.get(RowIDFullFilledSlabWithQty));
-											if(prdctVal>=schSlabSubBucketVal)
+
+											if(productFullFilledSlab.size()>=schSlabSubBucketVal)
 											{
 												listStrValHmapForSchm2.add(stringValHmap);
 												dbengine.insertProductMappedWithSchemApplied(storeID, productIdFullFilledSlabWithQty,""+schSlabId,""+schId,strGlobalOrderID);
 											}
+											else
+											{
+												dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
+												bucketCndtnFullFill=false;
+												listStrValHmapForSchm2.clear();
+												break;
+											}
+										}
+										if(schSlabSubBucketType.equals("4"))
+										{
+											Double singleProdRate= Double.parseDouble(hmapPrdctVolRatTax.get(productIdFullFilledSlabWithQty).split(Pattern.quote("^"))[1]);
+											Double singlePrdctOderRate=singleProdRate * Integer.parseInt(hmapPrdctOdrQty.get(productIdFullFilledSlabWithQty));
+											if(hmapSubBucketTotalValue.containsKey(RowIDFullFilledSlabWithQty))
+											{
+												Double prdctVal=Double.parseDouble(hmapSubBucketTotalValue.get(RowIDFullFilledSlabWithQty));
+												if(prdctVal>=schSlabSubBucketVal)
+												{
+													listStrValHmapForSchm2.add(stringValHmap);
+													dbengine.insertProductMappedWithSchemApplied(storeID, productIdFullFilledSlabWithQty,""+schSlabId,""+schId,strGlobalOrderID);
+												}
 										/*if(singlePrdctOderRate>=schSlabSubBucketVal)
 										{
 											listStrValHmapForSchm2.add(stringValHmap);
 											dbengine.insertProductMappedWithSchemApplied(storeID, productIdFullFilledSlabWithQty,""+schSlabId,""+schId,strGlobalOrderID);
 										}*/
+												else
+												{
+													dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
+													bucketCndtnFullFill=false;
+													listStrValHmapForSchm2.clear();
+													break;
+												}
+											}
 											else
 											{
 												dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
@@ -5334,34 +5367,34 @@ public void loadPurchaseProductDefault()
 												listStrValHmapForSchm2.clear();
 												break;
 											}
-										}
-										else
-										{
-											dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
-											bucketCndtnFullFill=false;
-											listStrValHmapForSchm2.clear();
-											break;
-										}
 
 
-									}
-									if(schSlabSubBucketType.equals("5"))
-									{
-										Double singleProdVol= Double.parseDouble(hmapPrdctVolRatTax.get(productIdFullFilledSlabWithQty).split(Pattern.quote("^"))[0]);
-										Double singlePrdctOderVol=singleProdVol * Integer.parseInt(hmapPrdctOdrQty.get(productIdFullFilledSlabWithQty));
-										if(hmapSubBucketTotalVolume.containsKey(RowIDFullFilledSlabWithQty))
+										}
+										if(schSlabSubBucketType.equals("5"))
 										{
-											Double prdctVol=Double.parseDouble(hmapSubBucketTotalVolume.get(RowIDFullFilledSlabWithQty));
-											if(prdctVol>=(schSlabSubBucketVal*1000))
+											Double singleProdVol= Double.parseDouble(hmapPrdctVolRatTax.get(productIdFullFilledSlabWithQty).split(Pattern.quote("^"))[0]);
+											Double singlePrdctOderVol=singleProdVol * Integer.parseInt(hmapPrdctOdrQty.get(productIdFullFilledSlabWithQty));
+											if(hmapSubBucketTotalVolume.containsKey(RowIDFullFilledSlabWithQty))
 											{
-												dbengine.insertProductMappedWithSchemApplied(storeID, productIdFullFilledSlabWithQty,""+schSlabId,""+schId,strGlobalOrderID);
-												listStrValHmapForSchm2.add(stringValHmap);
-											}
+												Double prdctVol=Double.parseDouble(hmapSubBucketTotalVolume.get(RowIDFullFilledSlabWithQty));
+												if(prdctVol>=(schSlabSubBucketVal*1000))
+												{
+													dbengine.insertProductMappedWithSchemApplied(storeID, productIdFullFilledSlabWithQty,""+schSlabId,""+schId,strGlobalOrderID);
+													listStrValHmapForSchm2.add(stringValHmap);
+												}
 										/*if(singlePrdctOderVol>=schSlabSubBucketVal)
 										{
 											listStrValHmapForSchm2.add(stringValHmap);
 											dbengine.insertProductMappedWithSchemApplied(storeID, productIdFullFilledSlabWithQty,""+schSlabId,""+schId,strGlobalOrderID);
 										}*/
+												else
+												{
+													dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
+													bucketCndtnFullFill=false;
+													listStrValHmapForSchm2.clear();
+													break;
+												}
+											}
 											else
 											{
 												dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
@@ -5369,14 +5402,9 @@ public void loadPurchaseProductDefault()
 												listStrValHmapForSchm2.clear();
 												break;
 											}
+
 										}
-										else
-										{
-											dbengine.deleteAlertValueSlab(storeID,""+schSlabId,strGlobalOrderID);
-											bucketCndtnFullFill=false;
-											listStrValHmapForSchm2.clear();
-											break;
-										}
+
 
 									}
 
@@ -5385,9 +5413,6 @@ public void loadPurchaseProductDefault()
 
 
 							}
-
-
-						}
 					/*if(productFullFilledSlab!=null && productFullFilledSlab.size()>0)
 					{
 						for(String productIdFullFilledSlabWithQty:productFullFilledSlab)
@@ -5567,61 +5592,63 @@ public void loadPurchaseProductDefault()
 					}*///	if(productFullFilledSlab!=null && productFullFilledSlab.size()>0) ends here
 
 
-						if(bucketCndtnFullFill)
+							if(bucketCndtnFullFill)
+							{
+								bucketCndtnFullFillisReally=true;
+								if(SchTypeId==1 || SchTypeId==3)
+								{
+									if(!TextUtils.isEmpty(stringValHmap.trim()))
+									{
+										for(String allproductFullFilledSlab:productFullFilledSlab)
+										{
+											productFullFilledSlabGlobal.add(allproductFullFilledSlab);
+										}
+
+
+										arredtboc_OderQuantityFinalSchemesToApply.add(stringValHmap+"^"+totalProductQnty+"^"+totalInvoice+"^"+totalProductLine+"^"+totalProductVal+"^"+totalProductVol+"^0");
+									}
+									else if(!TextUtils.isEmpty(stringValHmapInvoice.trim()))
+									{
+										arredtboc_OderQuantityFinalSchemesToApply.add(stringValHmapInvoice+"^"+totalProductQnty+"^"+totalInvoice+"^"+totalProductLine+"^"+totalProductVal+"^"+totalProductVol+"^0");
+									}
+								}
+								else
+								{
+									if(listStrValHmapForSchm2!=null && listStrValHmapForSchm2.size()>0)
+									{
+										for(String allproductFullFilledSlab:productFullFilledSlab)
+										{
+											productFullFilledSlabGlobal.add(allproductFullFilledSlab);
+										}
+
+										for(String strVal:listStrValHmapForSchm2)
+										{
+
+											arredtboc_OderQuantityFinalSchemesToApply.add(strVal+"^"+totalProductQnty+"^"+totalInvoice+"^"+totalProductLine+"^"+totalProductVal+"^"+totalProductVol+"^0");
+										}
+									}
+									if(!TextUtils.isEmpty(stringValHmapInvoice.trim()))
+									{
+										arredtboc_OderQuantityFinalSchemesToApply.add(stringValHmapInvoice+"^"+totalProductQnty+"^"+totalInvoice+"^"+totalProductLine+"^"+totalProductVal+"^"+totalProductVol+"^0");
+									}
+
+								}
+								break;
+							}//if(bucketCndtnFullFill) ends here
+
+						}// bucket ends here
+
+						if(bucketCndtnFullFillisReally)
 						{
-							bucketCndtnFullFillisReally=true;
-							if(SchTypeId==1 || SchTypeId==3)
-							{
-								if(!TextUtils.isEmpty(stringValHmap.trim()))
-								{
-									for(String allproductFullFilledSlab:productFullFilledSlab)
-									{
-										productFullFilledSlabGlobal.add(allproductFullFilledSlab);
-									}
-
-
-									arredtboc_OderQuantityFinalSchemesToApply.add(stringValHmap+"^"+totalProductQnty+"^"+totalInvoice+"^"+totalProductLine+"^"+totalProductVal+"^"+totalProductVol+"^0");
-								}
-								else if(!TextUtils.isEmpty(stringValHmapInvoice.trim()))
-								{
-									arredtboc_OderQuantityFinalSchemesToApply.add(stringValHmapInvoice+"^"+totalProductQnty+"^"+totalInvoice+"^"+totalProductLine+"^"+totalProductVal+"^"+totalProductVol+"^0");
-								}
-							}
-							else
-							{
-								if(listStrValHmapForSchm2!=null && listStrValHmapForSchm2.size()>0)
-								{
-									for(String allproductFullFilledSlab:productFullFilledSlab)
-									{
-										productFullFilledSlabGlobal.add(allproductFullFilledSlab);
-									}
-
-									for(String strVal:listStrValHmapForSchm2)
-									{
-
-										arredtboc_OderQuantityFinalSchemesToApply.add(strVal+"^"+totalProductQnty+"^"+totalInvoice+"^"+totalProductLine+"^"+totalProductVal+"^"+totalProductVol+"^0");
-									}
-								}
-								if(!TextUtils.isEmpty(stringValHmapInvoice.trim()))
-								{
-									arredtboc_OderQuantityFinalSchemesToApply.add(stringValHmapInvoice+"^"+totalProductQnty+"^"+totalInvoice+"^"+totalProductLine+"^"+totalProductVal+"^"+totalProductVol+"^0");
-								}
-
-							}
+							bucketCndtnSchemeFullFill=true;
 							break;
-						}//if(bucketCndtnFullFill) ends here
-
-					}// bucket ends here
-
-					if(bucketCndtnFullFillisReally)
-					{
-						bucketCndtnSchemeFullFill=true;
-						break;
+						}
 					}
 				}
-			}
 
+			}
 		}
+
 		if(hmapProductAddOnSchemesList!=null && hmapProductAddOnSchemesList.containsKey(ProductIdOnClicked))
 		{
 			fnCheckExtraSchemeAfterValueChange(hmapProductAddOnSchemesList.get(ProductIdOnClicked),ProductIdOnClicked);
@@ -5713,7 +5740,11 @@ public void loadPurchaseProductDefault()
 
 									for(String productIdToFillSlab:productFullFilledSlabGlobal)
 									{
-										arrProductIDMappedInSchSlbSubBukBenifits.put(hmapPrdctIdPrdctName.get(productIdToFillSlab.split(Pattern.quote("^"))[0]), productIdToFillSlab.split(Pattern.quote("^"))[0]);
+										if(Integer.parseInt(hmapPrdctOdrQty.get(productIdToFillSlab.split(Pattern.quote("^"))[0]))>0)
+										{
+											arrProductIDMappedInSchSlbSubBukBenifits.put(hmapPrdctIdPrdctName.get(productIdToFillSlab.split(Pattern.quote("^"))[0]), productIdToFillSlab.split(Pattern.quote("^"))[0]);
+										}
+										//arrProductIDMappedInSchSlbSubBukBenifits.put(hmapPrdctIdPrdctName.get(productIdToFillSlab.split(Pattern.quote("^"))[0]), productIdToFillSlab.split(Pattern.quote("^"))[0]);
 									}
 
 								}
@@ -6170,7 +6201,7 @@ public void loadPurchaseProductDefault()
 				}//hmapSchemeIdStoreID.containsKey(""+schId) ends here
 			}// for loops ends here for arredtboc_OderQuantityFinalSchemesToApply
 
-			if(noAlrtHshMaptoSaveData.size()>0)
+			if(noAlrtHshMaptoSaveData!=null && noAlrtHshMaptoSaveData.size()>0 )
 			{
 				boolean flagMappedToProduct=false; // if noAlrtHshMaptoSaveData doenot contains arrProductIDMappedInSchSlbSubBukRowId
 				if(productFullFilledSlabGlobal!=null && productFullFilledSlabGlobal.size()>0)
@@ -6187,12 +6218,13 @@ public void loadPurchaseProductDefault()
 							noAlrtHshMaptoSaveDataTemp.put(productFullFilledSlabGlobal.get(cntProdcutsRowIdCnt).split(Pattern.quote("^"))[0], noAlrtHshMaptoSaveData.get(productFullFilledSlabGlobal.get(cntProdcutsRowIdCnt)));
 							saveFreeProductDataWithSchemeToDatabase(noAlrtHshMaptoSaveDataTemp, productFullFilledSlabGlobal.get(cntProdcutsRowIdCnt).split(Pattern.quote("^"))[0]);
 						}
+
 					}
 
-               /*if(!flagMappedToProduct)
-               {
-                  saveFreeProductDataWithSchemeToDatabase(noAlrtHshMaptoSaveData, ProductIdOnClicked);
-            }*/
+					if(!flagMappedToProduct)
+					{
+						saveFreeProductDataWithSchemeToDatabase(noAlrtHshMaptoSaveData, ProductIdOnClicked);
+					}
 
 				}
 
@@ -8294,13 +8326,27 @@ public void loadPurchaseProductDefault()
 	{
 		String SchemeNamesApplies="No Scheme Applicable";
 		String scIds="0";
-		if(hmapProductRelatedSchemesList.containsKey(ProductIdOnClickedControl))
+
+		if(hmapProductRelatedSchemesList.containsKey(ProductIdOnClickedControl) || hmapProductAddOnSchemesList.containsKey(ProductIdOnClickedControl))
 		{
-			String SchemeOnProduct=hmapProductRelatedSchemesList.get(ProductIdOnClickedControl).toString();
-			if(hmapProductAddOnSchemesList.containsKey(ProductIdOnClickedControl))
+			String SchemeOnProduct="";
+
+			if(hmapProductRelatedSchemesList.containsKey(ProductIdOnClickedControl))
 			{
-				SchemeOnProduct=SchemeOnProduct+"#"+hmapProductAddOnSchemesList.get(ProductIdOnClickedControl);
+				SchemeOnProduct=hmapProductRelatedSchemesList.get(ProductIdOnClickedControl).toString();
+				if(hmapProductAddOnSchemesList.containsKey(ProductIdOnClickedControl))
+				{
+					SchemeOnProduct=SchemeOnProduct+"#"+hmapProductAddOnSchemesList.get(ProductIdOnClickedControl);
+				}
+
 			}
+			else
+			{
+
+				SchemeOnProduct=hmapProductAddOnSchemesList.get(ProductIdOnClickedControl);
+
+			}
+
 			String[] arrSchIdsListOnProductID=SchemeOnProduct.split("#");
 
 
@@ -8338,7 +8384,6 @@ public void loadPurchaseProductDefault()
 
 	}
 
-
 	public void fnDeletePreviousEntriesSchemeIDsAppliedOverProductAfterValueChange(String CompleteSchemeIdListOnProductID,String ProductIdOnClicked)
 	{
 
@@ -8348,7 +8393,11 @@ public void loadPurchaseProductDefault()
 		for(int pos=0;pos<werer.length;pos++)
 		{
 
-			String schIdforBen10=werer[pos].split(Pattern.quote("_"))[0].toString();
+			String schIdforBen10="0";
+			if(!werer[pos].split(Pattern.quote("_"))[0].equals("null"))
+			{
+				schIdforBen10=werer[pos].split(Pattern.quote("_"))[0].toString();
+			}
 			//String schmTypeId=werer[pos]..split(Pattern.quote("_")))[1].toString();
 
 			String[] arrProductRelatedToProject=dbengine.fnGetDistinctProductIdAgainstStoreProduct(storeID,schIdforBen10,strGlobalOrderID);
@@ -8431,7 +8480,7 @@ public void loadPurchaseProductDefault()
 											hmapPrdctFreeQty.put(((bensubBucket10Product[index]).split(Pattern.quote("^")))[1], "0");
 											//hmapPrdctFreeQty.put(bensubBucket10Product[index], "0");
 											hmapProductVolumePer.put(""+((bensubBucket10Product[index]).split(Pattern.quote("^")))[0],"0.00");
-
+											hmapProductVolumePerFinal.remove(""+((bensubBucket10Product[index]).split(Pattern.quote("^")))[0]+"^"+schIdforBen10);
 											hmapPrdctIdPrdctDscnt.put(""+((bensubBucket10Product[index]).split(Pattern.quote("^")))[0],"0.00");
 											((TextView)ll_prdct_detal.findViewWithTag("tvDiscountVal_"+((bensubBucket10Product[index]).split(Pattern.quote("^")))[0])).setText("0.00");
 											if(Integer.parseInt(((bensubBucket10Product[index]).split(Pattern.quote("^")))[1].toString())!=0)
@@ -8477,9 +8526,9 @@ public void loadPurchaseProductDefault()
 
 			else
 			{
-				String arrSchmesRelatedToProject=dbengine.fnGetDistinctSchIdsAgainstStoreProduct(storeID,ProductIdOnClicked,Integer.parseInt(schIdforBen10));
+				//String arrSchmesRelatedToProject=dbengine.fnGetDistinctSchIdsAgainstStoreProduct(storeID,ProductIdOnClicked,Integer.parseInt(schIdforBen10));
 
-
+				String arrSchmesRelatedToProject=dbengine.fnGetDistinctSchIdsAgainstStoreForDelete(storeID,ProductIdOnClicked,Integer.parseInt(schIdforBen10));
 
 
 				if(!TextUtils.isEmpty(arrSchmesRelatedToProject))
@@ -8551,16 +8600,19 @@ public void loadPurchaseProductDefault()
 							if(BenSubBucketType==1 || BenSubBucketType==5)
 							{
 								hmapPrdctFreeQty.put(""+freePrdctId, ""+(Integer.valueOf(hmapPrdctFreeQty.get(freePrdctId))-Math.abs(besnAssignVal.intValue())));
+								hmapPrdctFreeQtyFinal.remove(""+freePrdctId+"^"+schIdforBen10);
 								((TextView)ll_prdct_detal.findViewWithTag("tvFreeQty_"+freePrdctId)).setText(hmapPrdctFreeQty.get(""+freePrdctId).toString());
 							}
 							else if(BenSubBucketType==2 || BenSubBucketType==6)
 							{
 								hmapProductDiscountPercentageGive.put(""+freePrdctId, ""+(Double.valueOf(hmapProductDiscountPercentageGive.get(freePrdctId))-besnAssignVal));
+								hmapProductDiscountPercentageGiveFinal.remove(""+freePrdctId+"^"+schIdforBen10);
 								((TextView)ll_prdct_detal.findViewWithTag("tvDiscountVal_"+freePrdctId)).setText("0.0");
 							}
 							else if(BenSubBucketType==3 || BenSubBucketType==7)
 							{
 								hmapPrdctIdPrdctDscnt.put(""+freePrdctId, ""+(Double.valueOf(hmapPrdctIdPrdctDscnt.get(freePrdctId))-besnAssignVal));
+
 								((TextView)ll_prdct_detal.findViewWithTag("tvDiscountVal_"+freePrdctId)).setText(hmapPrdctIdPrdctDscnt.get(""+freePrdctId).toString());
 							}
 							if(SchTypeId==1 || SchTypeId==3)
@@ -8575,6 +8627,7 @@ public void loadPurchaseProductDefault()
 
 							}
 							dbengine.deleteProductSchemeType3(storeID, prodctMpdWdSchm,strGlobalOrderID);
+
 
 						}
 
@@ -9689,6 +9742,7 @@ public void loadPurchaseProductDefault()
 					int WhatFinallyApplied=1;
 
 
+
 					if(benSubBucketType==1 || benSubBucketType==5)//Free Different Product  / Free Same Product
 					{
 
@@ -9701,9 +9755,19 @@ public void loadPurchaseProductDefault()
 						{
 							if(hmapPrdctFreeQty!=null && hmapPrdctFreeQty.containsKey(""+freeProductId))
 							{
-								int exactVal=Integer.parseInt(hmapPrdctFreeQty.get(""+freeProductId));
+								int exactVal=0;
+								if(hmapPrdctFreeQtyFinal.containsKey(""+freeProductId+"^"+schemeId))
+								{
+
+								}
+								else {
+									hmapPrdctFreeQtyFinal.put(""+freeProductId+"^"+schemeId,""+benifitAssignedVal);
+									exactVal=Integer.parseInt(hmapPrdctFreeQty.get(""+freeProductId));
+								}
+
 								int totalVal=benifitAssignedVal.intValue()+exactVal;
 								hmapPrdctFreeQty.put(""+freeProductId,""+totalVal);
+
 							}
 						}
 						//hmapPrdctFreeQty.put(String.valueOf(freeProductId),((TextView)ll_prdct_detal.findViewWithTag("tvFreeQty_"+freeProductId)).getText().toString());
@@ -9721,7 +9785,17 @@ public void loadPurchaseProductDefault()
 							if(hmapProductDiscountPercentageGive!=null && hmapProductDiscountPercentageGive.containsKey(""+freeProductId))
 							{
 								Double val=Double.parseDouble(hmapProductDiscountPercentageGive.get(""+freeProductId));
-								int exactVal=val.intValue();
+								int exactVal=0;
+								if(hmapProductDiscountPercentageGiveFinal.containsKey(""+freeProductId+"^"+schemeId))
+								{
+
+								}
+								else {
+									hmapProductDiscountPercentageGiveFinal.put(""+freeProductId+"^"+schemeId,""+benifitAssignedVal);
+									exactVal=val.intValue();
+								}
+
+
 								int totalVal=benifitAssignedVal.intValue()+exactVal;
 								hmapProductDiscountPercentageGive.put(""+freeProductId,""+totalVal);
 							}
@@ -9745,12 +9819,22 @@ public void loadPurchaseProductDefault()
 						{
 							if(hmapProductVolumePer!=null && hmapProductVolumePer.containsKey(""+freeProductId))
 							{
-								Double exactVal=Double.parseDouble(hmapProductVolumePer.get(""+freeProductId));
+								Double exactVal=0.0;
+								if(hmapProductVolumePerFinal.containsKey(""+freeProductId+"^"+schemeId))
+								{
+
+								}
+								else {
+									hmapProductVolumePerFinal.put(""+freeProductId+"^"+schemeId,""+per);
+									exactVal=Double.parseDouble(hmapProductVolumePer.get(""+freeProductId));
+								}
+								//Double exactVal=Double.parseDouble(hmapProductVolumePer.get(""+freeProductId));
 								Double totalVal=per+exactVal;
 								hmapProductVolumePer.put(""+freeProductId,""+totalVal);
 							}
 						}
 					}
+
 
 					//BenSubBucketType
 					//1. Free Other Product
@@ -11037,123 +11121,136 @@ public void loadPurchaseProductDefault()
 		 		
 		 		return builder;
 
-		 	}    
-		 
+		 	}
 
-	     public Double getAccAsignValue(int schSlabSubBucketType,int chkflgProDataCalculation,double BenSubBucketValue,double schSlabSubBucketValue,int totalProductQty,int totalProductLine,double totalProductValue,double totalProductVol,double totalInvoice,double per,String productIdForFree,boolean isLastPrdct)
-	     {
-	    	 Double accAsignVal=0.0;
-	    	//1. Product Quantity
-				//5. Product Volume
-				//2. Invoice Value
-				//3. Product Lines
-				//4. Product Value
-	    	 
-	    	 //Product Quantity
-				if(schSlabSubBucketType==1)
-				{
-					if(chkflgProDataCalculation==1)
-					{
-						
-						if(isLastPrdct)
-						{
-							accAsignVal=BenSubBucketValue*(totalProductQty/schSlabSubBucketValue);
-							accAsignVal=  Double.valueOf(Math.abs(accAsignVal.intValue())) ;
-						}
-						//accAsignVal=Double.valueOf(Double.valueOf(hmapPrdctOdrQty.get(productIdForFree))*accAsignVal/totalProductQty);
-						
-					}
-					else
-					{
-						if(isLastPrdct)
-						{
-							accAsignVal=BenSubBucketValue;
-						}
-						
-					}
-					
-				}
-				//Invoice Value
-				else if(schSlabSubBucketType==2)
-				{
 
-					if(chkflgProDataCalculation==1)
-					{
-						accAsignVal=BenSubBucketValue*(totalInvoice/schSlabSubBucketValue);
-						
-					}
-					else
-					{
-						accAsignVal=BenSubBucketValue;
-					}
-				}
-				//Product Lines
-				else if(schSlabSubBucketType==3)
+	public Double getAccAsignValue(int schSlabSubBucketType,int chkflgProDataCalculation,double BenSubBucketValue,double schSlabSubBucketValue,int totalProductQty,int totalProductLine,double totalProductValue,double totalProductVol,double totalInvoice,double per,String productIdForFree,boolean isLastPrdct)
+	{
+		Double accAsignVal=0.0;
+		//1. Product Quantity
+		//5. Product Volume
+		//2. Invoice Value
+		//3. Product Lines
+		//4. Product Value
+
+		//Product Quantity
+		if(schSlabSubBucketType==1)
+		{
+			if(chkflgProDataCalculation==1)
+			{
+
+				if(isLastPrdct)
 				{
-					if(chkflgProDataCalculation==1)
-					{
-						accAsignVal=BenSubBucketValue*(totalProductLine/schSlabSubBucketValue);
-						accAsignVal=Double.valueOf(Double.valueOf(productFullFilledSlabGlobal.size())*accAsignVal/totalProductLine);
-					}
-					else
-					{
-						accAsignVal=BenSubBucketValue;
-					}
+					accAsignVal=BenSubBucketValue*(totalProductQty/schSlabSubBucketValue);
+					accAsignVal=  Double.valueOf(Math.abs(accAsignVal.intValue())) ;
 				}
-				 //Product Value
-				else if(schSlabSubBucketType==4)
+				//accAsignVal=Double.valueOf(Double.valueOf(hmapPrdctOdrQty.get(productIdForFree))*accAsignVal/totalProductQty);
+
+			}
+			else
+			{
+				if(isLastPrdct)
 				{
-					if(chkflgProDataCalculation==1)
-					{
-						accAsignVal=BenSubBucketValue*(totalProductValue/schSlabSubBucketValue);
-					
-						//product value
-						
-						Double prodRate= Double.parseDouble(hmapPrdctVolRatTax.get(productIdForFree).split(Pattern.quote("^"))[1]);
-						Double oderRateOfCurrentMapedProduct=prodRate *Double.valueOf(hmapPrdctOdrQty.get(productIdForFree)) ;
-						//oderRateOnProduct=oderRateOnProduct + oderRateOfCurrentMapedProduct;
-						double singleProductVal=oderRateOfCurrentMapedProduct;
-						
-						if(per>0.0)
-						{
-							singleProductVal=singleProductVal/per;
-						}
-						accAsignVal=Double.valueOf(Double.valueOf(singleProductVal)*(accAsignVal/totalProductValue));
-						
-						
-					}
-					else
-					{
-						
-						accAsignVal=BenSubBucketValue;
-					}
-					
+					accAsignVal=BenSubBucketValue;
 				}
-				// Product Volume
-				else if(schSlabSubBucketType==5)
+
+			}
+
+		}
+		//Invoice Value
+		else if(schSlabSubBucketType==2)
+		{
+
+			if(chkflgProDataCalculation==1)
+			{
+				accAsignVal=BenSubBucketValue*(totalInvoice/schSlabSubBucketValue);
+
+			}
+			else
+			{
+				if(isLastPrdct)
 				{
-					if(chkflgProDataCalculation==1)
-					{
-						
-						accAsignVal=BenSubBucketValue*(totalProductVol/(schSlabSubBucketValue*1000));
-						// product volume
-						Double prodVolume= Double.parseDouble(hmapPrdctVolRatTax.get(productIdForFree).split(Pattern.quote("^"))[0]);
-						Double oderVolumeOfCurrentMapedProduct=prodVolume * Double.valueOf(hmapPrdctOdrQty.get(productIdForFree)) ;
-						Double singleProductVol=oderVolumeOfCurrentMapedProduct;
-						if(per>0.0)
-						{
-							singleProductVol=singleProductVol/per;
-						}
-						accAsignVal=Double.valueOf(Double.valueOf(singleProductVol)*accAsignVal/totalProductVol);
-						
-					}
-					else
-					{
-						accAsignVal=BenSubBucketValue;
-					}
+					accAsignVal=BenSubBucketValue;
 				}
-				 return accAsignVal;
-	     }
+
+			}
+		}
+		//Product Lines
+		else if(schSlabSubBucketType==3)
+		{
+			if(chkflgProDataCalculation==1)
+			{
+				accAsignVal=BenSubBucketValue*(totalProductLine/schSlabSubBucketValue);
+				accAsignVal=Double.valueOf(Double.valueOf(productFullFilledSlabGlobal.size())*accAsignVal/totalProductLine);
+			}
+			else
+			{
+				if(isLastPrdct)
+				{
+					accAsignVal=BenSubBucketValue;
+				}
+			}
+		}
+		//Product Value
+		else if(schSlabSubBucketType==4)
+		{
+			if(chkflgProDataCalculation==1)
+			{
+				accAsignVal=BenSubBucketValue*(totalProductValue/schSlabSubBucketValue);
+
+				//product value
+
+				Double prodRate= Double.parseDouble(hmapPrdctVolRatTax.get(productIdForFree).split(Pattern.quote("^"))[1]);
+				Double oderRateOfCurrentMapedProduct=prodRate *Double.valueOf(hmapPrdctOdrQty.get(productIdForFree)) ;
+				//oderRateOnProduct=oderRateOnProduct + oderRateOfCurrentMapedProduct;
+				double singleProductVal=oderRateOfCurrentMapedProduct;
+
+				if(per>0.0)
+				{
+					singleProductVal=singleProductVal/per;
+				}
+				accAsignVal=Double.valueOf(Double.valueOf(singleProductVal)*(accAsignVal/totalProductValue));
+
+
+			}
+			else
+			{
+
+				if(isLastPrdct)
+				{
+					accAsignVal=BenSubBucketValue;
+				}
+			}
+
+		}
+		// Product Volume
+		else if(schSlabSubBucketType==5)
+		{
+			if(chkflgProDataCalculation==1)
+			{
+
+				accAsignVal=BenSubBucketValue*(totalProductVol/(schSlabSubBucketValue*1000));
+				// product volume
+				Double prodVolume= Double.parseDouble(hmapPrdctVolRatTax.get(productIdForFree).split(Pattern.quote("^"))[0]);
+				Double oderVolumeOfCurrentMapedProduct=prodVolume * Double.valueOf(hmapPrdctOdrQty.get(productIdForFree)) ;
+				Double singleProductVol=oderVolumeOfCurrentMapedProduct;
+				if(per>0.0)
+				{
+					singleProductVol=singleProductVol/per;
+				}
+				accAsignVal=Double.valueOf(Double.valueOf(singleProductVol)*accAsignVal/totalProductVol);
+
+			}
+			else
+			{
+				if(isLastPrdct)
+				{
+					accAsignVal=BenSubBucketValue;
+				}
+			}
+		}
+		return accAsignVal;
+	}
 	public boolean checkLastFinalLoctionIsRepeated(String currentLat,String currentLong,String currentAccuracy){
 		boolean repeatedLoction=false;
 

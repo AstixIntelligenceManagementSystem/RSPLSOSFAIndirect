@@ -18304,8 +18304,9 @@ public void deleteStoreTblsRecordsInCaseCancelOrderInOrderBooking(String StoreID
 		     public String[] fnGetDistinctProductIdAgainstStoreProduct(String StoreID,String schmIdForProductsavdInRecord,String pdaOrderID)
 		     {
 		      open();
-		      Cursor cursor = db.rawQuery("SELECT BenSubBucketType,ProductID,BenifitAssignedValue,BenifitDiscountApplied,IFNULL(BenifitCouponCode,0),schId,schSlbRowId,SchTypeId FROM tblStoreProductAppliedSchemesBenifitsRecords WHERE StoreID ='"+ StoreID + "' and  OrderIDPDA='"+pdaOrderID+"' and  schId="+ schmIdForProductsavdInRecord +" and BenSubBucketType in(10)", null);
-		      String[] chkI = new String[cursor.getCount()];
+		    //  Cursor cursor = db.rawQuery("SELECT BenSubBucketType,ProductID,BenifitAssignedValue,BenifitDiscountApplied,IFNULL(BenifitCouponCode,0),schId,schSlbRowId,SchTypeId FROM tblStoreProductAppliedSchemesBenifitsRecords WHERE StoreID ='"+ StoreID + "' and  OrderIDPDA='"+pdaOrderID+"' and  schId="+ schmIdForProductsavdInRecord +" and BenSubBucketType in(10)", null);
+                 Cursor cursor = db.rawQuery("SELECT BenSubBucketType,ProductID,BenifitAssignedValue,BenifitDiscountApplied,IFNULL(BenifitCouponCode,0),schId,schSlbRowId,SchTypeId FROM tblStoreProductAppliedSchemesBenifitsRecords WHERE StoreID ='"+ StoreID + "' and  OrderIDPDA='"+pdaOrderID+"' and  schId="+ schmIdForProductsavdInRecord +" and BenSubBucketType in(10)", null);
+		       String[] chkI = new String[cursor.getCount()];
 		      try {
 		       if(cursor.getCount()>0)
 		       { 
@@ -33700,6 +33701,39 @@ if(cursor.getCount()>0)
             close();
             return  hmap_Dbr;
         }
+    }
+
+    public String fnGetDistinctSchIdsAgainstStoreForDelete(String StoreID,String ProductIdOnClicked,int schId)
+    {
+        open();
+        Cursor cursor = db.rawQuery("SELECT schSlbRowId,SchTypeId FROM tblStoreProductAppliedSchemesBenifitsRecords WHERE StoreID ='"+ StoreID + "' and  schId="+schId+" and BenSubBucketType in(1,5,2,6,3,7,10)", null);
+        String chkI = "";
+        try {
+            if(cursor.getCount()>0)
+            {
+
+                if (cursor.moveToFirst()) {
+
+                    for (int i = 0; i <= (cursor.getCount() - 1); i++)
+                    {
+                        if(cursor.getString(0)!=null && cursor.getString(1)!=null)
+                        {
+                            chkI = cursor.getString(0)+"^"+cursor.getString(1);
+                        }
+                        cursor.moveToNext();
+                    }
+                }
+            }
+
+        } finally {
+            if(cursor!=null)
+            {
+                cursor.close();
+            }
+
+            close();
+        }
+        return chkI;
     }
 }
 
