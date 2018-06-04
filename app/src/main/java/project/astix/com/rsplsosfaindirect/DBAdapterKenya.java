@@ -700,8 +700,8 @@ private static final String DATABASE_TABLE_MAIN101 = "tblFirstOrderDetailsOnLast
 	   
 	private static final String DATABASE_CREATE_TABLE_209 = "create table tblProductRelatedScheme (ProductID text null,PrdString text null);";
 	private static final String DATABASE_CREATE_TABLE_210 = "create table tblStoreProdcutPurchaseDetails (IMEIno text not null,RouteID int null,StoreID text not null,CatID text  null,ProdID text not null,TransDate string not null,Stock integer not null,OrderQty integer not null,OrderVal real not null,FreeQty integer not null,DisVal real not null,Sstat integer not null,SampleQuantity int null,ProductShortName text null,ProductPrice real null, TaxRate real null,TaxValue real null,StoreCatNodeId int null,OrderIDPDA text null,flgIsQuoteRateApplied int null,distibutorID text null,flgOrderType int null);";
-	private static final String DATABASE_CREATE_TABLE_211 = "create table tblStoreProductAppliedSchemesBenifitsRecords (StoreID text not null,ProductID int not null,schId int not null,schSlabId integer not null,schSlbBuckId integer not null,schSlabSubBucketValue real not null,schSubBucketValType integer not null,schSlabSubBucketType int not null,BenifitRowID integer not null,BenSubBucketType int null,FreeProductID int null,BenifitSubBucketValue real null,BenifitMaxValue real null,BenifitAssignedValue real null,BenifitAssignedValueType int null,BenifitDiscountApplied int null,BenifitCouponCode text null,Sstat integer not null,Per real null,UOM real null,WhatFinallyApplied int null,schSlbRowId int null,SchTypeId int null,DiscountPercentage real null,OrderIDPDA text null);";
-
+	private static final String DATABASE_CREATE_TABLE_211 = "create table tblStoreProductAppliedSchemesBenifitsRecords (StoreID text not null,ProductID int not null,schId int not null,schSlabId integer not null,schSlbBuckId integer not null,schSlabSubBucketValue real not null,schSubBucketValType integer not null,schSlabSubBucketType int not null,BenifitRowID integer not null,BenSubBucketType int null,FreeProductID int null,BenifitSubBucketValue real null,BenifitMaxValue real null,BenifitAssignedValue real null,BenifitAssignedValueType int null,BenifitDiscountApplied int null,BenifitCouponCode text null,Sstat integer not null,Per real null,UOM real null,WhatFinallyApplied int null,schSlbRowId int null,SchTypeId int null,DiscountPercentage real null,OrderIDPDA text null,flgAddOn int null,isDiscountOnTotalAmount int null);";
+//
 	
 	 private static final String DATABASE_CREATE_TABLE_RETURNREASON = "create table tblReturnReason(StockStatusId text not null,StockStatus text not null);";
 
@@ -17901,8 +17901,9 @@ public void deleteStoreTblsRecordsInCaseCancelOrderInOrderBooking(String StoreID
 		   {
 		    open();
 		    String highestDiscount="";
-		    Cursor cursor=db.rawQuery("Select  Max(BenifitAssignedValue),BenifitRowID from tblStoreProductAppliedSchemesBenifitsRecords where StoreID='"+storeId+"' and FreeProductID='"+freeProductId+"' and BenSubBucketType in (2,6) Limit 1", null);
-		    try {
+		  //  Cursor cursor=db.rawQuery("Select  Max(BenifitAssignedValue),BenifitRowID from tblStoreProductAppliedSchemesBenifitsRecords where StoreID='"+storeId+"' and FreeProductID='"+freeProductId+"' and BenSubBucketType in (2,6) Limit 1", null);
+               Cursor cursor=db.rawQuery("Select  Max(BenifitAssignedValue),BenifitRowID,isDiscountOnTotalAmount from tblStoreProductAppliedSchemesBenifitsRecords where StoreID='"+storeId+"' and FreeProductID='"+freeProductId+"' and flgAddOn=0 and BenSubBucketType in (2,6) Limit 1", null);
+		     try {
 				    if(cursor.getCount()>0)
 				    {
 				     if(cursor.moveToFirst())
@@ -17914,7 +17915,7 @@ public void deleteStoreTblsRecordsInCaseCancelOrderInOrderBooking(String StoreID
 						   }
 						   else
 						   {
-							   highestDiscount=cursor.getString(0)+"^"+cursor.getString(1);   
+							   highestDiscount=cursor.getString(0)+"^"+cursor.getString(1)+"^"+cursor.getString(2);;
 						   }
 				     }
 				    }
@@ -17962,8 +17963,9 @@ public void deleteStoreTblsRecordsInCaseCancelOrderInOrderBooking(String StoreID
 		   {
 		    open();
 		    String highestDiscount="";
-		    Cursor cursor=db.rawQuery("Select  Max(BenifitAssignedValue),BenifitRowID from tblStoreProductAppliedSchemesBenifitsRecords where StoreID='"+storeId+"' and ProductID='"+freeProductId+"' and BenSubBucketType in (3,7,10) Limit 1", null);
-		    try {
+		   // Cursor cursor=db.rawQuery("Select  Max(BenifitAssignedValue),BenifitRowID from tblStoreProductAppliedSchemesBenifitsRecords where StoreID='"+storeId+"' and ProductID='"+freeProductId+"' and BenSubBucketType in (3,7,10) Limit 1", null);
+               Cursor cursor=db.rawQuery("Select  Max(BenifitAssignedValue),BenifitRowID,isDiscountOnTotalAmount from tblStoreProductAppliedSchemesBenifitsRecords where StoreID='"+storeId+"' and ProductID='"+freeProductId+"' and flgAddOn=0 and BenSubBucketType in (3,7,10) Limit 1", null);
+               try {
 				    if(cursor.getCount()>0)
 				    {
 					     if(cursor.moveToFirst())
@@ -17975,7 +17977,7 @@ public void deleteStoreTblsRecordsInCaseCancelOrderInOrderBooking(String StoreID
 							   }
 							   else
 							   {
-								   highestDiscount=cursor.getString(0)+"^"+cursor.getString(1);   
+								   highestDiscount=cursor.getString(0)+"^"+cursor.getString(1)+"^"+cursor.getString(2);;
 							   }
 					     }
 				    }

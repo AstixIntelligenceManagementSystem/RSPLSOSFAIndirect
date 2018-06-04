@@ -138,6 +138,7 @@ public class SplashScreen extends AppCompatActivity
         // imei="357328070587765";
         // imei="351976082609146";   // For training App
         // imei="351976082609153";
+
         // imei="354010084603910_OLd"; //for test
         // imei="359473079352535";    //Ramesh as TSI
         // imei="866924020381699";
@@ -145,7 +146,7 @@ public class SplashScreen extends AppCompatActivity
         // imei="351976087620171";
         // imei="359473079352536";    //Ramesh as TSI
         // imei="351976082609146";
-        // imei="351976087770067";
+        imei="351893080684874"; // test release
 
        // imei="359632061313398";
 
