@@ -3770,9 +3770,9 @@ GoogleApiClient.OnConnectionFailedListener,CategoryCommunicator
                     }
                 }
 
-                if(hmapProductRelatedSchemesList.size()>0)
+                if(hmapProductRelatedSchemesList.size()>0 || (hmapProductAddOnSchemesList.size()>0))
                 {
-                    if(hmapProductRelatedSchemesList.containsKey(ProductIdOnClickedControl))
+                    if(hmapProductRelatedSchemesList.containsKey(ProductIdOnClickedControl) || hmapProductAddOnSchemesList.containsKey(ProductIdOnClickedControl))
                     {
                         fnUpdateSchemeNameOnScehmeControl(ProductIdOnClickedControl);
                     }
@@ -6014,9 +6014,9 @@ GoogleApiClient.OnConnectionFailedListener,CategoryCommunicator
 
 
 	  String ProductIdOnClickedControl=v.getTag().toString().split(Pattern.quote("_"))[1];
-	  if(hmapProductRelatedSchemesList.size()>0)
+	  if((hmapProductRelatedSchemesList.size()>0) || (hmapProductAddOnSchemesList.size()>0))
 	  {
-	   if(hmapProductRelatedSchemesList.containsKey(ProductIdOnClickedControl))
+	   if(hmapProductRelatedSchemesList.containsKey(ProductIdOnClickedControl) || hmapProductAddOnSchemesList.containsKey(ProductIdOnClickedControl))
 	   {
 
 		   fnUpdateSchemeNameOnScehmeControl(ProductIdOnClickedControl);
