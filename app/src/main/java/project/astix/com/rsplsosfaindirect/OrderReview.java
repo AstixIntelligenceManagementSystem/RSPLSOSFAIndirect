@@ -4862,9 +4862,9 @@ public void loadPurchaseProductDefault()
 				}
 			}
 
-			if(hmapProductRelatedSchemesList.size()>0)
+			if(hmapProductRelatedSchemesList.size()>0 || hmapProductAddOnSchemesList.size()>0)
 			{
-				if(hmapProductRelatedSchemesList.containsKey(ProductIdOnClickedControl))
+				if(hmapProductRelatedSchemesList.containsKey(ProductIdOnClickedControl) || hmapProductAddOnSchemesList.containsKey(ProductIdOnClickedControl))
 				{
 					fnUpdateSchemeNameOnScehmeControl(ProductIdOnClickedControl);
 				}
@@ -5740,7 +5740,7 @@ public void loadPurchaseProductDefault()
 
 									for(String productIdToFillSlab:productFullFilledSlabGlobal)
 									{
-										if(Integer.parseInt(hmapPrdctOdrQty.get(productIdToFillSlab.split(Pattern.quote("^"))[0]))>0)
+										if((hmapPrdctOdrQty.containsKey(productIdToFillSlab.split(Pattern.quote("^"))[0])) && (Integer.parseInt(hmapPrdctOdrQty.get(productIdToFillSlab.split(Pattern.quote("^"))[0]))>0))
 										{
 											arrProductIDMappedInSchSlbSubBukBenifits.put(hmapPrdctIdPrdctName.get(productIdToFillSlab.split(Pattern.quote("^"))[0]), productIdToFillSlab.split(Pattern.quote("^"))[0]);
 										}
@@ -7104,9 +7104,9 @@ public void loadPurchaseProductDefault()
 	 
 
 	  String ProductIdOnClickedControl=v.getTag().toString().split(Pattern.quote("_"))[1];
-	  if(hmapProductRelatedSchemesList.size()>0)
+		if(hmapProductRelatedSchemesList.size()>0 || hmapProductAddOnSchemesList.size()>0)
 	  {
-	   if(hmapProductRelatedSchemesList.containsKey(ProductIdOnClickedControl))
+	   if(hmapProductRelatedSchemesList.containsKey(ProductIdOnClickedControl) || hmapProductAddOnSchemesList.containsKey(ProductIdOnClickedControl))
 	   {
 		   
 		   fnUpdateSchemeNameOnScehmeControl(ProductIdOnClickedControl);
