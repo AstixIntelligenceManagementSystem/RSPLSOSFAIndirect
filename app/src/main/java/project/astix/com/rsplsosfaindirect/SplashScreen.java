@@ -129,7 +129,7 @@ public class SplashScreen extends AppCompatActivity
         // imei="354010084603910";  // New Testing Phoine
         // imei="911383400331938";  // Test User Anil Kumar
        //  imei="866924020382358";   // Live user
-        // imei="354010084603910";
+       //  imei="354010084603910";
         // imei="351976087770067";   // TSI imei with RSPL Test Release DB
         // imei="866924027228117";    // hard code given to Alok Sir
         // imei="353202065143237";
@@ -146,7 +146,7 @@ public class SplashScreen extends AppCompatActivity
         // imei="351976087620171";
         // imei="359473079352536";    //Ramesh as TSI
         // imei="351976082609146";
-        imei="351893080684874"; // test release
+      //  imei="351893080684874"; // test release
 
        // imei="359632061313398";
 
