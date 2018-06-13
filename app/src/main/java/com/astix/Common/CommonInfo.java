@@ -267,6 +267,7 @@ public class CommonInfo
 	// Its for Test Release Path on 194 Server
 
 
+
 /*
 
 	public static int flgAllRoutesData=1;
@@ -350,8 +351,9 @@ public class CommonInfo
 	public static int flgNewStoreORStoreValidation=0;
 	public static String URLImageLinkToViewStoreOverWebProtal="http://103.20.212.194/RSPL_Testrelease/Reports/frmPDAImgsdev.aspx";
 
-
 */
+
+
 
 
 // Its for Training Path on 194 Server

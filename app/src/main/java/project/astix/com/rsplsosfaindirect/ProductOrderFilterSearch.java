@@ -1460,10 +1460,19 @@ GoogleApiClient.OnConnectionFailedListener,CategoryCommunicator
 			    		dbengine.close();
 
 			    		dbengine.updateStoreQuoteSubmitFlgInStoreMstr(storeID.trim(),0);
-
+/*
 			        	Intent storeSaveIntent = new Intent(ProductOrderFilterSearch.this, AllButtonActivity.class);
 			     		startActivity(storeSaveIntent);
-			     		finish();
+			     		finish();*/
+
+						String routeID=dbengine.GetActiveRouteIDSunil();
+						Intent ide = new Intent(ProductOrderFilterSearch.this, StoreSelection.class);
+						ide.putExtra("userDate", date);
+						ide.putExtra("pickerDate", pickerDate);
+						ide.putExtra("imei", imei);
+						ide.putExtra("rID", routeID);
+						startActivity(ide);
+						finish();
 			        }
 
 			     });
@@ -7707,9 +7716,18 @@ GoogleApiClient.OnConnectionFailedListener,CategoryCommunicator
 					dbengine.close();
 				}
 			}
-		    Intent storeSaveIntent = new Intent(ProductOrderFilterSearch.this, AllButtonActivity.class);
+		  /*  Intent storeSaveIntent = new Intent(ProductOrderFilterSearch.this, AllButtonActivity.class);
 			startActivity(storeSaveIntent);
-			finish();
+			finish();*/
+
+		 String routeID=dbengine.GetActiveRouteIDSunil();
+		 Intent ide = new Intent(ProductOrderFilterSearch.this, StoreSelection.class);
+		 ide.putExtra("userDate", date);
+		 ide.putExtra("pickerDate", pickerDate);
+		 ide.putExtra("imei", imei);
+		 ide.putExtra("rID", routeID);
+		 startActivity(ide);
+		 finish();
 
 	 }
 
