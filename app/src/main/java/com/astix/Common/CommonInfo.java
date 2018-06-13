@@ -9,7 +9,7 @@ public class CommonInfo
 
 	// Its for Live Path on 194 Server
 
-    /*public static int flgAllRoutesData=1;
+    public static int flgAllRoutesData=1;
 	public static File imageF_savedInstance=null;
 	public static String imageName_savedInstance=null;
 	public static String clickedTagPhoto_savedInstance=null;
@@ -36,8 +36,8 @@ public class CommonInfo
 	public static String DATABASE_NAME = "DbRSPLSFAApp";
 	public static int AnyVisit = 0;
 
-	public static int DATABASE_VERSIONID = 40;     // put this field value based on value in table on the server
-	public static String AppVersionID = "1.4";     // put this field value based on value in table on the server
+	public static int DATABASE_VERSIONID = 43;     // put this field value based on value in table on the server
+	public static String AppVersionID = "1.5";     // put this field value based on value in table on the server
 
 	public static int Application_TypeID = 4;      //1=Parag Store Mapping,2=Parag SFA Indirect,3=Parag SFA Direct
 
@@ -79,7 +79,6 @@ public class CommonInfo
 	public static int flgNewStoreORStoreValidation=0;
 	public static String URLImageLinkToViewStoreOverWebProtal="http://103.20.212.194/RSPL/Reports/frmPDAImgsdev.aspx";
 
-*/
 
 	// Its for Test Path on 194 Server
 
@@ -268,6 +267,7 @@ public class CommonInfo
 	// Its for Test Release Path on 194 Server
 
 
+/*
 
 	public static int flgAllRoutesData=1;
 	public static File imageF_savedInstance=null;
@@ -299,8 +299,8 @@ public class CommonInfo
 
 	public static int AnyVisit = 0;
 
-	public static int DATABASE_VERSIONID = 40;      // put this field value based on value in table on the server
-	public static String AppVersionID = "1.6";   // put this field value based on value in table on the server
+	public static int DATABASE_VERSIONID = 42;      // put this field value based on value in table on the server
+	public static String AppVersionID = "1.7";   // put this field value based on value in table on the server
 	public static int Application_TypeID = 4; //1=Parag Store Mapping,2=Parag SFA Indirect,3=Parag SFA Direct
 
 	public static String OrderSyncPath="http://103.20.212.194/ReadXML_RSPLTestRelease/DefaultSOSFA.aspx";
@@ -351,6 +351,7 @@ public class CommonInfo
 	public static String URLImageLinkToViewStoreOverWebProtal="http://103.20.212.194/RSPL_Testrelease/Reports/frmPDAImgsdev.aspx";
 
 
+*/
 
 
 // Its for Training Path on 194 Server

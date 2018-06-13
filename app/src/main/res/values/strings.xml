@@ -1,12 +1,12 @@
 <resources>
 
-   <!-- <string name="app_name">RSPL TSO SFA</string>-->
+    <string name="app_name">RSPL TSO SFA</string>
 
     <!-- <string name="app_name">RSPL TSO SFA Stagging</string>-->
      <!--<string name="app_name">RSPL TSO SFA Test</string>-->
    <!-- <string name="app_name">RSPL TSO SFA Dev</string>-->
     <!--<string name="app_name">RSPL TSO SFA Training</string>-->
-<string name="app_name">RSPL TSO SFA Test Release</string>
+<!--<string name="app_name">RSPL TSO SFA Test Release</string>-->
 
     <string name="ManageDSRMsg">Manage DSR &amp; IMEI</string>
     <!--Alert Box message-->
