@@ -132,6 +132,9 @@ public class DialogActivity_Report extends BaseActivity
         final RadioButton rb_WholeReport= (RadioButton) findViewById(R.id.rb_WholeReport);
         final Spinner spinner_dsrVisit= (Spinner) findViewById(R.id.spinner_dsrVisit);
 
+        final RadioButton rb_dsrAttendance= (RadioButton) findViewById(R.id.rb_dsrAttendance);
+
+
         final RadioButton rb_distrbtrScope= (RadioButton) findViewById(R.id.rb_distrbtrScope);
         final Spinner spinner_distrbtrScope= (Spinner) findViewById(R.id.spinner_distrbtrScope);
 
@@ -221,6 +224,12 @@ public class DialogActivity_Report extends BaseActivity
                         showAlertSingleButtonInfo(getResources().getString(R.string.selectDistributorProceeds));
                     }
                 }
+                else if(rb_dsrAttendance.isChecked())
+                {
+                      Intent i=new Intent(DialogActivity_Report.this,WebViewDSRAttendanceReportActivity.class);
+                      startActivity(i);
+                      finish();
+  }
                 else
                 {
                    showAlertSingleButtonInfo(getResources().getString(R.string.selectOptionProceeds));
@@ -228,6 +237,22 @@ public class DialogActivity_Report extends BaseActivity
             }
         });
 
+        rb_dsrAttendance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if(rb_dsrAttendance.isChecked())
+                {
+                    rb_dsrReport.setChecked(false);
+                    rb_WholeReport.setChecked(false);
+                    rb_dsrReport.setChecked(false);
+                    spinner_dsrVisit.setVisibility(View.GONE);
+                    rb_distrbtrScope.setChecked(false);
+                    rb_dsrAttendance.setChecked(true);
+                    spinner_distrbtrScope.setVisibility(View.GONE);
+                }
+            }
+        });
         rb_myReport.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
@@ -238,6 +263,7 @@ public class DialogActivity_Report extends BaseActivity
                     rb_WholeReport.setChecked(false);
                     spinner_dsrVisit.setVisibility(View.GONE);
                     rb_distrbtrScope.setChecked(false);
+                    rb_dsrAttendance.setChecked(false);
                     spinner_distrbtrScope.setVisibility(View.GONE);
                 }
             }
@@ -252,6 +278,7 @@ public class DialogActivity_Report extends BaseActivity
                     rb_myReport.setChecked(false);
                     spinner_dsrVisit.setVisibility(View.GONE);
                     rb_distrbtrScope.setChecked(false);
+                    rb_dsrAttendance.setChecked(false);
                     spinner_distrbtrScope.setVisibility(View.GONE);
                 }
             }
@@ -267,6 +294,7 @@ public class DialogActivity_Report extends BaseActivity
                     rb_WholeReport.setChecked(false);
                     rb_distrbtrScope.setChecked(false);
                     spinner_distrbtrScope.setVisibility(View.GONE);
+                    rb_dsrAttendance.setChecked(false);
 
                     ArrayAdapter adapterCategory=new ArrayAdapter(DialogActivity_Report.this, android.R.layout.simple_spinner_item,drsNames);
                     adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -317,7 +345,7 @@ public class DialogActivity_Report extends BaseActivity
                     rb_WholeReport.setChecked(false);
                     rb_dsrReport.setChecked(false);
                     spinner_dsrVisit.setVisibility(View.GONE);
-
+                    rb_dsrAttendance.setChecked(false);
                     ArrayAdapter adapterCategory=new ArrayAdapter(DialogActivity_Report.this, android.R.layout.simple_spinner_item,DbrArray);
                     adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner_distrbtrScope.setAdapter(adapterCategory);

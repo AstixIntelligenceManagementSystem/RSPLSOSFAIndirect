@@ -82,7 +82,7 @@ import java.util.regex.Pattern;
 
 public class AllButtonActivity extends BaseActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener{
 
-
+    SharedPreferences sPrefAttandance;
     private boolean serviceException=false;
     private String passDate;
     private SharedPreferences sharedPref;
@@ -226,6 +226,22 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
 
     private LinearLayout ll_DistrbtrTarget;
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(CommonInfo.DayStartClick==2)
+        {
+            SharedPreferences.Editor editor1=sPrefAttandance.edit();
+            editor1.clear();
+            editor1.commit();
+            CommonInfo.DayStartClick=0;
+            finish();
+
+        }
+    }
+
     @Override
     public void onDestroy()
     {
@@ -266,7 +282,7 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
         setContentView(R.layout.activity_all_button);
 
         sharedPrefReport = getSharedPreferences("Report", MODE_PRIVATE);
-
+        sPrefAttandance=getSharedPreferences(CommonInfo.AttandancePreference, MODE_PRIVATE);
 
 
         sharedPref = getSharedPreferences(CommonInfo.Preference, MODE_PRIVATE);

@@ -68,7 +68,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-
+        <activity android:name=".DayStartActivity"  />
         <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -116,6 +116,8 @@
         <activity android:name="com.example.gcm.NotificationActivity" />
         <activity android:name=".WebViewDSRDataReportActivity" />
         <activity android:name=".WebViewDSRTrackerActivity" />
+
+        <activity android:name=".WebViewDSRAttendanceReportActivity" />
 
         <activity android:name=".WebViewPurchaseOrderActivity" />
 

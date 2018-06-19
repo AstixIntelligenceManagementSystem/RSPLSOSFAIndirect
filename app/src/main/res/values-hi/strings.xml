@@ -5,8 +5,18 @@
     <!--<string name="app_name">RSPL TSO SFA Training</string>-->
     <!-- <string name="app_name">RSPL TSO SFA Dev</string>-->
      <!--<string name="app_name">RSPL TSO SFA Test</string>-->
+   <!-- <string name="app_name">RSPL TSO SFA Test Release</string>-->
 
 
+    <string name="select_attendance_scope">उपस्थिति रिपोर्ट देखें</string>
+    <string name="select_attendance_report">डीएसआर उपस्थिति रिपोर्ट</string>
+    <!--Day Start message start-->
+    <string name="DayStartButtonText">दिन शुरू</string>
+    <string name="ExitButtonText">बाहर जाएं</string>
+    <string name="submittingDayStart">दिन प्रारंभ विवरण जमा हो रहा है ...</string>
+    <string name="selectAtleastOneOption">आगे बढ़ने के लिए कम से कम एक विकल्प का चयन करें।</string>
+    <string name="selectAtleastOneOptionwithedittext">आगे बढ़ने के लिए पहले कारण निर्दिष्ट करें</string>
+    <!--Day Start message end-->
 
     <!--Splash screen starts here-->
     <string name="genTermNoDataConnection">जानकारी</string>
@@ -989,7 +999,7 @@
     <string name="submitted_and_sent_to_server">सबमिट और सर्वर पर भेजा गया</string>
     <string name="submitted_but_not_sent_to_server">सबमिट किया गया लेकिन सर्वर पर भेजा नहीं गया</string>
     <string name="saved_but_not_submitted">सहेजे गए लेकिन सबमिट नहीं किए गए</string>
-    <string name="select_report_scope">रिपोर्ट स्कोप का चयन करें</string>
+    <string name="select_report_scope">सारांश रिपोर्ट</string>
     <string name="individual_dsr">विशिष्ट DSR</string>
     <string name="full_territory">पूर्ण क्षेत्र</string>
     <string name="distributor_scope">वितरक स्कोप</string>

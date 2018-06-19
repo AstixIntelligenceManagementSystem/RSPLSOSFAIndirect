@@ -868,6 +868,7 @@ public class ServiceWorker
 					int PersonNodeType=0;
 					int CoverageAreaNodeID=0;
 					int CoverageAreaNodeType=0;
+					String flgPersonTodaysAtt="0";
 
 					Element element = (Element) tblSchemeStoreMappingNode.item(i);
 
@@ -909,8 +910,14 @@ public class ServiceWorker
 					{
 						CoverageAreaNodeType=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
 					}
+					NodeList flgPersonTodaysAttNode = element.getElementsByTagName("flgPersonTodaysAtt");
+					line = (Element) flgPersonTodaysAttNode.item(0);
+					if(flgPersonTodaysAttNode.getLength()>0)
+					{
+						flgPersonTodaysAtt=xmlParser.getCharacterDataFromElement(line);
+					}
 
-					dbengine.savetblUserAuthenticationMstr(flgUserAuthenticated,flgAllRoutesData,PersonNodeID,PersonNodeType,CoverageAreaNodeID,CoverageAreaNodeType);
+					dbengine.savetblUserAuthenticationMstr(flgUserAuthenticated,flgAllRoutesData,PersonNodeID,PersonNodeType,CoverageAreaNodeID,CoverageAreaNodeType,flgPersonTodaysAtt);
 				}
 
 	            NodeList tblSchemeMstrNode = doc.getElementsByTagName("tblAvailableVersion");
@@ -16302,7 +16309,10 @@ public class ServiceWorker
 							String ReasonId="0";
 							String ReasonDescr="NA";
 							int FlgToShowTextBox=0;
-							
+							int flgSOApplicable=0;
+							int flgDSRApplicable=0;
+							int flgNoVisitOption=0;
+							int SeqNo=0;
 							
 							if (tableRow.hasProperty("ReasonId") ) 
 							{
@@ -16338,17 +16348,66 @@ public class ServiceWorker
 									String abc = tableRow.getProperty("FlgToShowTextBox").toString().trim();
 									FlgToShowTextBox=Integer.parseInt(abc);
 								}
-							} 
+							}
+							if (tableRow.hasProperty("flgSOApplicable") )
+							{
+								if (tableRow.getProperty("flgSOApplicable").toString().isEmpty() )
+								{
+									flgSOApplicable=0;
+								}
+								else
+								{
+									flgSOApplicable=Integer.parseInt(tableRow.getProperty("flgSOApplicable").toString().trim());
+								}
+							}
+							if (tableRow.hasProperty("flgDSRApplicable") )
+							{
+								if (tableRow.getProperty("flgDSRApplicable").toString().isEmpty() )
+								{
+									flgDSRApplicable=0;
+								}
+								else
+								{
+									String abc = tableRow.getProperty("flgDSRApplicable").toString().trim();
+									flgDSRApplicable=Integer.parseInt(abc);
+								}
+							}
+							if (tableRow.hasProperty("flgNoVisitOption") )
+							{
+								if (tableRow.getProperty("flgNoVisitOption").toString().isEmpty() )
+								{
+									flgNoVisitOption=0;
+								}
+								else
+								{
+									String abc = tableRow.getProperty("flgNoVisitOption").toString().trim();
+									flgNoVisitOption=Integer.parseInt(abc);
+								}
+							}
+							if (tableRow.hasProperty("SeqNo") )
+							{
+								if (tableRow.getProperty("SeqNo").toString().isEmpty() )
+								{
+									SeqNo=0;
+								}
+								else
+								{
+									String abc = tableRow.getProperty("SeqNo").toString().trim();
+									SeqNo=Integer.parseInt(abc);
+								}
+							}
 							
 							
 							
 							AutoIdStore= i +1;
 							
 							
-							dbengine.savetblNoVisitReasonMaster(AutoIdStore,ReasonId,ReasonDescr,FlgToShowTextBox);
-						
-							
-							
+							//dbengine.savetblNoVisitReasonMaster(AutoIdStore,ReasonId,ReasonDescr,FlgToShowTextBox);
+							dbengine.savetblNoVisitReasonMaster(AutoIdStore,ReasonId,ReasonDescr,FlgToShowTextBox,flgSOApplicable,flgDSRApplicable,flgNoVisitOption,SeqNo);
+
+
+
+
 						}
 					}
 					

@@ -149,13 +149,33 @@ public class DatabaseAssistant
 			exportTable("tblStoreClosedPhotoDetail");
 			exportTable("tblStoreCloseReasonSaving");
 			exportTable("tblAllCollectionData");
-
+			exportTableAttandance("tblAttandanceDetails");
 
 			//String routeID=GetActiveRouteIDSunil();
 		}
 		String xmlString = xmlBuilder.end();
 		writeToFile(xmlString, exportFileNamePrefix + ".xml");
 
+	}
+
+	private void exportTableAttandance(final String tableName) throws IOException {
+
+		xmlBuilder.openTable(tableName);
+		//String sql = "select * from " + tableName;
+		String sql = "select AttandanceTime,PersonNodeID,PersonNodeType,ReasonID,ReasonDesc,Comment,fnLati,fnLongi,fnAccuracy,fnAddress,AllProvidersLocation,flgLocNotFound from " + tableName + " where Sstat = 3";		// chk for flag - DB adapter
+		Cursor c = db.rawQuery(sql, new String[0]);
+		if (c.moveToFirst()) {
+			int cols = c.getColumnCount();
+			do {
+				xmlBuilder.openRow();
+				for (int i = 0; i < cols; i++) {
+					xmlBuilder.addColumn(c.getColumnName(i), c.getString(i));
+				}
+				xmlBuilder.closeRow();
+			} while (c.moveToNext());
+		}
+		c.close();
+		xmlBuilder.closeTable();
 	}
 	
 	private void exportTableNotification(final String tableName) throws IOException {

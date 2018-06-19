@@ -32,12 +32,27 @@ import com.astix.Common.CommonInfo;
 
 public class DBAdapterKenya
 {
-
+    SharedPreferences sPref,sPrefAttandance;
 	private Cursor cursor;
 	public static final String KEY_PHID = "phID";
 
 	private static final String TAG = "DBAdapterKenya";
 	private boolean isDBOpenflag = false;
+
+    private static final String TABLE_tblAttandanceDetails="tblAttandanceDetails";
+    private static final String DATABASE_CREATE_TABLE_tblAttandanceDetails="create table tblAttandanceDetails(AttandanceTime text null," +
+            "PersonNodeID text null, PersonNodeType text null," +
+            "OptionID text null,OptionDesc text null,ReasonID text null,ReasonDesc text null,Comment text null, Address text null,PinCode text null, City text null, State text null," +
+            "fnLati text null,fnLongi text null,fnAccuracy text null," +
+            "flgLocNotFound text null,fnAccurateProvider text null,AllProvidersLocation text null,fnAddress text null," +
+            "GpsLat text null, GpsLong text null, GpsAccuracy text null, GpsAddress text null, NetwLat text null, " +
+            "NetwLong text null, NetwAccuracy text null, NetwAddress text null, FusedLat text null, FusedLong text null, " +
+            "FusedAccuracy text null, FusedAddress text null,FusedLocationLatitudeWithFirstAttempt text null," +
+            "FusedLocationLongitudeWithFirstAttempt text null,FusedLocationAccuracyWithFirstAttempt text null," +
+            "Sstat int null,flgLocationServicesOnOff int null,flgGPSOnOff int null,flgNetworkOnOff int null," +
+            "flgFusedOnOff int null,flgInternetOnOffWhileLocationTracking int null,flgRestart int null," +
+            "MapAddress text null,MapCity text null,MapPinCode text null,MapState text null,CityId text null,StateId text null);";
+
 
     private static final String DATABASE_TABLE_AlertNearestSchmApld = "tblProductAlertNearestSchmApld";
     private static final String DATABASE_CREATE_TABLE_AlertNearestSchmApld = "create table tblProductAlertNearestSchmApld (RowID text null,ProductID text null,SchemeID text null,SchemeSlabID text null,SlabSubBucketType text null,SlabSubBucketMin text null,SlabSubBucketMax text null);";
@@ -228,7 +243,7 @@ public class DBAdapterKenya
 
     // Tables Data Coming at Splash Screen Starts
 	private static final String TABLE_tblUserAuthenticationMstr_Define = "tblUserAuthenticationMstr";
-	private static final String TABLE_tblUserAuthenticationMstr_Definition = "create table tblUserAuthenticationMstr (flgUserAuthenticated text null,flgAllRoutesData integer null,PersonNodeID integer null,PersonNodeType integer null,CoverageAreaNodeID integer null,CoverageAreaNodeType integer null);";
+	private static final String TABLE_tblUserAuthenticationMstr_Definition = "create table tblUserAuthenticationMstr (flgUserAuthenticated text null,flgAllRoutesData integer null,PersonNodeID integer null,PersonNodeType integer null,CoverageAreaNodeID integer null,CoverageAreaNodeType integer null,flgPersonTodaysAtt text null);";
 
 	//private static final String TABLE_tblUserAuthenticationMstr_Definition = "create table tblUserAuthenticationMstr (flgUserAuthenticated text null,PersonName text null,FlgRegistered text null);";
 
@@ -266,7 +281,9 @@ public class DBAdapterKenya
     private static final String TABLE_tblNotificationMstr_Definition = "create table tblNotificationMstr (SerialNo int null,IMEI text null, Noti_text text null,Noti_DateTime text null,Noti_ReadStatus int null,Noti_NewOld int null,Noti_ReadDateTime text null,Sstat int null,MsgServerID int null);";
 
 	private static final String TABLE_tblNoVisitReasonMaster_Define = "tblNoVisitReasonMaster";
-	private static final String TABLE_tblNoVisitReasonMaster_Definition = "create table tblNoVisitReasonMaster(AutoIdStore integer null,ReasonId text null,ReasonDescr text null,FlgToShowTextBox integer null);";
+    private static final String TABLE_tblNoVisitReasonMaster_Definition = "create table tblNoVisitReasonMaster(AutoIdStore integer null,ReasonId text null,ReasonDescr text null,FlgToShowTextBox integer null,flgSOApplicable int null,flgDSRApplicable int null,flgNoVisitOption int null,SeqNo int null);";
+
+   // private static final String TABLE_tblNoVisitReasonMaster_Definition = "create table tblNoVisitReasonMaster(AutoIdStore integer null,ReasonId text null,ReasonDescr text null,FlgToShowTextBox integer null);";
 
 	private static final String TABLE_tblNoVisitStoreDetails_Define = "tblNoVisitStoreDetails";
     private static final String TABLE_tblNoVisitStoreDetails_Definition = "create table tblNoVisitStoreDetails(IMEI text null,CurDate text null,ReasonId text null,ReasonDescr text null,flgHasVisit integer null,Sstat integer not null);";
@@ -976,6 +993,7 @@ private static final String DATABASE_TABLE_MAIN101 = "tblFirstOrderDetailsOnLast
 		{
 			try
 			{
+                db.execSQL(DATABASE_CREATE_TABLE_tblAttandanceDetails);
                 db.execSQL(DATABASE_CREATE_TABLE_tblLastOutstanding);
                 db.execSQL(DATABASE_CREATE_TABLE_tblInvoiceLastVisitDetails);
 
@@ -1248,6 +1266,7 @@ private static final String DATABASE_TABLE_MAIN101 = "tblFirstOrderDetailsOnLast
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			try 
 			{
+                db.execSQL("DROP TABLE IF EXISTS tblAttandanceDetails");
                 db.execSQL("DROP TABLE IF EXISTS tblLastOutstanding");
 
                 db.execSQL("DROP TABLE IF EXISTS tblInvoiceLastVisitDetails");
@@ -5877,13 +5896,21 @@ open();
 	}
 	public void reCreateDB() 
 	{
-		// Log.w(TAG, "DB not present..");
+        sPref=context.getSharedPreferences(CommonInfo.Preference, context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=sPref.edit();
+        editor.clear();
+        editor.commit();
 
-		Log.w(TAG, "Re-Creating Table..");
-		//db.execSQL("DROP TABLE IF EXISTS tblRouteMstr");
-		
-		//db.execSQL("DELETE FROM tblAvailableVersionMstr");
-	//	db.execSQL("DELETE FROM tblNotificationMstr");
+        try {
+            sPrefAttandance=context.getSharedPreferences(CommonInfo.AttandancePreference, context.MODE_PRIVATE);
+            SharedPreferences.Editor editor1=sPrefAttandance.edit();
+            editor1.clear();
+            editor1.commit();
+        }
+        catch (Exception e)
+        {
+
+        }
 
         db.execSQL("Delete FROM tblLastOutstanding");
 
@@ -19685,7 +19712,8 @@ open();
 				}*/
 				public long savetblUserAuthenticationMstr(String flgUserAuthenticated,int flgAllRoutesData,
 														  int PersonNodeID,int PersonNodeType,
-														  int CoverageAreaNodeID,int CoverageAreaNodeType)
+														  int CoverageAreaNodeID,int CoverageAreaNodeType,
+                                                          String flgPersonTodaysAtt)
 				{
 
 					ContentValues initialValues = new ContentValues();
@@ -19696,6 +19724,8 @@ open();
 					initialValues.put("PersonNodeType", PersonNodeType);
 					initialValues.put("CoverageAreaNodeID", CoverageAreaNodeID);
 					initialValues.put("CoverageAreaNodeType", CoverageAreaNodeType);
+
+                    initialValues.put("flgPersonTodaysAtt", flgPersonTodaysAtt.trim());
 
 					return db.insert(TABLE_tblUserAuthenticationMstr_Define, null, initialValues);
 				}
@@ -21307,7 +21337,7 @@ open();
 					/* private static final String DATABASE_CREATE_TABLE_252 = "create table tblNoVisitReasonMaster " +
 					 		"(ReasonId text null,ReasonDescr text null,FlgToShowTextBox integer null);";*/
 					 
-					 public long savetblNoVisitReasonMaster(int AutoIdStore,String ReasonId,String ReasonDescr,int FlgToShowTextBox)
+					/* public long savetblNoVisitReasonMaster(int AutoIdStore,String ReasonId,String ReasonDescr,int FlgToShowTextBox)
 						{
 											
 											ContentValues initialValues = new ContentValues();
@@ -21318,15 +21348,27 @@ open();
 										
 											//// System.out.println("Arjun data insert properly tblTradeChannelMstr ");
 											return db.insert(TABLE_tblNoVisitReasonMaster_Define, null, initialValues);
-						}
-					 
-					/* initialValues.put("AutoIdStore", AutoIdStore); 
-						initialValues.put("ReasonId", ReasonId); 
-						initialValues.put("ReasonDescr", ReasonDescr.trim()); 
-						initialValues.put("FlgToShowTextBox", FlgToShowTextBox); 
-						
-						 private static final String DATABASE_CREATE_TABLE_252 = "create table tblNoVisitReasonMaster (ReasonId text null,ReasonDescr text null,FlgToShowTextBox integer null);";
-					*/
+						}*/
+
+    public long savetblNoVisitReasonMaster(int AutoIdStore,String ReasonId,String ReasonDescr,
+                                           int FlgToShowTextBox,int flgSOApplicable,int flgDSRApplicable,
+                                           int flgNoVisitOption,int SeqNo)
+    {
+
+        ContentValues initialValues = new ContentValues();
+        initialValues.put("AutoIdStore", AutoIdStore);
+        initialValues.put("ReasonId", ReasonId);
+        initialValues.put("ReasonDescr", ReasonDescr.trim());
+        initialValues.put("FlgToShowTextBox", FlgToShowTextBox);
+
+        initialValues.put("flgSOApplicable", flgSOApplicable);
+        initialValues.put("flgDSRApplicable", flgDSRApplicable);
+        initialValues.put("flgNoVisitOption", flgNoVisitOption);
+        initialValues.put("SeqNo", SeqNo);
+
+
+        return db.insert(TABLE_tblNoVisitReasonMaster_Define, null, initialValues);
+    }
 						
 					 public LinkedHashMap<String, String> fetch_Reason_List()
 						{
@@ -33786,6 +33828,274 @@ if(cursor.getCount()>0)
             close();
         }
         return chkI;
+    }
+
+    public LinkedHashMap<Integer, String> fetch_Reason_List_for_option()
+    {
+        open();
+        LinkedHashMap<Integer, String> hmapCatgry = new LinkedHashMap<Integer, String>();
+        Cursor cursor = db.rawQuery("SELECT ReasonId,ReasonDescr FROM tblNoVisitReasonMaster where flgSOApplicable='"+1+"' and flgNoVisitOption='"+0+"' order by SeqNo asc",null);
+        try
+        {
+            if(cursor.getCount()>0)
+            {
+                if (cursor.moveToFirst())
+                {
+                    for (int i = 0; i <= (cursor.getCount() - 1); i++)
+                    {
+                        hmapCatgry.put(Integer.parseInt(cursor.getString(0).toString()),cursor.getString(1).toString());
+                        cursor.moveToNext();
+                    }
+                }
+
+            }
+
+            else
+            {
+                // hmapCatgry.put(0, "No Reason");
+            }
+            return hmapCatgry;
+        }
+        finally
+        {
+            cursor.close();
+            close();
+        }
+    }
+
+    public LinkedHashMap<Integer, String> fetch_NoWorking_Reason_List()
+    {
+        open();
+        LinkedHashMap<Integer, String> hmapCatgry = new LinkedHashMap<Integer, String>();
+        Cursor cursor = db.rawQuery("SELECT ReasonId,ReasonDescr FROM tblNoVisitReasonMaster where flgSOApplicable='"+1+"' and flgNoVisitOption="+1,null);
+        try
+        {
+            if(cursor.getCount()>0)
+            {
+                if (cursor.moveToFirst())
+                {
+                    // hmapCatgry.put("Select Reason", "0");
+                    for (int i = 0; i <= (cursor.getCount() - 1); i++)
+                    {
+                        hmapCatgry.put(Integer.parseInt(cursor.getString(0).toString()),cursor.getString(1).toString());
+                        cursor.moveToNext();
+                    }
+                }
+
+            }
+
+            else
+            {
+                // hmapCatgry.put(0, "No Reason");
+            }
+            return hmapCatgry;
+        }
+        finally
+        {
+            cursor.close();
+            close();
+        }
+    }
+    public void updatetblAttandanceDetails(String OptionID,String OptionDesc,String ReasonID,String ReasonDesc,
+                                           String Comment)
+    {
+        open();
+        try {
+
+
+            ContentValues values=new ContentValues();
+            values.put("OptionID",OptionID.trim());
+            values.put("OptionDesc",OptionDesc.trim());
+            values.put("ReasonID",ReasonID.trim());
+            values.put("ReasonDesc",ReasonDesc);
+            values.put("Comment",Comment);
+            db.update(TABLE_tblAttandanceDetails,values,"",new String[]{});
+        }catch(SQLiteException exception)
+        {
+
+        }finally
+        {
+            close();
+        }
+
+    }
+    public long savetblAttandanceDetails(String AttandanceTime,String PersonNodeID,String  PersonNodeType ,String PersonName ,
+                                         String OptionID,String OptionDesc ,String ReasonID,String ReasonDesc,
+                                         String Address,
+                                         String PinCode,String City,String State,String fnLati,
+                                         String fnLongi ,String fnAccuracy ,String flgLocNotFound,String fnAccurateProvider,
+                                         String AllProvidersLocation ,String fnAddress ,String GpsLat ,String  GpsLong ,
+                                         String GpsAccuracy ,String GpsAddress ,String NetwLat ,String NetwLong ,
+                                         String NetwAccuracy ,String  NetwAddress ,String  FusedLat ,String  FusedLong ,
+                                         String FusedAccuracy ,String  FusedAddress ,String FusedLocationLatitudeWithFirstAttempt,
+                                         String FusedLocationLongitudeWithFirstAttempt ,String FusedLocationAccuracyWithFirstAttempt,
+                                         int Sstat,int flgLocationServicesOnOff,int flgGPSOnOff,int flgNetworkOnOff,
+                                         int flgFusedOnOff,int flgInternetOnOffWhileLocationTracking,int flgRestart
+            ,String CityId,String StateId,String MapAddress,String MapCity,String MapPinCode,String MapState)
+    {
+        try
+        {
+            db.execSQL("DELETE FROM tblAttandanceDetails");
+        }
+        catch(Exception e)
+        {
+
+        }
+
+        ContentValues initialValues = new ContentValues();
+        String aa= fnGetPersonNodeIDAndPersonNodeType();
+
+
+        initialValues.put("AttandanceTime", AttandanceTime.trim());
+        initialValues.put("PersonNodeID", aa.split(Pattern.quote("^"))[0].trim());
+        initialValues.put("PersonNodeType", aa.split(Pattern.quote("^"))[1].trim());
+
+        initialValues.put("OptionID", OptionID.trim());
+        initialValues.put("OptionDesc", OptionDesc.trim());
+        initialValues.put("ReasonID", ReasonID.trim());
+        initialValues.put("ReasonDesc", ReasonDesc.trim());
+
+        initialValues.put("Address", Address.trim());
+        initialValues.put("PinCode", PinCode.trim());
+        initialValues.put("City", City.trim());
+        initialValues.put("State", State.trim());
+
+        initialValues.put("fnLati", fnLati.trim());
+        initialValues.put("fnLongi", fnLongi.trim());
+        initialValues.put("fnAccuracy", fnAccuracy.trim());
+        initialValues.put("flgLocNotFound", flgLocNotFound.trim());
+        initialValues.put("fnAccurateProvider", fnAccurateProvider.trim());
+        initialValues.put("AllProvidersLocation", AllProvidersLocation.trim());
+        initialValues.put("fnAddress", fnAddress.trim());
+
+        initialValues.put("GpsLat", GpsLat.trim());
+        initialValues.put("GpsLong", GpsLong.trim());
+        initialValues.put("GpsAccuracy", GpsAccuracy.trim());
+        initialValues.put("GpsAddress", GpsAddress.trim());
+
+        initialValues.put("NetwLat", NetwLat.trim());
+        initialValues.put("NetwLong", NetwLong.trim());
+        initialValues.put("NetwAccuracy", NetwAccuracy.trim());
+        initialValues.put("NetwAddress", NetwAddress.trim());
+
+        initialValues.put("FusedLat", FusedLat.trim());
+        initialValues.put("FusedLong", FusedLong.trim());
+        initialValues.put("FusedAccuracy", FusedAccuracy.trim());
+        initialValues.put("FusedAddress", FusedAddress.trim());
+
+        initialValues.put("FusedLocationLatitudeWithFirstAttempt", FusedLocationLatitudeWithFirstAttempt.trim());
+        initialValues.put("FusedLocationLongitudeWithFirstAttempt", FusedLocationLongitudeWithFirstAttempt.trim());
+        initialValues.put("FusedLocationAccuracyWithFirstAttempt", FusedLocationAccuracyWithFirstAttempt.trim());
+        initialValues.put("Sstat", Sstat);
+
+        initialValues.put("flgLocationServicesOnOff", flgLocationServicesOnOff);
+        initialValues.put("flgGPSOnOff", flgGPSOnOff);
+        initialValues.put("flgNetworkOnOff", flgNetworkOnOff);
+        initialValues.put("flgFusedOnOff", flgFusedOnOff);
+        initialValues.put("flgInternetOnOffWhileLocationTracking", flgInternetOnOffWhileLocationTracking);
+        initialValues.put("flgRestart", flgRestart);
+
+        initialValues.put("MapAddress", MapAddress);
+        initialValues.put("MapCity", MapCity);
+        initialValues.put("MapPinCode", MapPinCode);
+        initialValues.put("MapState", MapState);
+        initialValues.put("CityId", CityId);
+        initialValues.put("StateId", StateId);
+
+        return db.insert(TABLE_tblAttandanceDetails, null, initialValues);
+    }
+    public void fnSettblAttandanceDetails() {
+
+        try
+        {
+
+            open();
+
+            db.execSQL("UPDATE tblAttandanceDetails SET Sstat= 4" );
+
+
+
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
+        }
+        finally {
+            close();
+        }
+
+    }
+
+    public String fnGetPersonNodeIDAndPersonNodeType()
+    {
+        String SONodeIdAndNodeType="0^0";
+
+
+        Cursor cursor=db.rawQuery("Select PersonNodeID,PersonNodeType from tblUserAuthenticationMstr", null);
+
+        if(cursor.getCount()>0)
+        {
+            if(cursor.moveToFirst())
+            {
+                SONodeIdAndNodeType=cursor.getString(0)+"^"+cursor.getString(1);
+            }
+        }
+
+        return SONodeIdAndNodeType;
+    }
+    public int FetchflgPersonTodaysAtt()
+    {
+        int CatId=0;
+
+        Cursor cursor = db.rawQuery("SELECT flgPersonTodaysAtt from tblUserAuthenticationMstr", null);
+        try {
+
+            if (cursor.moveToFirst())
+            {
+
+                for (int i = 0; i <= (cursor.getCount() - 1); i++)
+                {
+
+                    String abc =(String) cursor.getString(0).toString();
+                    CatId=Integer.parseInt(abc);
+                    cursor.moveToNext();
+                }
+
+            }
+            return CatId;
+        } finally {
+            cursor.close();
+        }
+
+    }
+    int fntableExists(String tableName)
+    {
+        if (tableName == null)
+        {
+            return 0;
+        }
+        int count=0;
+        Cursor cursor=null;
+        open();
+        try {
+
+            cursor = db.rawQuery("SELECT COUNT(*) FROM sqlite_master WHERE type = ? AND name = ?", new String[] {"table", tableName});
+            if (cursor.moveToFirst())
+            {
+                count = cursor.getInt(0);
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            if(cursor!=null) {
+                cursor.close();
+            }
+            close();
+        }
+
+        return count;
     }
 }
 

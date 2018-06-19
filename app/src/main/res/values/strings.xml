@@ -6,7 +6,22 @@
      <!--<string name="app_name">RSPL TSO SFA Test</string>-->
    <!-- <string name="app_name">RSPL TSO SFA Dev</string>-->
     <!--<string name="app_name">RSPL TSO SFA Training</string>-->
-<!--<string name="app_name">RSPL TSO SFA Test Release</string>-->
+    <!--<string name="app_name">RSPL TSO SFA Test Release</string>-->
+
+
+    <string name="select_attendance_scope">View Attendance Report</string>
+    <string name="select_attendance_report">DSR Attendance Report</string>
+
+
+
+    <!--Day Start message start-->
+    <string name="DayStartButtonText">Day Start</string>
+    <string name="ExitButtonText">Exit</string>
+    <string name="submittingDayStart">Submitting Day Start Details...</string>
+    <string name="selectAtleastOneOption">Please Select atleast one option to proceed.</string>
+    <string name="selectAtleastOneOptionwithedittext">Please Specify the reason first to proceed.</string>
+
+    <!--Day Start message end-->
 
     <string name="ManageDSRMsg">Manage DSR &amp; IMEI</string>
     <!--Alert Box message-->
@@ -990,7 +1005,7 @@
  <string name="submitted_and_sent_to_server">Submitted and Sent to Server</string>
  <string name="submitted_but_not_sent_to_server">Submitted but not sent to Server</string>
  <string name="saved_but_not_submitted">Saved but not Submitted</string>
- <string name="select_report_scope">Select Report Scope</string>
+ <string name="select_report_scope">Summary Reports</string>
  <string name="individual_dsr">Individual DSR</string>
  <string name="full_territory">Full Territory</string>
  <string name="distributor_scope">Distributor Scope</string>

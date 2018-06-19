@@ -66,7 +66,7 @@ public class SplashScreen extends AppCompatActivity
     public int syncFLAG = 0;
     public ProgressDialog pDialogGetStores;
     String serverDateForSPref;
-    SharedPreferences sPref;
+    SharedPreferences sPref,sPrefAttandance;
     public int flgTodaySalesTargetToShow=0;
 
     DBAdapterKenya dbengine; //= new DBAdapterKenya(this);
@@ -128,12 +128,12 @@ public class SplashScreen extends AppCompatActivity
 
         // imei="354010084603910";  // New Testing Phoine
         // imei="911383400331938";  // Test User Anil Kumar
-       //  imei="866924020382358";   // Live user
+         //imei="866924020382358";   // Live user
        //  imei="354010084603910";
         // imei="351976087770067";   // TSI imei with RSPL Test Release DB
         // imei="866924027228117";    // hard code given to Alok Sir
         // imei="353202065143237";
-         //  imei="351976082331444"; //for development given by avinash sir
+
         // imei="864449033669429"; //by avinash sir
         // imei="357328070587765";
         // imei="351976082609146";   // For training App
@@ -155,9 +155,17 @@ public class SplashScreen extends AppCompatActivity
       //  imei="866924020424622"; // Test release
 
        // imei="356813085816045"; //given by gaurav sir
+        // imei="351976082331444"; //for development given by avinash sir
 
         CommonInfo.imei = imei;
+
+
+       /* Intent storeIntent1 = new Intent(SplashScreen.this, AllButtonActivity.class);
+        startActivity(storeIntent1);
+        finish();*/
+
         sPref=getSharedPreferences(CommonInfo.Preference, MODE_PRIVATE);
+        sPrefAttandance=getSharedPreferences(CommonInfo.AttandancePreference, MODE_PRIVATE);
         Date date1 = new Date();
         sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
         fDate = sdf.format(date1).trim();
@@ -699,28 +707,73 @@ public class SplashScreen extends AppCompatActivity
 
                                 if(sPref.getString("DatePref", "").equals(serverDateForSPref))
                                 {
-                                  /*  dbengine.open();
-                                    dbengine.reCreateDB();
-                                    dbengine.close();*/
-                                    Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);
+                                    Date date1 = new Date();
+                                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+                                    fDate = sdf.format(date1).trim();
+
+                                    int chkIfStoreExists=dbengine.fntableExists("tblStoreList");
+                                    int checkDataNotSync =0;
+
+                                    if(chkIfStoreExists==1)
+                                    {
+                                        checkDataNotSync=dbengine.CheckUserDoneGetStoreOrNot();
+                                    }
+                                    else
+                                    {
+                                        checkDataNotSync=0;
+                                    }
+
+                                    // checkDataNotSync=0;
+                                    if (checkDataNotSync == 1)
+                                    {
+                                        dbengine.open();
+                                        String rID = dbengine.GetActiveRouteID();
+                                        dbengine.close();
+
+                                        // Date date=new Date();
+                                        sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+                                        String fDateNew = sdf.format(date1).toString();
+                                        //fDate = passDate.trim().toString();
+
+
+                                        // In Splash Screen SP, we are sending this Format "dd-MMM-yyyy"
+                                        // But InLauncher Screen SP, we are sending this Format "dd-MM-yyyy"
+
+                                        Intent storeIntent = new Intent(SplashScreen.this, StoreSelection.class);
+                                        storeIntent.putExtra("imei", imei);
+                                        storeIntent.putExtra("userDate", fDate);
+                                        storeIntent.putExtra("pickerDate", fDateNew);
+                                        storeIntent.putExtra("rID", rID);
+                                        startActivity(storeIntent);
+                                        finish();
+
+                                    }
+                                    else
+                                    {
+                                        finish();
+                                    }
+
+                                   /* Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);
                                     intent.putExtra("imei", imei);
                                     SplashScreen.this.startActivity(intent);
-                                    finish();
+                                    finish();*/
 
                                 }
                                 else
                                 {
-                                    SharedPreferences.Editor editor=sPref.edit();
+                                    finish();
+                                   /* SharedPreferences.Editor editor=sPref.edit();
                                     editor.clear();
                                     editor.commit();
                                     sPref.edit().putString("DatePref", serverDateForSPref).commit();
-                                    fnShowAlertBeforeRedirectingToLauncher();
+                                    fnShowAlertBeforeRedirectingToLauncher();*/
                                 }
                             }
                             else
                             {
-                                sPref.edit().putString("DatePref", serverDateForSPref).commit();
-                                fnShowAlertBeforeRedirectingToLauncher();
+                                finish();;
+                               // sPref.edit().putString("DatePref", serverDateForSPref).commit();
+                               // fnShowAlertBeforeRedirectingToLauncher();
                             }
                         }
 
@@ -1099,10 +1152,16 @@ public class SplashScreen extends AppCompatActivity
                             if(sPref.getString("DatePref", "").equals(serverDateForSPref))
                             {
 
-                                Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);
-                                intent.putExtra("imei", imei);
-                                SplashScreen.this.startActivity(intent);
-                                finish();
+                                if(!sPrefAttandance.contains("AttandancePref"))
+                                {
+                                    callDayStartActivity();
+                                }
+                                else {
+                                    Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);
+                                    intent.putExtra("imei", imei);
+                                    SplashScreen.this.startActivity(intent);
+                                    finish();
+                                }
 
                             }
                             else
@@ -1110,19 +1169,35 @@ public class SplashScreen extends AppCompatActivity
                                 editor.clear();
                                 editor.commit();
                                 sPref.edit().putString("DatePref", serverDateForSPref).commit();
-                                Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);
-                                intent.putExtra("imei", imei);
-                                SplashScreen.this.startActivity(intent);
-                                finish();
+                                SharedPreferences.Editor editor1=sPrefAttandance.edit();
+                                editor1.clear();
+                                editor1.commit();
+
+                                if(!sPrefAttandance.contains("AttandancePref"))
+                                {
+                                    callDayStartActivity();
+                                }
+                                else {
+                                    Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);
+                                    intent.putExtra("imei", imei);
+                                    SplashScreen.this.startActivity(intent);
+                                    finish();
+                                }
                             }
                         }
                         else
                         {
                             sPref.edit().putString("DatePref", serverDateForSPref).commit();
-                            Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);
-                            intent.putExtra("imei", imei);
-                            SplashScreen.this.startActivity(intent);
-                            finish();
+                            if(!sPrefAttandance.contains("AttandancePref"))
+                            {
+                                callDayStartActivity();
+                            }
+                            else {
+                                Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);
+                                intent.putExtra("imei", imei);
+                                SplashScreen.this.startActivity(intent);
+                                finish();
+                            }
                         }
 
                     }
@@ -1136,6 +1211,29 @@ public class SplashScreen extends AppCompatActivity
 
         }
     }
+
+    public void callDayStartActivity()
+    {
+        dbengine.open();
+        int flgPersonTodaysAtt=dbengine.FetchflgPersonTodaysAtt();
+        dbengine.close();
+        if(flgPersonTodaysAtt==0)
+        {
+            Intent intent=new Intent(this,DayStartActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        else
+        {
+            Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);
+            intent.putExtra("imei", imei);
+            SplashScreen.this.startActivity(intent);
+            finish();
+        }
+
+
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
     {

@@ -156,11 +156,15 @@ public class SyncMaster extends Activity
 
 
 						dialog.dismiss();
-						// finishing activity & stepping back
-
-						Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
-						startActivity(submitStoreIntent);
-						finish();
+						if(whereTo.contentEquals("DayStart"))
+						{
+							finish();
+						}
+						else {
+							Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
+							startActivity(submitStoreIntent);
+							finish();
+						}
 						//SyncMaster.this.finish();
 					}
 				});
@@ -976,6 +980,11 @@ public class SyncMaster extends Activity
 				{
 					 pDialogGetStores.setMessage(getResources().getString(R.string.txtSubmitQuoteDetail));
 					}
+				else if(DayStartActivity.flgDaySartWorking==1)
+				{
+					pDialogGetStores.setMessage(getResources().getString(R.string.submittingDayStart));
+
+				}
 				else
 				{
 				pDialogGetStores.setMessage(getResources().getString(R.string.SubmittingOrderDetails));
@@ -1998,6 +2007,11 @@ if(NoOfOutletID.length>0)
 				{
 					pDialogGetStores.setMessage(getResources().getString(R.string.SubmitDistrbtrMapDetail));
 				}
+				else if(DayStartActivity.flgDaySartWorking==1)
+				{
+					pDialogGetStores.setMessage(getResources().getString(R.string.submittingDayStart));
+
+				}
 				else
 				{
 				pDialogGetStores.setMessage(getResources().getString(R.string.SubmittingOrderDetails));
@@ -2263,6 +2277,10 @@ if(NoOfOutletID.length>0)
 								{
 			            			showSyncError();
 								}
+							else if(whereTo.contentEquals("DayStart"))
+							{
+								showSyncError();
+							}
 			            		else
 			            		{
 
@@ -2447,8 +2465,16 @@ if(NoOfOutletID.length>0)
 
 			pDialogGetStores.setTitle(getText(R.string.genTermPleaseWaitNew));
 			//  pDialogGetStores.setMessage("Uploading Data...");
+        if(DayStartActivity.flgDaySartWorking==1)
+		{
+			pDialogGetStores.setMessage(getResources().getString(R.string.submittingDayStart));
+			DayStartActivity.flgDaySartWorking=0;
+		}
+		else
+		{
+			pDialogGetStores.setMessage(getResources().getString(R.string.txtGetStockData));
+		}
 
-				pDialogGetStores.setMessage(getResources().getString(R.string.txtGetStockData));
 			pDialogGetStores.setIndeterminate(false);
 			pDialogGetStores.setCancelable(false);
 			pDialogGetStores.setCanceledOnTouchOutside(false);
@@ -2546,6 +2572,13 @@ if(NoOfOutletID.length>0)
 					}
 
 
+
+				}
+				else if(whereTo.contentEquals("DayStart"))
+				{
+					Intent intent=new Intent(SyncMaster.this,AllButtonActivity.class);
+					startActivity(intent);
+					finish();;
 
 				}
 				else
