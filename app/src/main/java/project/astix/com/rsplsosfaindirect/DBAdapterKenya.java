@@ -51,7 +51,7 @@ public class DBAdapterKenya
             "FusedLocationLongitudeWithFirstAttempt text null,FusedLocationAccuracyWithFirstAttempt text null," +
             "Sstat int null,flgLocationServicesOnOff int null,flgGPSOnOff int null,flgNetworkOnOff int null," +
             "flgFusedOnOff int null,flgInternetOnOffWhileLocationTracking int null,flgRestart int null," +
-            "MapAddress text null,MapCity text null,MapPinCode text null,MapState text null,CityId text null,StateId text null);";
+            "MapAddress text null,MapCity text null,MapPinCode text null,MapState text null,CityId text null,StateId text null,DistributorId text null,DistributorNodeType text null,DistributorName text null);";
 
 
     private static final String DATABASE_TABLE_AlertNearestSchmApld = "tblProductAlertNearestSchmApld";
@@ -33897,7 +33897,7 @@ if(cursor.getCount()>0)
         }
     }
     public void updatetblAttandanceDetails(String OptionID,String OptionDesc,String ReasonID,String ReasonDesc,
-                                           String Comment)
+                                           String Comment,String DistributorId,String DistributorNodeType,String DistributorName )
     {
         open();
         try {
@@ -33909,6 +33909,11 @@ if(cursor.getCount()>0)
             values.put("ReasonID",ReasonID.trim());
             values.put("ReasonDesc",ReasonDesc);
             values.put("Comment",Comment);
+
+            values.put("DistributorId",DistributorId.trim());
+            values.put("DistributorNodeType",DistributorNodeType);
+            values.put("DistributorName",DistributorName);
+
             db.update(TABLE_tblAttandanceDetails,values,"",new String[]{});
         }catch(SQLiteException exception)
         {
@@ -34001,6 +34006,12 @@ if(cursor.getCount()>0)
         initialValues.put("MapState", MapState);
         initialValues.put("CityId", CityId);
         initialValues.put("StateId", StateId);
+
+
+        initialValues.put("DistributorId", "0");
+        initialValues.put("DistributorNodeType", "0");
+        initialValues.put("DistributorName", "NA");
+
 
         return db.insert(TABLE_tblAttandanceDetails, null, initialValues);
     }

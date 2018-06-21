@@ -1217,6 +1217,7 @@ public class SplashScreen extends AppCompatActivity
         dbengine.open();
         int flgPersonTodaysAtt=dbengine.FetchflgPersonTodaysAtt();
         dbengine.close();
+
         if(flgPersonTodaysAtt==0)
         {
             Intent intent=new Intent(this,DayStartActivity.class);

@@ -118,6 +118,10 @@
         <activity android:name=".WebViewDSRTrackerActivity" />
 
         <activity android:name=".WebViewDSRAttendanceReportActivity" />
+        <activity android:name=".WebViewDSMWiseReport" />
+
+
+
 
         <activity android:name=".WebViewPurchaseOrderActivity" />
 

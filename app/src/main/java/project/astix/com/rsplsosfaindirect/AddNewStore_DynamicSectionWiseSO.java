@@ -730,9 +730,11 @@ catch (SecurityException e)
 
             }
         });
-        btn_refresh.setOnClickListener(new OnClickListener() {
+        btn_refresh.setOnClickListener(new OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
 
 
                 if (mIsServiceStarted)

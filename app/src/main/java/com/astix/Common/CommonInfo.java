@@ -37,8 +37,8 @@ public class CommonInfo
 	public static String DATABASE_NAME = "DbRSPLSFAApp";
 	public static int AnyVisit = 0;
 
-	public static int DATABASE_VERSIONID = 44;     // put this field value based on value in table on the server
-	public static String AppVersionID = "1.6";     // put this field value based on value in table on the server
+	public static int DATABASE_VERSIONID = 46;     // put this field value based on value in table on the server
+	public static String AppVersionID = "1.7";     // put this field value based on value in table on the server
 
 	public static int Application_TypeID = 4;      //1=Parag Store Mapping,2=Parag SFA Indirect,3=Parag SFA Direct
 
@@ -82,6 +82,7 @@ public class CommonInfo
 	public static int flgLTFoodsSOOnlineOffLine=0;
 	public static int flgNewStoreORStoreValidation=0;
 	public static String URLImageLinkToViewStoreOverWebProtal="http://103.20.212.194/RSPL/Reports/frmPDAImgsdev.aspx";
+	public static String WebPageUrlDSMWiseReport="http://103.20.212.194/RSPL/Mobile/frmDSMWiseReportCard.aspx?imei=";
 
 
 	// Its for Test Path on 194 Server
@@ -186,9 +187,8 @@ public class CommonInfo
 	// Its for Dev Path on 194 Server
 
 
-/*
 
-	  public static int flgAllRoutesData=1;
+	 /* public static int flgAllRoutesData=1;
 	    public static File imageF_savedInstance=null;
 	    public static String imageName_savedInstance=null;
 	    public static String clickedTagPhoto_savedInstance=null;
@@ -271,16 +271,20 @@ public class CommonInfo
 	  public static int flgLTFoodsSOOnlineOffLine=0;
 	  public static int flgNewStoreORStoreValidation=0;
 	  public static String URLImageLinkToViewStoreOverWebProtal="http://103.20.212.194/RSPL_dev/Reports/frmPDAImgsdev.aspx";
-
+	  public static String WebPageUrlDSMWiseReport="http://103.20.212.194/RSPL_dev/Mobile/frmDSMWiseReportCard.aspx?imei=";
 
 */
+
+
 
 
 
 	// Its for Test Release Path on 194 Server
 
 
-	/*public static int flgAllRoutesData=1;
+/*
+
+	public static int flgAllRoutesData=1;
 	public static File imageF_savedInstance=null;
 	public static String imageName_savedInstance=null;
 	public static String clickedTagPhoto_savedInstance=null;
@@ -311,8 +315,8 @@ public class CommonInfo
 
 	public static int AnyVisit = 0;
 
-	public static int DATABASE_VERSIONID = 46;      // put this field value based on value in table on the server
-	public static String AppVersionID = "1.11";   // put this field value based on value in table on the server
+	public static int DATABASE_VERSIONID = 52;      // put this field value based on value in table on the server
+	public static String AppVersionID = "1.13";   // put this field value based on value in table on the server
 	public static int Application_TypeID = 4; //1=Parag Store Mapping,2=Parag SFA Indirect,3=Parag SFA Direct
 
 	public static String OrderSyncPath="http://103.20.212.194/ReadXML_RSPLTestRelease/DefaultSOSFA.aspx";
@@ -363,6 +367,8 @@ public class CommonInfo
 	public static int flgLTFoodsSOOnlineOffLine=0;
 	public static int flgNewStoreORStoreValidation=0;
 	public static String URLImageLinkToViewStoreOverWebProtal="http://103.20.212.194/RSPL_Testrelease/Reports/frmPDAImgsdev.aspx";
+
+    public static String WebPageUrlDSMWiseReport="http://103.20.212.194/RSPL_testrelease/Mobile/frmDSMWiseReportCard.aspx?imei=";
 
 */
 

@@ -5,10 +5,17 @@
     <!--<string name="app_name">RSPL TSO SFA Training</string>-->
     <!-- <string name="app_name">RSPL TSO SFA Dev</string>-->
      <!--<string name="app_name">RSPL TSO SFA Test</string>-->
-   <!-- <string name="app_name">RSPL TSO SFA Test Release</string>-->
+    <!--<string name="app_name">RSPL TSO SFA Test Release</string>-->
 
 
-    <string name="select_attendance_scope">उपस्थिति रिपोर्ट देखें</string>
+    <string name="DSR_Wise_Report">डीएसआर रिपोर्ट</string>
+   <string name="today_working">आज का काम</string>
+   <string name="today_Notworking">काम नहीं कर रहे हो</string>
+    <string name="working">काम कर रहे हो</string>
+    <string name="not_working">काम नहीं कर रहे हो</string>
+
+
+ <string name="select_attendance_scope">उपस्थिति रिपोर्ट देखें</string>
     <string name="select_attendance_report">डीएसआर उपस्थिति रिपोर्ट</string>
     <!--Day Start message start-->
     <string name="DayStartButtonText">दिन शुरू</string>

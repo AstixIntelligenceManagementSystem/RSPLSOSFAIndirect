@@ -4373,6 +4373,20 @@ public void DayEndWithoutalert()
 	        parms.height=parms.MATCH_PARENT;
 	        parms.dimAmount = (float) 0.5;
 
+
+		 Button btnDSMWiseReport= (Button) dialog.findViewById(R.id.btnDSMWiseReport);
+		 btnDSMWiseReport.setOnClickListener(new OnClickListener() {
+			 @Override
+			 public void onClick(View v)
+			 {
+				 dialog.dismiss();
+
+				 Intent i=new Intent(StoreSelection.this,WebViewDSMWiseReport.class);
+				 startActivity(i);
+
+			 }
+		 });
+
 		  final Button btnManageDSR = (Button) dialog.findViewById(R.id.btnManageDSR);
 		 btnManageDSR.setOnClickListener(new View.OnClickListener() {
 			 @Override

@@ -6,11 +6,22 @@
      <!--<string name="app_name">RSPL TSO SFA Test</string>-->
    <!-- <string name="app_name">RSPL TSO SFA Dev</string>-->
     <!--<string name="app_name">RSPL TSO SFA Training</string>-->
-    <!--<string name="app_name">RSPL TSO SFA Test Release</string>-->
+   <!-- <string name="app_name">RSPL TSO SFA Test Release</string>-->
 
 
+
+
+
+    <string name="DSR_Wise_Report">DSR Wise Report</string>
+
+    <string name="today_working">Today Working</string>
+    <string name="today_Notworking">Not Working</string>
     <string name="select_attendance_scope">View Attendance Report</string>
     <string name="select_attendance_report">DSR Attendance Report</string>
+
+
+    <string name="working">Working</string>
+    <string name="not_working">Not Working</string>
 
 
 
