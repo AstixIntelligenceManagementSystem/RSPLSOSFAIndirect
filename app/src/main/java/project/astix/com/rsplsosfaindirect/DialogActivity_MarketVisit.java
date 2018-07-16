@@ -30,6 +30,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.astix.Common.CommonInfo;
@@ -78,7 +79,7 @@ public class DialogActivity_MarketVisit extends BaseActivity implements Location
     private SimpleDateFormat sdf;
     private String passDate;
 
-
+TextView txt_HdrVst;
 
     private Date currDate;
     private SimpleDateFormat currDateFormat;
@@ -88,6 +89,7 @@ public class DialogActivity_MarketVisit extends BaseActivity implements Location
     private String PageFrom="0";
     private String rID;
     private String imei;
+    String FROM="";
     private final LinkedHashMap<String, String> hmapOutletListForNearUpdated= new LinkedHashMap<>();
     private LinkedHashMap<String, String> hmapOutletListForNear= new LinkedHashMap<>();
     private String fusedData;
@@ -152,6 +154,7 @@ public class DialogActivity_MarketVisit extends BaseActivity implements Location
 
     private LinkedHashMap<String, String> hmapdsrIdAndDescr_details= new LinkedHashMap<>();
     private String[] drsNames;
+    SharedPreferences sharedPrefForSurvey;
 
     @Override
     protected void onStop() {
@@ -167,6 +170,7 @@ public class DialogActivity_MarketVisit extends BaseActivity implements Location
     {
 
         super.onCreate(savedInstanceState);
+
         locationManager=(LocationManager) this.getSystemService(LOCATION_SERVICE);
 
         sharedPref = getSharedPreferences(CommonInfo.Preference, MODE_PRIVATE);
@@ -226,6 +230,8 @@ public class DialogActivity_MarketVisit extends BaseActivity implements Location
         {
             PageFrom = getStorei.getStringExtra("PageFrom").trim();
             imei=getStorei.getStringExtra("imei").trim();
+          FROM   =getStorei.getStringExtra("FROM").trim();
+
 
         }
 
@@ -242,7 +248,7 @@ public class DialogActivity_MarketVisit extends BaseActivity implements Location
         int screenWidth = (int) (metrics.widthPixels * 0.80);
 
         setContentView(R.layout.market_visit_alert);
-
+        sharedPrefForSurvey=getSharedPreferences("SurveyPref", MODE_PRIVATE);
         getWindow().setLayout(screenWidth, WindowManager.LayoutParams.WRAP_CONTENT);
         setFinishOnTouchOutside(false);
 
@@ -350,8 +356,18 @@ public class DialogActivity_MarketVisit extends BaseActivity implements Location
                             String fDateNew = sdf1.format(date1);
                             //fDate = passDate.trim().toString();
 
+                            Intent storeIntent=null;
+                            if(FROM.equals("MARKETVISIT")){
+                                 storeIntent = new Intent(DialogActivity_MarketVisit.this, StoreSelection.class);
+                            }
+                            else if(FROM.equals("SURVEY")){
+                                storeIntent = new Intent(DialogActivity_MarketVisit.this, SurveyStoreList.class);
+                                sharedPrefForSurvey.edit().putString("FROM", "DASHBOARD").commit();
+                            }
+                            else{
+                                storeIntent = new Intent(DialogActivity_MarketVisit.this, StoreSelection.class);
+                            }
 
-                            Intent storeIntent = new Intent(DialogActivity_MarketVisit.this, StoreSelection.class);
                             storeIntent.putExtra("imei", imei);
                             storeIntent.putExtra("userDate", fDate);
                             storeIntent.putExtra("pickerDate", fDateNew);
@@ -515,7 +531,14 @@ public class DialogActivity_MarketVisit extends BaseActivity implements Location
                 }
             }
         });
-
+        txt_HdrVst=(TextView) findViewById(R.id.txt_HdrVst);
+        if(FROM.equals("SURVEY")){
+            txt_HdrVst.setText(getResources().getString(R.string.coverage_area));
+            rb_dsrVisit.setText(getResources().getString(R.string.dsrcoverage_area));
+            rb_dsrVisit.setChecked(true);
+            spinner_dsrVisit.setVisibility(View.VISIBLE);
+            rb_jointWorking.setVisibility(View.GONE);
+        }
     }
 
     private void showSettingsAlert(){
@@ -2025,7 +2048,18 @@ private void marketVisitGetRoutesClick(){
             }
             else
             {
-                Intent storeIntent = new Intent(DialogActivity_MarketVisit.this, StoreSelection.class);
+                Intent storeIntent=null;
+                if(FROM.equals("MARKETVISIT")){
+                    storeIntent = new Intent(DialogActivity_MarketVisit.this, StoreSelection.class);
+                }
+                else if(FROM.equals("SURVEY")){
+                    storeIntent = new Intent(DialogActivity_MarketVisit.this, SurveyStoreList.class);
+                    sharedPrefForSurvey.edit().putString("FROM", "DASHBOARD").commit();
+                }
+                else{
+                    storeIntent = new Intent(DialogActivity_MarketVisit.this, StoreSelection.class);
+                }
+
                 storeIntent.putExtra("imei", imei);
                 storeIntent.putExtra("userDate", currSysDate);
                 storeIntent.putExtra("pickerDate", fDate);

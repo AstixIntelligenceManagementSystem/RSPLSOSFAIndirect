@@ -59,7 +59,9 @@ import com.astix.Common.CommonInfo;
 
 public class SyncMaster extends Activity
 {
-
+	public String userDate="";
+	public String pickerDate="";
+	public String imei="";
 	public Timer timerForDataSubmission;
 	public	MyTimerTaskForDataSubmission myTimerTaskForDataSubmission;
 
@@ -146,6 +148,9 @@ public class SyncMaster extends Activity
 		{
 			alertDialogSyncError.setMessage(getText(R.string.syncAlertErrMsgDayEndOrChangeRoute));
 		}
+		else if(whereTo.contentEquals("SurveyActivity")){
+			alertDialogSyncError.setMessage(getText(R.string.syncAlertErrMsg));
+		}
 		else
 		{
 		alertDialogSyncError.setMessage(getText(R.string.syncAlertErrMsg));
@@ -158,6 +163,15 @@ public class SyncMaster extends Activity
 						dialog.dismiss();
 						if(whereTo.contentEquals("DayStart"))
 						{
+							finish();
+						}
+						else if(whereTo.contentEquals("SurveyActivity")){
+
+							Intent     intent=new Intent(SyncMaster.this,SurveyStoreList.class);
+							intent.putExtra("imei", imei);
+							intent.putExtra("userDate", userDate);
+							intent.putExtra("pickerDate", pickerDate);
+							startActivity(intent);
 							finish();
 						}
 						else {
@@ -576,6 +590,9 @@ public class SyncMaster extends Activity
 		{
 			alertDialogSyncOK.setMessage(getText(R.string.SubmitDistrbtr));
 		}
+		else if(whereTo.contentEquals("SurveyActivity")){
+			alertDialogSyncOK.setMessage(getText(R.string.SubmitSurvey));
+		}
 		else
 		{
 			if(StoreSelection.flgChangeRouteOrDayEnd==3)
@@ -688,6 +705,14 @@ public class SyncMaster extends Activity
 							startActivity(submitStoreIntent);
 							finish();*/
 						}
+						else if(whereTo.contentEquals("SurveyActivity")){
+							Intent     intent=new Intent(SyncMaster.this,SurveyStoreList.class);
+							intent.putExtra("imei", imei);
+							intent.putExtra("userDate", userDate);
+							intent.putExtra("pickerDate", pickerDate);
+							startActivity(intent);
+							finish();
+						}
 						else
 						{
 						//Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
@@ -768,6 +793,11 @@ public class SyncMaster extends Activity
 		 xmlForWeb[0] = syncIntent.getStringExtra("xmlPathForSync");
 		zipFileName = syncIntent.getStringExtra("OrigZipFileName");
 		whereTo = syncIntent.getStringExtra("whereTo");
+		if(whereTo.contentEquals("SurveyActivity")){
+			imei = syncIntent.getStringExtra("imei");
+			userDate = syncIntent.getStringExtra("userDate");
+			pickerDate = syncIntent.getStringExtra("pickerDate");
+		}
 
 
 		try
@@ -983,6 +1013,11 @@ public class SyncMaster extends Activity
 				else if(DayStartActivity.flgDaySartWorking==1)
 				{
 					pDialogGetStores.setMessage(getResources().getString(R.string.submittingDayStart));
+
+				}
+				else if(whereTo.contentEquals("SurveyActivity"))
+				{
+					pDialogGetStores.setMessage(getResources().getString(R.string.SubmittingDataMsg));
 
 				}
 				else
@@ -2012,6 +2047,11 @@ if(NoOfOutletID.length>0)
 					pDialogGetStores.setMessage(getResources().getString(R.string.submittingDayStart));
 
 				}
+				else if(whereTo.contentEquals("SurveyActivity"))
+				{
+					pDialogGetStores.setMessage(getResources().getString(R.string.SubmittingDataMsg));
+
+				}
 				else
 				{
 				pDialogGetStores.setMessage(getResources().getString(R.string.SubmittingOrderDetails));
@@ -2277,6 +2317,10 @@ if(NoOfOutletID.length>0)
 								{
 			            			showSyncError();
 								}
+							else if(whereTo.contentEquals("SurveyActivity"))
+							{
+								showSyncError();
+							}
 							else if(whereTo.contentEquals("DayStart"))
 							{
 								showSyncError();
@@ -2325,12 +2369,17 @@ if(NoOfOutletID.length>0)
 
 
 
-
-
-
+							if(whereTo.contentEquals("SurveyActivity")){
+								showSyncSuccess();
+							}
+							else{
 								SyncStockData task1=new SyncStockData(SyncMaster.this);
 
-									task1.execute();
+								task1.execute();
+							}
+
+
+
 
 
 		            	}

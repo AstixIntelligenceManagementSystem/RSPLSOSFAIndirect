@@ -2085,6 +2085,7 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
             {
                 Intent storeIntent = new Intent(StorelistActivity.this, DialogActivity_MarketVisit.class);
                 storeIntent.putExtra("PageFrom", "0");
+                storeIntent.putExtra("FROM", "MARKETVISIT");
                 storeIntent.putExtra(imei, imei);
 
                 startActivity(storeIntent);

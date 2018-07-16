@@ -102,6 +102,7 @@ public class StoreSelection extends BaseActivity implements com.google.android.g
 {
 	LinkedHashMap<String, String> hmapdsrIdAndDescr_details=new LinkedHashMap<String, String>();
 	String[] drsNames;
+	SharedPreferences sharedPrefForSurvey;
 	SharedPreferences sharedPref;
 	int slctdCoverageAreaNodeID=0,slctdCoverageAreaNodeType=0,slctdDSrSalesmanNodeId=0,slctdDSrSalesmanNodeType=0;
 	public String	SelectedDSRValue="";
@@ -3208,7 +3209,8 @@ public void DayEndWithoutalert()
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_store_selection);
-
+		sharedPrefForSurvey=getSharedPreferences("SurveyPref", MODE_PRIVATE);
+		sharedPrefForSurvey.edit().putString("FROM", "STORESELECTION").commit();
 		sharedPref = getSharedPreferences(CommonInfo.Preference, MODE_PRIVATE);
 		if(sharedPref.contains("CoverageAreaNodeID"))
 		{
@@ -4397,6 +4399,21 @@ public void DayEndWithoutalert()
 				 // finish();
 			 }
 		 });
+		 final Button btnSurvey = (Button) dialog.findViewById(R.id.btnSurvey);
+		 btnSurvey.setOnClickListener(new View.OnClickListener() {
+			 @Override
+			 public void onClick(View view)
+			 {
+				 sharedPrefForSurvey.edit().putString("FROM", "STORESELECTION").commit();
+				 Intent storeIntent=new Intent(StoreSelection.this,SurveyStoreList.class);
+				 storeIntent.putExtra("imei", imei);
+				 storeIntent.putExtra("userDate", userDate);
+				 storeIntent.putExtra("pickerDate", pickerDate);
+				 storeIntent.putExtra("rID", rID);
+				 startActivity(storeIntent);
+				 // finish();
+			 }
+		 });
 
 		 final   Button butn_Change_dsr = (Button) dialog.findViewById(R.id.butn_Change_dsr);
 		// butn_Change_dsr.setVisibility(View.GONE);
@@ -4410,6 +4427,7 @@ public void DayEndWithoutalert()
 				 Intent storeIntent = new Intent(StoreSelection.this, DialogActivity_MarketVisit.class);
 				 storeIntent.putExtra("PageFrom", "1");
 				 storeIntent.putExtra("imei", imei);
+				 storeIntent.putExtra("FROM", "MARKETVISIT");
 
 
 				 startActivity(storeIntent);

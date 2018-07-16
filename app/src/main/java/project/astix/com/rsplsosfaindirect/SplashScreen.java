@@ -58,6 +58,7 @@ import java.util.zip.ZipOutputStream;
 
 public class SplashScreen extends AppCompatActivity
 {
+    SharedPreferences sharedPrefForSurvey;
     SyncXMLfileData task2;
     public String[] xmlForWeb = new String[1];
     DatabaseAssistantDistributorEntry DA = new DatabaseAssistantDistributorEntry(this);
@@ -150,9 +151,9 @@ public class SplashScreen extends AppCompatActivity
 
        // imei="359632061313398";
 
-       // imei="866924027228398";
+       // imei="352801088236109";
 
-      //  imei="866924020424622"; // Test release
+       //imei="866924020424622"; // Test release
 
        // imei="356813085816045"; //given by gaurav sir
         // imei="351976082331444"; //for development given by avinash sir
@@ -186,9 +187,20 @@ public class SplashScreen extends AppCompatActivity
 
             // In Splash Screen SP, we are sending this Format "dd-MMM-yyyy"
             // But InLauncher Screen SP, we are sending this Format "dd-MM-yyyy"
+            Intent storeIntent=null;
+            if(sharedPrefForSurvey.contains("FROM")){
+                if( sharedPrefForSurvey.getString("FROM", "").equals("DASHBOARD")){
+                    storeIntent = new Intent(SplashScreen.this, AllButtonActivity.class);
+                }
+                else {
+                    storeIntent = new Intent(SplashScreen.this, StoreSelection.class);
+                }
+            }
 
+            else{
+                storeIntent = new Intent(SplashScreen.this, StoreSelection.class);
+            }
 
-            Intent storeIntent = new Intent(SplashScreen.this, StoreSelection.class);
             storeIntent.putExtra("imei", imei);
             storeIntent.putExtra("userDate", fDate);
             storeIntent.putExtra("pickerDate", fDateNew);
@@ -386,6 +398,8 @@ public class SplashScreen extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         dbengine = new DBAdapterKenya(this);
+
+        sharedPrefForSurvey=getSharedPreferences("SurveyPref", MODE_PRIVATE);
   //      BugSenseHandler.setup(this, "1f12b9fe");
 
         // Initalization New Relic Tool
@@ -739,7 +753,20 @@ public class SplashScreen extends AppCompatActivity
                                         // In Splash Screen SP, we are sending this Format "dd-MMM-yyyy"
                                         // But InLauncher Screen SP, we are sending this Format "dd-MM-yyyy"
 
-                                        Intent storeIntent = new Intent(SplashScreen.this, StoreSelection.class);
+                                        Intent storeIntent=null;
+                                        if(sharedPrefForSurvey.contains("FROM")){
+                                            if( sharedPrefForSurvey.getString("FROM", "").equals("DASHBOARD")){
+                                                storeIntent = new Intent(SplashScreen.this, AllButtonActivity.class);
+                                            }
+                                            else {
+                                                storeIntent = new Intent(SplashScreen.this, StoreSelection.class);
+                                            }
+                                        }
+
+                                        else{
+                                            storeIntent = new Intent(SplashScreen.this, StoreSelection.class);
+                                        }
+
                                         storeIntent.putExtra("imei", imei);
                                         storeIntent.putExtra("userDate", fDate);
                                         storeIntent.putExtra("pickerDate", fDateNew);
@@ -983,7 +1010,7 @@ public class SplashScreen extends AppCompatActivity
 
             try
             {
-                for(int mm = 1; mm<10; mm++)
+                for(int mm = 1; mm<11; mm++)
                 {
                     System.out.println("mm Value:-"+mm);
                     if(mm==1)
@@ -1088,6 +1115,22 @@ public class SplashScreen extends AppCompatActivity
 
 
                         newservice = newservice.fnGetStateCityListMstr(SplashScreen.this,imei, fDate,CommonInfo.Application_TypeID);
+                        if(!newservice.director.toString().trim().equals("1"))
+                        {
+                            if(chkFlgForErrorToCloseApp==0)
+                            {
+                                chkFlgForErrorToCloseApp=1;
+                                break;
+                            }
+
+                        }
+                    }
+
+                    if(mm==10)
+                    {
+
+
+                        newservice = newservice.fnGetSurveyData(SplashScreen.this,imei, fDate,CommonInfo.Application_TypeID);
                         if(!newservice.director.toString().trim().equals("1"))
                         {
                             if(chkFlgForErrorToCloseApp==0)

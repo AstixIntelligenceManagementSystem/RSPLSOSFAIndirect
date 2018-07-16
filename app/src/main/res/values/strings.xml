@@ -6,11 +6,12 @@
      <!--<string name="app_name">RSPL TSO SFA Test</string>-->
    <!-- <string name="app_name">RSPL TSO SFA Dev</string>-->
     <!--<string name="app_name">RSPL TSO SFA Training</string>-->
-   <!-- <string name="app_name">RSPL TSO SFA Test Release</string>-->
+   <!--<string name="app_name">RSPL TSO SFA Test Release</string>-->
 
 
 
-
+ <string name="coverage_area">Select Coverage Area</string>
+ <string name="dsrcoverage_area">Select DSR Coverage Area </string>
 
     <string name="DSR_Wise_Report">DSR Wise Report</string>
 
@@ -102,6 +103,7 @@
     <string name="hintMobileNo">Mobile No.</string>
     <string name="txtValidate">Validate</string>
     <string name="txtFName">First Name</string>
+    <string name="txtStoreNotVisible">If store is not showing in list? Please click on Find Nearby Stores button. </string>
     <string name="txtLName">Last Name</string>
     <string name="txtContactNo">Contact No.</string>
     <string name="txtDOB">DOB</string>
@@ -152,7 +154,7 @@
 
 
     <!--activity_list.xml inflated in DSR_Registration start here-->
-    <string name="hintSearchproducts">Search products..</string>
+    <string name="hintSearchproducts">Search here..</string>
     <!--activity_list.xml inflated in DSR_Registration ends here-->
 
     <!--activity_main.xml inflated in DSR_Registration start here-->
@@ -545,7 +547,8 @@
 
     <string name="StockAsOn">Stock as on-</string>
     <string name="StckInCases">Stock Entry(In Cases)</string>
-    <string name="SubmitDistrbtr">Distributor Data is Submitted Succcessfully</string>
+    <string name="SubmitDistrbtr">Distributor Data is Submitted Successfully</string>
+    <string name="SubmitSurvey"> Data is Submitted Successfully</string>
 
 
     <!-- Distributor Entry Activity ends -->
@@ -618,6 +621,7 @@
     <string name="genTermSyncErrorFullMsg">Sync Error! \n\n Please check your Internet Connectivity &amp; Try Again!</string>
     <string name="SubmittingDelDetails">Submitting Delivery Details...</string>
 
+
     <!--invoice sync master ends-->
 
 
@@ -645,6 +649,7 @@
 
     <!--  Selection header starts -->
     <string name="ChangeLanguage">Change Language</string>
+    <string name="Survey">Survey</string>
     <string name="Language">Language</string>
     <string name="LanguageSelection">Please Select Language</string>
     <string name="Hindi">Hindi</string>

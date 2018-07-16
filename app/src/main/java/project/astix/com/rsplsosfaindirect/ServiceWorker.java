@@ -20706,6 +20706,219 @@ public class ServiceWorker
 
 
 	}
+	public ServiceWorker fnGetSurveyData(Context ctx,String uuid,String CurDate,int ApplicationID)
+	{
+
+		this.context = ctx;
+		DBAdapterKenya dbengine = new DBAdapterKenya(context);
+
+
+		decimalFormat.applyPattern(pattern);
+
+		int chkTblStoreListContainsRow=1;
+		StringReader read;
+		InputSource inputstream;
+		final String SOAP_ACTION = "http://tempuri.org/GetSpStoreSurveyQstn";
+		final String METHOD_NAME = "GetSpStoreSurveyQstn";
+		final String NAMESPACE = "http://tempuri.org/";
+		final String URL = UrlForWebService;
+		//Create request
+		SoapObject table = null; // Contains table of dataset that returned
+		// through SoapObject
+		SoapObject client = null; // Its the client petition to the web service
+		SoapObject tableRow = null; // Contains row of table
+		SoapObject responseBody = null; // Contains XML content of dataset
+
+		//SoapObject param
+		HttpTransportSE transport = null; // That call webservice
+		SoapSerializationEnvelope sse = null;
+
+		sse = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+
+		sse.dotNet = true;
+		HttpTransportSE androidHttpTransport = new HttpTransportSE(URL,timeout);
+
+		ServiceWorker setmovie = new ServiceWorker();
+
+		try {
+			client = new SoapObject(NAMESPACE, METHOD_NAME);
+
+
+
+
+
+			client.addProperty("uuid", uuid.toString());
+			//client.addProperty("DatabaseVersion","11");
+			client.addProperty("DatabaseVersion", CommonInfo.DATABASE_VERSIONID);
+			client.addProperty("ApplicationID", ApplicationID);
+
+
+
+			// // System.out.println("Kajol 102");
+			sse.setOutputSoapObject(client);
+			// // System.out.println("Kajol 103");
+			sse.bodyOut = client;
+			// // System.out.println("Kajol 104");
+
+			androidHttpTransport.call(SOAP_ACTION, sse);
+
+			// // System.out.println("Kajol 1");
+
+			responseBody = (SoapObject)sse.bodyIn;
+			// This step: get file XML
+			//responseBody = (SoapObject) sse.getResponse();
+			int totalCount = responseBody.getPropertyCount();
+
+			// // System.out.println("Kajol 2 :"+totalCount);
+			String resultString=androidHttpTransport.responseDump;
+
+			String name=responseBody.getProperty(0).toString();
+
+			// // System.out.println("Kajol 3 :"+name);
+
+			XMLParser xmlParser = new XMLParser();
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			InputSource is = new InputSource();
+			is.setCharacterStream(new StringReader(name));
+			Document doc = db.parse(is);
+			dbengine.deleteSurveyTables();
+			dbengine.open();
+
+
+
+
+			NodeList tblStateCityMaster = doc.getElementsByTagName("tblQuestionsSurvey");
+			for (int i = 0; i < tblStateCityMaster.getLength(); i++)
+			{
+
+				String QstnID="0";
+				String QstnText ="0";
+				String flgActive ="0";
+				String flgOrder ="0";
+
+
+
+				Element element = (Element) tblStateCityMaster.item(i);
+
+				if(!element.getElementsByTagName("QstnID").equals(null))
+				{
+					NodeList QstnIDNodeID = element.getElementsByTagName("QstnID");
+					Element     line = (Element) QstnIDNodeID.item(0);
+					if (QstnIDNodeID.getLength()>0)
+					{
+						QstnID=xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("QstnText").equals(null))
+				{
+					NodeList QstnTextNode = element.getElementsByTagName("QstnText");
+					Element     line = (Element) QstnTextNode.item(0);
+					if (QstnTextNode.getLength()>0)
+					{
+						QstnText=xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("flgActive").equals(null))
+				{
+					NodeList flgActiveNode = element.getElementsByTagName("flgActive");
+					Element     line = (Element) flgActiveNode.item(0);
+					if (flgActiveNode.getLength()>0)
+					{
+						flgActive=xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("flgOrder").equals(null))
+				{
+					NodeList flgOrderNode = element.getElementsByTagName("flgOrder");
+					Element     line = (Element) flgOrderNode.item(0);
+					if (flgOrderNode.getLength()>0)
+					{
+						flgOrder=xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+
+
+
+				dbengine.fnsavetblQuestionsSurvey(QstnID,QstnText,flgActive,flgOrder);
+
+			}
+
+			NodeList tblOptionSurveyMaster = doc.getElementsByTagName("tblOptionSurvey");
+			for (int i = 0; i < tblOptionSurveyMaster.getLength(); i++)
+			{
+
+				String OptionID="0";
+				String OptionText ="0";
+				String QstnID ="0";
+				String flgaActive ="0";
+
+
+
+				Element element = (Element) tblOptionSurveyMaster.item(i);
+
+				if(!element.getElementsByTagName("OptionID").equals(null))
+				{
+					NodeList OptionIDNodeID = element.getElementsByTagName("OptionID");
+					Element     line = (Element) OptionIDNodeID.item(0);
+					if (OptionIDNodeID.getLength()>0)
+					{
+						OptionID=xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("OptionText").equals(null))
+				{
+					NodeList OptionTextNode = element.getElementsByTagName("OptionText");
+					Element     line = (Element) OptionTextNode.item(0);
+					if (OptionTextNode.getLength()>0)
+					{
+						OptionText=xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("QstnID").equals(null))
+				{
+					NodeList QstnIDNode = element.getElementsByTagName("QstnID");
+					Element     line = (Element) QstnIDNode.item(0);
+					if (QstnIDNode.getLength()>0)
+					{
+						QstnID=xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("flgaActive").equals(null))
+				{
+					NodeList flgaActiveNode = element.getElementsByTagName("flgaActive");
+					Element     line = (Element) flgaActiveNode.item(0);
+					if (flgaActiveNode.getLength()>0)
+					{
+						flgaActive=xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+
+
+
+				dbengine.fnsavetblOptionSurvey(OptionID, OptionText, QstnID, flgaActive);
+
+			}
+
+			setmovie.director = "1";
+			dbengine.close();
+			return setmovie;
+
+		} catch (Exception e) {
+
+			// System.out.println("Aman Exception occur in GetIMEIVersionDetailStatusNew :"+e.toString());
+			setmovie.director = e.toString();
+			setmovie.movie_name = e.toString();
+			dbengine.close();
+
+			return setmovie;
+		}
+
+
+
+
+
+	}
 
 	public ServiceWorker getStoreWiseOutStandings(Context ctx, String dateVAL, String uuid, String rID, String RouteType)
 	{

@@ -417,7 +417,18 @@
             -->
 
         </activity>
-
+        <activity
+            android:name=".SurveyActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/StorelistTheme">
+        </activity>
+        <activity
+            android:name=".SurveyStoreList"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/StorelistTheme">
+        </activity>
         <activity  android:name=".SummaryActivity" >
 
         </activity>
@@ -445,7 +456,7 @@
 
             android:screenOrientation="portrait"
             android:theme="@style/StorelistTheme" />
-        android:screenOrientation="portrait"/>
+
         <activity android:name="project.astix.com.rsplsosfaindirect.CollectionActivityNew"
             android:screenOrientation="portrait" />
 

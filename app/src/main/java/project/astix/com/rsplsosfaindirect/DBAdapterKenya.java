@@ -84,7 +84,12 @@ public class DBAdapterKenya
     //actual visit stock
     private static final String DATABASE_TABLE_tblActualVisitStock = "tblActualVisitStock";
     private static final String DATABASE_CREATE_TABLE_tblActualVisitStock = "create table tblActualVisitStock(storeID text null,ProductID text null,Stock text null,Sstat integer null);";
-
+    private static final String DATABASE_TABLE_tblQuestionsSurvey= "tblQuestionsSurvey";
+    private static final String DATABASE_CREATE_TABLE_tblQuestionsSurvey = "create table tblQuestionsSurvey (QstnID text null,QstnText text null,flgActive text null,flgOrder text null);";
+    private static final String DATABASE_TABLE_tblOptionSurvey= "tblOptionSurvey";
+    private static final String DATABASE_CREATE_TABLE_tblOptionSurvey = "create table tblOptionSurvey (OptionID text null,OptionText text null,QstnID text null,flgaActive text null);";
+    private static final String DATABASE_TABLE_tblSurveyData= "tblSurveyData";
+    private static final String DATABASE_CREATE_TABLE_tblSurveyData = "create table tblSurveyData (StoreID text null,QstnID text null,OptionID text null,OptionText text null,DateTime text null,Latitude text null,Longitude text null,Accuracy text null,Sstat Integer null);";
 
     private static final String TABLE_tblStateCityMaster="tblStateCityMaster";
     private static final String DATABASE_CREATE_TABLE_tblStateCityMaster="create table tblStateCityMaster(" +
@@ -1001,7 +1006,9 @@ private static final String DATABASE_TABLE_MAIN101 = "tblFirstOrderDetailsOnLast
                 db.execSQL(DATABASE_CREATE_ADDONSCHEME);
                 db.execSQL(DATABASE_CREATE_TABLE_ADDONSCHEME);
 
-
+                db.execSQL(DATABASE_CREATE_TABLE_tblQuestionsSurvey);
+                db.execSQL(DATABASE_CREATE_TABLE_tblOptionSurvey);
+                db.execSQL(DATABASE_CREATE_TABLE_tblSurveyData);
                 db.execSQL(DATABASE_CREATE_TABLE_tblActualVisitStock);
 
                 db.execSQL(DATABASE_CREATE_TABLE_tblStateCityMaster);
@@ -1274,7 +1281,9 @@ private static final String DATABASE_TABLE_MAIN101 = "tblFirstOrderDetailsOnLast
                 db.execSQL("DROP TABLE IF EXISTS tblProductAlertNearestSchmApld");
                 db.execSQL("DROP TABLE IF EXISTS tblStoreProductAddOnSchemeApplied");
                 db.execSQL("DROP TABLE IF EXISTS tblProductADDONScheme");
-
+                db.execSQL("DROP TABLE IF EXISTS tblQuestionsSurvey");
+                db.execSQL("DROP TABLE IF EXISTS tblOptionSurvey");
+                db.execSQL("DROP TABLE IF EXISTS tblSurveyData");
 
                 db.execSQL("DROP TABLE IF EXISTS tblActualVisitStock");
 
@@ -13361,8 +13370,40 @@ public void deleteStoreTblsRecordsInCaseCancelOrderInOrderBooking(String StoreID
 		}
 
 	}
-	
-	
+
+    public String[] FetchStoreListAllRoute()
+    {
+        int ScodecolumnIndex = 0;
+        int SnamecolumnIndex = 1;
+        Cursor cursor=null;
+        String StoreName[] = null;
+
+
+        try
+        {
+            cursor = db.rawQuery("SELECT StoreID, StoreName FROM tblStoreList   ORDER BY DistanceNear", null);
+            StoreName = new String[cursor.getCount()];
+            if (cursor.getCount() > 0)
+            {
+                if (cursor.moveToFirst())
+                {
+                    for (int i = 0; i <= (cursor.getCount() - 1); i++)
+                    {
+                        StoreName[i] = (String) cursor.getString(ScodecolumnIndex) + "_"+ (String) cursor.getString(SnamecolumnIndex);
+                        cursor.moveToNext();
+                    }
+
+                }
+            }
+        }
+        finally
+        {
+            if(cursor!= null)
+                cursor.close();
+            return StoreName;
+        }
+
+    }
 	public String[] ProcessStoreReq() 
 	{
 
@@ -32682,6 +32723,22 @@ if(cursor.getCount()>0)
         close();
     }
 
+    public void deleteSurveyTables()
+    {
+        open();
+        db.execSQL("DELETE FROM tblQuestionsSurvey");
+        db.execSQL("DELETE FROM tblOptionSurvey");
+        db.execSQL("DELETE FROM tblSurveyData");
+        close();
+    }
+    public void deletetblSurveyData(String StoreID)
+    {
+
+        db.execSQL("DELETE FROM tblSurveyData where StoreID='"+StoreID+"'");
+
+
+    }
+
     public void fnsavetblStateCityMaster(String StateID, String State, String CityID, String City,int cityDefault)
     {
 
@@ -32695,7 +32752,52 @@ if(cursor.getCount()>0)
         db.insert(TABLE_tblStateCityMaster , null, values);
 
     }
+    public void fnsavetblQuestionsSurvey(String QstnID, String QstnText, String flgActive, String flgOrder)
+    {
 
+        ContentValues values=new ContentValues();
+        values.put("QstnID", QstnID);
+        values.put("QstnText", QstnText);
+        values.put("flgActive", flgActive);
+        values.put("flgOrder", flgOrder);
+
+
+        db.insert(DATABASE_TABLE_tblQuestionsSurvey , null, values);
+
+    }
+
+    public void fnsavetblOptionSurvey(String OptionID, String OptionText, String QstnID, String flgaActive)
+    {
+
+        ContentValues values=new ContentValues();
+        values.put("OptionID", OptionID);
+        values.put("OptionText", OptionText);
+        values.put("QstnID", QstnID);
+        values.put("flgaActive", flgaActive);
+
+
+        db.insert(DATABASE_TABLE_tblOptionSurvey , null, values);
+
+    }
+
+    public void fnsavetblSurveyData(String StoreID, String QstnID, String OptionID,String OptionText, String DateTime,int Sstat,String Latitude, String Longitude, String Accuracy)
+    {
+
+        ContentValues values=new ContentValues();
+        values.put("StoreID", StoreID);
+        values.put("QstnID", QstnID);
+        values.put("OptionID", OptionID);
+        values.put("OptionText", OptionText);
+        values.put("DateTime", DateTime);
+        values.put("Latitude", Latitude);
+        values.put("Longitude", Longitude);
+        values.put("Accuracy", Accuracy);
+        values.put("Sstat", Sstat);
+
+
+        db.insert(DATABASE_TABLE_tblSurveyData , null, values);
+
+    }
     public LinkedHashMap<String, String> fngetDistinctState()
     {
 
@@ -32731,7 +32833,110 @@ if(cursor.getCount()>0)
         }
     }
 
+    public LinkedHashMap<String, String> fngettblQuestionsSurvey()
+    {
 
+        open();
+        Cursor cur=null;
+        LinkedHashMap<String, String> hmapDistinctStates= new LinkedHashMap<>();
+        try {
+            cur=db.rawQuery("Select Distinct QstnID,QstnText,flgActive from tblQuestionsSurvey Order BY flgOrder", null);
+            if(cur.getCount()>0)
+            {
+                if(cur.moveToFirst())
+                {
+                    for(int i=0;i<cur.getCount();i++)
+                    {
+                        hmapDistinctStates.put(cur.getString(0), cur.getString(1)+"^"+cur.getString(2));
+                        cur.moveToNext();
+                    }
+                }
+
+            }
+
+        } catch (SQLiteException e) {
+            // TODO: handle exception
+        }
+        finally
+        {
+            if(cur!=null)
+            {
+                cur.close();
+            }
+            close();
+            return hmapDistinctStates;
+        }
+    }
+
+    public LinkedHashMap<String, String> fngettblOptionSurvey(String QstnID)
+    {
+
+        open();
+        Cursor cur=null;
+        LinkedHashMap<String, String> hmapDistinctStates= new LinkedHashMap<>();
+        try {
+            cur=db.rawQuery("Select Distinct OptionID,OptionText,flgaActive from tblOptionSurvey where QstnID='"+QstnID+"'", null);
+            if(cur.getCount()>0)
+            {
+                if(cur.moveToFirst())
+                {
+                    for(int i=0;i<cur.getCount();i++)
+                    {
+                        hmapDistinctStates.put(cur.getString(0),  cur.getString(1)+"^"+cur.getString(2));
+                        cur.moveToNext();
+                    }
+                }
+
+            }
+
+        } catch (SQLiteException e) {
+            // TODO: handle exception
+        }
+        finally
+        {
+            if(cur!=null)
+            {
+                cur.close();
+            }
+            close();
+            return hmapDistinctStates;
+        }
+    }
+
+    public LinkedHashMap<String, String> fngetSubmittedSurvey()
+    {
+
+        open();
+        Cursor cur=null;
+        LinkedHashMap<String, String> hmapDistinctStates= new LinkedHashMap<>();
+        try {
+            cur=db.rawQuery("Select Distinct StoreID from tblSurveyData where Sstat='"+4+"'", null);
+            if(cur.getCount()>0)
+            {
+                if(cur.moveToFirst())
+                {
+                    for(int i=0;i<cur.getCount();i++)
+                    {
+                        hmapDistinctStates.put(cur.getString(0),  cur.getString(0));
+                        cur.moveToNext();
+                    }
+                }
+
+            }
+
+        } catch (SQLiteException e) {
+            // TODO: handle exception
+        }
+        finally
+        {
+            if(cur!=null)
+            {
+                cur.close();
+            }
+            close();
+            return hmapDistinctStates;
+        }
+    }
 
     public LinkedHashMap<String,String> getCityAgainstState()
     {
@@ -34023,6 +34228,25 @@ if(cursor.getCount()>0)
             open();
 
             db.execSQL("UPDATE tblAttandanceDetails SET Sstat= 4" );
+
+
+
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
+        }
+        finally {
+            close();
+        }
+
+    }
+    public void UpdateSstatSurvey(String StoreID) {
+
+        try
+        {
+
+            open();
+
+            db.execSQL("UPDATE tblSurveyData SET Sstat= 4 where StoreID='"+StoreID+"' " );
 
 
 

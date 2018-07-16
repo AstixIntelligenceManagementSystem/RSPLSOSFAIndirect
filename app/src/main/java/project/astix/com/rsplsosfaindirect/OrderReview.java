@@ -243,8 +243,8 @@ GoogleApiClient.OnConnectionFailedListener{
 
 	    
 	    public CoundownClass2 countDownTimer2;
-	    private  long startTime = 45000;
-	    private final long interval = 200;
+	    private  long startTime = 31000;
+	    private final long interval = 10000;
 	    
 	    private static final String TAG = "LocationActivity";
 	    private static final long INTERVAL = 1000 * 10;
@@ -10715,7 +10715,17 @@ public void loadPurchaseProductDefault()
 
 			@Override
 			public void onTick(long millisUntilFinished) {
-			
+				System.out.println("Shivam"+FusedLocationAccuracy);
+				if(FusedLocationAccuracy!=null){
+					if(Double.parseDouble(FusedLocationAccuracy)<50 && (!FusedLocationAccuracy.equals("0"))){
+						System.out.println("Shivam"+"ontickFInish "+millisUntilFinished+":"+ FusedLocationAccuracy);
+
+						countDownTimer2.onFinish();
+						countDownTimer2.cancel();
+
+					}
+				}
+
 			}
 
 			@Override

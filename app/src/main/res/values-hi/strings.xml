@@ -1,11 +1,11 @@
 <resources>
 
-    <string name="app_name">RSPL TSO SFA</string>
+   <!-- <string name="app_name">RSPL TSO SFA</string>-->
     <!-- <string name="app_name">RSPL TSO SFA Stagging</string>-->
     <!--<string name="app_name">RSPL TSO SFA Training</string>-->
     <!-- <string name="app_name">RSPL TSO SFA Dev</string>-->
      <!--<string name="app_name">RSPL TSO SFA Test</string>-->
-    <!--<string name="app_name">RSPL TSO SFA Test Release</string>-->
+    <string name="app_name">RSPL TSO SFA Test Release</string>
 
 
     <string name="DSR_Wise_Report">डीएसआर रिपोर्ट</string>
@@ -105,7 +105,7 @@
     <string name="txtValidateBloodGroup">कृपया रक्त समूह चुनें</string>
     <string name="txtValidateSignature">कृपया हस्ताक्षर करें</string>
 
-    <string name="hintSearchproducts">उत्पादों को खोजे </string>
+    <string name="hintSearchproducts">यहाँ खोजे </string>
 
     <string name="txtSwitchCamera">स्विच कैमरा</string>
     <string name="txtCapture">फोटो खींचे</string>
@@ -617,6 +617,8 @@
 
     <!--  Selection header starts -->
     <string name="ChangeLanguage">भाषा बदले</string>
+   <string name="Survey">सर्वेक्षण</string>
+
     <string name="Language">भाषा</string>
     <string name="LanguageSelection">कृपया भाषा चुनें</string>
     <string name="Hindi">हिंदी</string>
@@ -767,8 +769,10 @@
     <string name="title_activity_dialog__report">डायलॉग गतिविधि रिपोर्ट</string>
     <string name="SubmitDistrbtr">ितरक डेटा सौभाग्य से सबमिट किया जह चुका है</string>
     <string name="syncAlertsubmit"><small>डेटा सफलतापूर्वक सबमिट हों चुका है</small></string>
-
-
+   <string name="SubmitSurvey"> डेटा सफलतापूर्वक सबमिट हों चुका है</string>
+   <string name="txtStoreNotVisible">अगर स्टोर सूची में नहीं दिख रहा है? कृपया नजदीक की दुकानों को ढूंढें बटन पर क्लिक करें।</string>
+   <string name="coverage_area">कवरेज क्षेत्र का चयन करें</string>
+   <string name="dsrcoverage_area">डीएसआर कवरेज क्षेत्र का चयन करें </string>
     <!--newly added for store close activity-->
     <string name="StrClosed">स्टोर बंद</string>
     <string name="StrClosedHeader">स्टोर बंद सूचना</string>

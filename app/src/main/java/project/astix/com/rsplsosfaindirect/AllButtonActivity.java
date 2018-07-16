@@ -105,7 +105,7 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
     private PowerManager.WakeLock wl;
     private String rID="0";    // Abhinav Sir tell Sunil for set its value zero at 10 October 2017
     private LinearLayout ll_noVisit;
-    private LinearLayout ll_marketVisit;
+    private LinearLayout ll_marketVisit,ll_Survey;
     private LinearLayout ll_reports;
     private LinearLayout ll_storeVal;
     private LinearLayout ll_distrbtrStock;
@@ -131,7 +131,7 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
     private final int CstmrNodeId=0;
     private final int CstomrNodeType= 0;
     private int battLevel=0;
-
+    SharedPreferences sharedPrefForSurvey;
     public String newfullFileName;
     DatabaseAssistantDistributorEntry DA = new DatabaseAssistantDistributorEntry(this);
     private final DatabaseAssistant DASFA = new DatabaseAssistant(this);
@@ -280,6 +280,8 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_button);
+        sharedPrefForSurvey=getSharedPreferences("SurveyPref", MODE_PRIVATE);
+        sharedPrefForSurvey.edit().putString("FROM", "DASHBOARD").commit();
 
         sharedPrefReport = getSharedPreferences("Report", MODE_PRIVATE);
         sPrefAttandance=getSharedPreferences(CommonInfo.AttandancePreference, MODE_PRIVATE);
@@ -483,6 +485,8 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
     {
         ll_noVisit = (LinearLayout) findViewById(R.id.ll_noVisit);
         ll_marketVisit = (LinearLayout) findViewById(R.id.ll_marketVisit);
+        ll_Survey = (LinearLayout) findViewById(R.id.ll_Survey);
+
         ll_reports = (LinearLayout) findViewById(R.id.ll_reports);
         ll_storeVal = (LinearLayout) findViewById(R.id.ll_storeVal);
 
@@ -515,6 +519,7 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
 
 
         marketVisitWorking();
+        SurveyWorking();
         executionWorking();
 
         storeValidationWorking();
@@ -2037,7 +2042,18 @@ private void changeLanguageWorking()
             }
         }
     }
-
+private void SurveyWorking(){
+    ll_Survey.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent storeIntent = new Intent(AllButtonActivity.this, DialogActivity_MarketVisit.class);
+            storeIntent.putExtra("PageFrom", "0");
+            storeIntent.putExtra("FROM", "SURVEY");
+            storeIntent.putExtra("imei", imei);
+            startActivity(storeIntent);
+        }
+    });
+}
     private void marketVisitWorking()
     {
         ll_marketVisit.setOnClickListener(new View.OnClickListener()
@@ -2092,7 +2108,7 @@ private void changeLanguageWorking()
                 Intent storeIntent = new Intent(AllButtonActivity.this, DialogActivity_MarketVisit.class);
                 storeIntent.putExtra("PageFrom", "0");
                 storeIntent.putExtra("imei", imei);
-
+                storeIntent.putExtra("FROM", "MARKETVISIT");
                 startActivity(storeIntent);
 
 
