@@ -447,8 +447,16 @@ public class SurveyActivity extends AppCompatActivity implements InterfaceClass{
                         OptionText=checkBox.getText().toString();
                     }
                     else{
-                        OptionID=OptionID+"^"+checkBox.getTag().toString();
-                        OptionText=OptionText+"^"+checkBox.getText().toString();
+                        if(OptionID.equals("0") && OptionText.equals("0")){
+                            OptionID=checkBox.getTag().toString();
+                            OptionText=checkBox.getText().toString();
+                        }
+                        else{
+                            OptionID=OptionID+"^"+checkBox.getTag().toString();
+                            OptionText=OptionText+"^"+checkBox.getText().toString();
+                        }
+
+
                     }
 
 
@@ -456,7 +464,7 @@ public class SurveyActivity extends AppCompatActivity implements InterfaceClass{
                 }
             }
             dbengine.fnsavetblSurveyData(StoreID,QstnID,OptionID,OptionText,currentDateTime,3,fnLati,fnLongi,finalAccuracy);
-            QstnID= tv_quest3.getTag().toString();
+            QstnID= tv_quest4.getTag().toString();
             OptionID="0";
             OptionText="";
             if(!et_Comment.getText().toString().trim().equals("")){
