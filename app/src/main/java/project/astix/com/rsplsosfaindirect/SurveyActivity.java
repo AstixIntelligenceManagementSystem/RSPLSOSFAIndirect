@@ -424,7 +424,7 @@ public class SurveyActivity extends AppCompatActivity implements InterfaceClass{
             dbengine.fnsavetblSurveyData(StoreID,QstnID,OptionID,OptionText,currentDateTime,3,fnLati,fnLongi,finalAccuracy);
 
             QstnID= tv_quest2.getTag().toString();
-            if(rb_quest1_no.isChecked()){
+            if(rb_quest2_yes.isChecked()){
                 OptionID=rb_quest2_yes.getTag().toString();
                 OptionText=rb_quest2_yes.getText().toString();
             }
