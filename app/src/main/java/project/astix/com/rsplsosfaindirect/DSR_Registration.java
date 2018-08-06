@@ -10,6 +10,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -86,10 +87,10 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
     LinearLayout LL_banner_image,parentOf_questionLayout,parentOf_validationLayout,parentOf_registrationformLayout,parent_of_marriedSection,mContent;
     RadioButton radio_yes,radio_no, radio_Male,radio_Female,radio_married,radio_unmarried;
     TextView welcomeTextView,txt_Dob_credential,Text_Dob,Text_married_date,spinnerQualification,Text_capture_image,Text_Browse_image,spinner_bloodgrp,textMessage,text_UpdateNow,text_NotYou,text_Daystart;
-    TextView textviewFirstname,textviewLastname,textviewContact,textviewDOB,textviewSex,textviewMaritalStatus,textviewMarriedDate,textviewQualification,textviewUpdatedPhoto,textviewBloodGrp,textviewSignhere;
+    TextView CovrageArea,textContact,textDob,ContactOnWelcome , DobOnWelcome,textCoverage ,textviewFirstname,textviewLastname,textviewContact,textviewDOB,textviewSex,textviewMaritalStatus,textviewMarriedDate,textviewQualification,textviewUpdatedPhoto,textviewBloodGrp,textviewSignhere;
     EditText ET_mobile_credential,ET_firstname,ET_lastname ,ET_contact_no,editText_emailID;
     Button validate_btn,Submit_btn,BtnCancel;
-    ImageView imgView_photo,imgCncl;
+    ImageView imgView_photo,imgCncl,profile_image;
     public int chkFlgForErrorToCloseApp=0;
 
     String mobNumberForService;
@@ -138,7 +139,7 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
     File file;
     View view;
     String DIRECTORY = Environment.getExternalStorageDirectory().getPath() + "/" + CommonInfo.ImagesFolder + "/";
-    String pic_name = new SimpleDateFormat("yyyyMMMdd_HHmmss",Locale.ENGLISH).format(new Date());
+    String pic_name = new SimpleDateFormat("yyyyMMMdd_HHmmss", Locale.ENGLISH).format(new Date());
     String StoredPath = DIRECTORY + pic_name + ".png";
     ScrollView scrollViewParentOfMap;
     ImageView transparent_image;
@@ -150,6 +151,22 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
     String photoNameGlobal="NA";
     String userNodeIdGlobal="0";
     String userNodetypeGlobal="0";
+    SharedPreferences sPrefAttandance;
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(CommonInfo.DayStartClick==2)
+        {
+            SharedPreferences.Editor editor1=sPrefAttandance.edit();
+            editor1.clear();
+            editor1.commit();
+            CommonInfo.DayStartClick=0;
+            finish();
+
+        }
+    }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) // Control the PDA
     // Native Button
@@ -181,8 +198,7 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
         setContentView(R.layout.dsr__registration_activity);
 
         Intent intent = getIntent();
-         FROM= intent.getStringExtra("IntentFrom");
-
+        FROM= intent.getStringExtra("IntentFrom");
         TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         imei = tManager.getDeviceId();
         if(CommonInfo.imei.trim().equals(null) || CommonInfo.imei.trim().equals(""))
@@ -193,8 +209,8 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
         {
             imei=CommonInfo.imei.trim();
         }
-
-
+        sPrefAttandance=getSharedPreferences(CommonInfo.AttandancePreference, MODE_PRIVATE);
+        profile_image=(ImageView)findViewById(R.id.profile_image);
         //Retreiving master data from database
         getDataFromDataBase();
 
@@ -210,29 +226,31 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
         mustFillViews();
         fillDataToLayoutFromDataBase();
 
-        if(FROM.equals("DAYEND"))
-        {
-            imei = intent.getStringExtra("imei").trim();
-            pickerDate = intent.getStringExtra("pickerDate").trim();
-            userDate = intent.getStringExtra("userDate");
 
-            parentOf_questionLayout.setVisibility(View.GONE);
-            parentOf_registrationformLayout.setVisibility(View.VISIBLE);
-            LL_banner_image.setVisibility(View.GONE);
-            Submit_btn.setVisibility(View.VISIBLE);
+        if(FROM != null && !FROM.isEmpty()) {
+            if (FROM.equals("DAYEND") || FROM.equals("AllButtonActivity") ) {
+                imei = intent.getStringExtra("imei").trim();
+                pickerDate = intent.getStringExtra("pickerDate").trim();
+                userDate = intent.getStringExtra("userDate");
 
+                parentOf_questionLayout.setVisibility(View.GONE);
+                parentOf_registrationformLayout.setVisibility(View.VISIBLE);
+                LL_banner_image.setVisibility(View.GONE);
+                Submit_btn.setVisibility(View.VISIBLE);
+
+            }
         }
 
     }
 
-  public  void ImageViewInitialize()
+    public  void ImageViewInitialize()
     {
 
         imgCncl= (ImageView) findViewById(R.id.imgCncl);
         imgCncl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              String imagNm=  hmapImageData.get("ImageData").split(Pattern.quote("~"))[1];
+                String imagNm=  hmapImageData.get("ImageData").split(Pattern.quote("~"))[1];
                 String file_dj_path = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolder + "/" +imagNm;
                 File fdelete = new File(file_dj_path);
                 if (fdelete.exists()) {
@@ -279,7 +297,6 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
 
 
             }
-
         });
     }
 
@@ -356,6 +373,16 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
 
     public void TextViewInitialize()
     {
+        textCoverage= (TextView) findViewById(R.id.textCoverage);
+        textContact= (TextView) findViewById(R.id.textContact);
+        textDob= (TextView) findViewById(R.id.textDob);
+
+        CovrageArea= (TextView) findViewById(R.id.CovrageArea);
+        ContactOnWelcome= (TextView) findViewById(R.id.ContactOnWelcome);
+        DobOnWelcome= (TextView) findViewById(R.id.DobOnWelcome);
+
+
+
         welcomeTextView= (TextView) findViewById(R.id.welcomeTextView);
         textMessage= (TextView) findViewById(R.id.textMessage);
 
@@ -375,23 +402,30 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
 
         text_NotYou= (TextView) findViewById(R.id.text_NotYou);
         text_NotYou.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            parentOf_questionLayout.setVisibility(View.GONE);
-            parentOf_validationLayout.setVisibility(View.VISIBLE);
+            @Override
+            public void onClick(View v) {
+                parentOf_questionLayout.setVisibility(View.GONE);
+                parentOf_validationLayout.setVisibility(View.VISIBLE);
 
-        }
-    });
+            }
+        });
 
 
         text_Daystart= (TextView) findViewById(R.id.text_Daystart);
         text_Daystart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i=new Intent(DSR_Registration.this,SalesValueTarget.class);
-                i.putExtra("IntentFrom", 0);
-                startActivity(i);
-                finish();
+                if(!sPrefAttandance.contains("AttandancePref"))
+                {
+                    callDayStartActivity();
+
+                }
+                else{
+                    Intent i=new Intent(DSR_Registration.this,SalesValueTarget.class);
+                    i.putExtra("IntentFrom", 0);
+                    startActivity(i);
+                    finish();
+                }
 
             }
         });
@@ -422,7 +456,7 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
                 // datePickerDialog.setMinDate(calendar);
 
                 //surbhi
-               calendarForSetDate.set(Year - 24, Month, Day);
+                calendarForSetDate.set(Year - 24, Month, Day);
                 datePickerDialog.setMaxDate(calendarForSetDate);
                 datePickerDialog.setAccentColor(Color.parseColor("#544f88"));
 
@@ -456,7 +490,7 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
                 // datePickerDialog.setMaxDate(Calendar.getInstance());
                 // datePickerDialog.setMinDate(calendar);
 
-              //  datePickerDialog.setMinDate(calendarForSetDate);
+                //  datePickerDialog.setMinDate(calendarForSetDate);
                 calendarForSetDate.set(Year - 24, Month, Day);
                 datePickerDialog.setMaxDate(calendarForSetDate);
                 datePickerDialog.setAccentColor(Color.parseColor("#544f88"));
@@ -489,7 +523,7 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
                 // datePickerDialog.setMaxDate(Calendar.getInstance());
                 // datePickerDialog.setMinDate(calendar);
 
-               // datePickerDialog.setMinDate(calendarForSetDate);
+                // datePickerDialog.setMinDate(calendarForSetDate);
                 datePickerDialog.setAccentColor(Color.parseColor("#544f88"));
 
                 datePickerDialog.setTitle(getResources().getString(R.string.txtSelectMarriedDate));
@@ -577,7 +611,7 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
                         byteArray.length);
                 imgView_photo.setImageBitmap(bitmap);
 
-               // imgView_photo.setImageBitmap(BitmapFactory.decodeFile(new_pathOfImage));
+                // imgView_photo.setImageBitmap(BitmapFactory.decodeFile(new_pathOfImage));
                 parent_of_image_holder.setVisibility(View.VISIBLE);
                 //deleting previous image if image is already set
                 deletingPreviousImage();
@@ -742,7 +776,7 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
 
 
     }
-//nitika text end today
+    //nitika text end today
     public void EdittextInitilize()
     {
         ET_mobile_credential= (EditText) findViewById(R.id.ET_mobile_credential);
@@ -755,11 +789,11 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
 
     public void ButtonInitialize()
     {
-       validate_btn=(Button)findViewById(R.id.validate_btn);
-       validate_btn.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               check_validationAndGetDataFromServer();
+        validate_btn=(Button)findViewById(R.id.validate_btn);
+        validate_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                check_validationAndGetDataFromServer();
 
 
              /* String text="Somu";
@@ -776,49 +810,49 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
                startActivity(sendIntent);*/
 
 
-           }
-       });
-       Submit_btn=(Button)findViewById(R.id.Submit_btn);
+            }
+        });
+        Submit_btn=(Button)findViewById(R.id.Submit_btn);
         Submit_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-             if(validate())
-             {
-                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                         DSR_Registration.this);
-                 alertDialog.setTitle(getResources().getString(R.string.genTermNoDataConnection));
+                if(validate())
+                {
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                            DSR_Registration.this);
+                    alertDialog.setTitle(getResources().getString(R.string.genTermNoDataConnection));
 
-                 alertDialog.setCancelable(false);
-                 alertDialog.setMessage(getResources().getString(R.string.txtSubmitData));
-                 alertDialog.setPositiveButton(getResources().getString(R.string.AlertDialogYesButton),
-                         new DialogInterface.OnClickListener() {
-                             public void onClick(DialogInterface dialog,
-                                                 int which) {
-                                 dialog.dismiss();
-
-
-
-
-                                 saveDataToDataBase();
+                    alertDialog.setCancelable(false);
+                    alertDialog.setMessage(getResources().getString(R.string.txtSubmitData));
+                    alertDialog.setPositiveButton(getResources().getString(R.string.AlertDialogYesButton),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    dialog.dismiss();
 
 
 
-                             }
-                         });
-                 alertDialog.setNegativeButton(getResources().getString(R.string.AlertDialogNoButton),
-                         new DialogInterface.OnClickListener() {
-                             public void onClick(DialogInterface dialog,
-                                                 int which) {
-                                 dialog.dismiss();
-                             }
-                         });
 
-                 // Showing Alert Message
-                 alertDialog.show();
+                                    saveDataToDataBase();
 
 
-             }
+
+                                }
+                            });
+                    alertDialog.setNegativeButton(getResources().getString(R.string.AlertDialogNoButton),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+
+                    // Showing Alert Message
+                    alertDialog.show();
+
+
+                }
             }
         });
         BtnCancel=(Button)findViewById(R.id.BtnCancel);
@@ -829,16 +863,46 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
                 //deleting image from image folder
                 deletingPreviousImage();
 
-                Intent i=new Intent(DSR_Registration.this,SalesValueTarget.class);
-                i.putExtra("IntentFrom", 0);
-                startActivity(i);
-                finish();
+                if(FROM.equals("DAYEND"))
+                {
+                    Intent trans2storeList = new Intent(DSR_Registration.this, StoreSelection.class);
+                    trans2storeList.putExtra("imei", imei);
+                    trans2storeList.putExtra("userDate", userDate);
+                    trans2storeList.putExtra("pickerDate", pickerDate);
+
+                    startActivity(trans2storeList);
+                    finish();
+                }
+                else if(FROM.equals("AllButtonActivity")){
+                    Intent trans2storeList = new Intent(DSR_Registration.this, AllButtonActivity.class);
+                    trans2storeList.putExtra("imei", imei);
+                    trans2storeList.putExtra("userDate", userDate);
+                    trans2storeList.putExtra("pickerDate", pickerDate);
+
+                    startActivity(trans2storeList);
+                    finish();
+                }
+                else
+                {
+                    if(!sPrefAttandance.contains("AttandancePref"))
+                    {
+                        callDayStartActivity();
+
+                    }
+                    else{
+                        Intent i=new Intent(DSR_Registration.this,SalesValueTarget.class);
+                        i.putExtra("IntentFrom", 0);
+                        startActivity(i);
+                        finish();
+                    }
+
+                }
 
             }
         });
 
 
-   }
+    }
     public boolean isOnline()
     {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -877,45 +941,45 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
 
     public void check_validationAndGetDataFromServer()
     {
-          if( ET_mobile_credential.getText().toString().trim().equals("0000000000") || ET_mobile_credential.getText().toString().trim().equals("") || ET_mobile_credential.getText().toString().trim().length()<10)
-          {
-        showAlertForEveryOne(getResources().getString(R.string.txtErrorMobileNo));
+        if( ET_mobile_credential.getText().toString().trim().equals("0000000000") || ET_mobile_credential.getText().toString().trim().equals("") || ET_mobile_credential.getText().toString().trim().length()<10)
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtErrorMobileNo));
 
-          }
-          else if(txt_Dob_credential.getText().toString().trim().equals(""))
-          {
-              showAlertForEveryOne(getResources().getString(R.string.txtSelectDOB));
+        }
+        else if(txt_Dob_credential.getText().toString().trim().equals(""))
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtSelectDOB));
 
-          }
-          else
-          {
-          mobNumberForService=     ET_mobile_credential.getText().toString().trim();
-               dobForService=    txt_Dob_credential.getText().toString().trim();
-              if(isOnline())
-              {
+        }
+        else
+        {
+            mobNumberForService=     ET_mobile_credential.getText().toString().trim();
+            dobForService=    txt_Dob_credential.getText().toString().trim();
+            if(isOnline())
+            {
 
-                  try
-                  {
-                      ValidateAndGetDsrData cuv = new ValidateAndGetDsrData(DSR_Registration.this);
-                      cuv.execute();
-                  }
-                  catch (Exception e) {
-                      e.printStackTrace();
+                try
+                {
+                    ValidateAndGetDsrData cuv = new ValidateAndGetDsrData(DSR_Registration.this);
+                    cuv.execute();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
 
-                  }
+                }
 
-              }
-              else {
-                  showNoConnAlert();
+            }
+            else {
+                showNoConnAlert();
 
-              }
+            }
              /* parentOf_validationLayout.setVisibility(View.GONE);
               parentOf_registrationformLayout.setVisibility(View.VISIBLE);
               LL_banner_image.setVisibility(View.GONE);
               Submit_btn.setVisibility(View.VISIBLE);
               BtnCancel.setVisibility(View.VISIBLE);*/
 
-          }
+        }
 
     }
 
@@ -1096,7 +1160,7 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
 
 
                         //
-                      //  setSavedImageToScrollView(bitmap, imageName,valueOfKey,clickedTagPhoto);
+                        //  setSavedImageToScrollView(bitmap, imageName,valueOfKey,clickedTagPhoto);
                     }
 
 
@@ -1207,9 +1271,10 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
         String timeStamp = new SimpleDateFormat("yyyyMMMdd_HHmmss",Locale.ENGLISH).format(new Date());
         File mediaFile;
         //and make a media file:
-       // mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");
-       // mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" +CommonInfo.imei+"$"+ timeStamp + ".jpg");
+        //mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");
+        // mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" +CommonInfo.imei+"$"+ timeStamp + ".jpg");
         mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" +CommonInfo.imei+timeStamp + ".jpg");
+
         return mediaFile;
     }
 
@@ -1229,7 +1294,8 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
         String timeStamp = new SimpleDateFormat("yyyyMMMdd_HHmmss",Locale.ENGLISH).format(new Date());
         File mediaFile;
         //and make a media file:
-        mediaFile = new File(mediaStorageDir.getPath() + File.separator + imgName);
+        /// mediaFile = new File(mediaStorageDir.getPath() + File.separator + imgName);
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" +CommonInfo.imei+"$"+ timeStamp + ".jpg");
 
         return mediaFile;
     }
@@ -1274,7 +1340,7 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
             //mCamera = Camera.open(findBackFacingCamera());
 
             //commenting it because we want selfie camera
-           // mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
+            // mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
 		/*if(mCamera==null){
 			mCamera=Camera.open(0);
 		}*/
@@ -1430,7 +1496,7 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
                 mCamera.setParameters(params);
                 isLighOn = false;
                 dialog.dismiss();
-               getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
         });
         capture.setOnClickListener(captrureListener);
@@ -1553,93 +1619,93 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
 
     }
 
-      public boolean validate()
-       {
-           String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-           String mail=editText_emailID.getText().toString().trim();
+    public boolean validate()
+    {
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        String mail=editText_emailID.getText().toString().trim();
 
-           if(ET_firstname.getText().toString().trim().equals(""))
-           {
+        if(ET_firstname.getText().toString().trim().equals(""))
+        {
 
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateFirstName));
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateFirstName));
 
-               return false;
-           }
-           else if(ET_lastname.getText().toString().trim().equals(""))
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateLastName));
+            return false;
+        }
+        else if(ET_lastname.getText().toString().trim().equals(""))
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateLastName));
 
-               return false;
-           }
+            return false;
+        }
 
-           else if( ET_contact_no.getText().toString().trim().equals("0000000000") || ET_contact_no.getText().toString().trim().equals("") || ET_contact_no.getText().toString().trim().length()<10)
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateContactNo));
+        else if( ET_contact_no.getText().toString().trim().equals("0000000000") || ET_contact_no.getText().toString().trim().equals("") || ET_contact_no.getText().toString().trim().length()<10)
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateContactNo));
 
-               return false;
-           }
-           else if(Text_Dob.getText().toString().trim().equals("Select Date"))
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtSelectDOB));
+            return false;
+        }
+        else if(Text_Dob.getText().toString().trim().equals(getResources().getString(R.string.txtSelectDate)))
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtSelectDOB));
 
-               return false;
-           }
-           else if(!radio_Male.isChecked() && !radio_Female.isChecked())
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateSelectSex));
+            return false;
+        }
+        else if(!radio_Male.isChecked() && !radio_Female.isChecked())
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateSelectSex));
 
-               return false;
-           }
-           else if(!radio_married.isChecked() && !radio_unmarried.isChecked())
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateMaritalStatus));
+            return false;
+        }
+        else if(!radio_married.isChecked() && !radio_unmarried.isChecked())
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateMaritalStatus));
 
-               return false;
-           }
-           else if(radio_married.isChecked() && Text_married_date.getText().toString().trim().equals("Select Date") )
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateMarriedDate));
+            return false;
+        }
+        else if(radio_married.isChecked() && Text_married_date.getText().toString().trim().equals(getResources().getString(R.string.txtSelectDate)) )
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateMarriedDate));
 
-               return false;
-           }
-           else if(spinnerQualification.getText().toString().trim().equals("Select"))
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateQualification));
+            return false;
+        }
+        else if(spinnerQualification.getText().toString().trim().equals(getResources().getString(R.string.txtSelect)))
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateQualification));
 
-               return false;
-           }
-           else if(hmapImageData.isEmpty())
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateUpdatePhoto));
+            return false;
+        }
+        else if(hmapImageData.isEmpty())
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateUpdatePhoto));
 
-               return false;
-           }
-           else if(!editText_emailID.getText().toString().trim().equals("") && !mail.matches(emailPattern))
-           {
+            return false;
+        }
+        else if(!editText_emailID.getText().toString().trim().equals("") && !mail.matches(emailPattern))
+        {
 
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateEmailID));
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateEmailID));
 
 
-               return false;
-           }
-           else if(spinner_bloodgrp.getText().toString().trim().equals("Select"))
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateBloodGroup));
+            return false;
+        }
+        else if(spinner_bloodgrp.getText().toString().trim().equals(getResources().getString(R.string.txtSelect)))
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateBloodGroup));
 
-               return false;
-           }
-           else if(!signOrNot)
-           {
-               showAlertForEveryOne(getResources().getString(R.string.txtValidateSignature));
+            return false;
+        }
+        else if(!signOrNot)
+        {
+            showAlertForEveryOne(getResources().getString(R.string.txtValidateSignature));
 
-               return false;
-           }
+            return false;
+        }
 
-           else{
-               return true;
-           }
+        else{
+            return true;
+        }
 
-       }
+    }
     public void showAlertForEveryOne(String msg)
     {
         AlertDialog.Builder alertDialogNoConn = new AlertDialog.Builder(DSR_Registration.this);
@@ -1663,11 +1729,22 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
     {
         if(!PersonNameAndFlgRegistered.equals("0"))
         {
-         String personName=   PersonNameAndFlgRegistered.split(Pattern.quote("^"))[0];
+            String personName=   PersonNameAndFlgRegistered.split(Pattern.quote("^"))[0];
             String FlgRegistered=   PersonNameAndFlgRegistered.split(Pattern.quote("^"))[1];
+
+
+            String ContactNumberFromServer=   PersonNameAndFlgRegistered.split(Pattern.quote("^"))[2];
+            String DOB=   PersonNameAndFlgRegistered.split(Pattern.quote("^"))[3];
+            String SelfieName=   PersonNameAndFlgRegistered.split(Pattern.quote("^"))[4];
+            String SelfieNameURL=   PersonNameAndFlgRegistered.split(Pattern.quote("^"))[5];
+            String SalesAreaName=   PersonNameAndFlgRegistered.split(Pattern.quote("^"))[6];
+
+
+
+
             welcomeTextView.setText(getResources().getString(R.string.txtWelcome)+" "+personName);
             //
-           // FlgRegistered="1";
+            // FlgRegistered="1";
             if(FlgRegistered.equals("0"))
             {
                 textMessage.setText(getResources().getString(R.string.txtDSRMsg));
@@ -1677,6 +1754,24 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
                 SpannableString content1 = new SpannableString(text);
                 content1.setSpan(new UnderlineSpan(), 0, text.length(), 0);
                 text_UpdateNow.setText(content1);
+
+                CovrageArea.setVisibility(View.VISIBLE);
+                ContactOnWelcome.setVisibility(View.VISIBLE);
+                DobOnWelcome.setVisibility(View.GONE);
+                textCoverage.setVisibility(View.VISIBLE);
+                textContact.setVisibility(View.VISIBLE);
+                textDob.setVisibility(View.GONE);
+                profile_image.setVisibility(View.GONE);
+                CovrageArea.setText(SalesAreaName);
+
+
+                if(!ContactNumberFromServer.equals("0")){
+
+                    ContactOnWelcome.setText(ContactNumberFromServer);
+                }
+
+
+
             }
             if(FlgRegistered.equals("1"))
             {
@@ -1685,6 +1780,28 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
                 SpannableString content1 = new SpannableString(text);
                 content1.setSpan(new UnderlineSpan(), 0, text.length(), 0);
                 text_NotYou.setText(content1);
+
+                CovrageArea.setText(SalesAreaName);
+                ContactOnWelcome.setText(ContactNumberFromServer);
+                DobOnWelcome.setText(DOB);
+
+                try{
+                    String PATH = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolderServer + "/";
+
+                    File file2 = new File(PATH + SelfieName);
+                    if (file2.exists()) {
+
+                        Bitmap myBitmap = BitmapFactory.decodeFile(file2.getAbsolutePath());
+
+                        profile_image.setImageBitmap(myBitmap);
+                    }
+
+                }
+                catch (Exception e){
+
+                }
+
+
 
 
             }
@@ -1696,7 +1813,7 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
     {
         hmapBloodGroup=  dbengine.fnGettblBloodGroup();
         hmapQualification=  dbengine.fnGettblEducationQuali();
-      PersonNameAndFlgRegistered=  dbengine.fnGetPersonNameAndFlgRegistered();
+        PersonNameAndFlgRegistered=  dbengine.fnGetPersonNameAndFlgRegistered();
 
     }
     public class signature extends View {
@@ -1828,171 +1945,188 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
             dirtyRect.bottom = Math.max(lastTouchY, eventY);
         }
     }
-   public void signatureAllCode()
-   {
-       file = new File(DIRECTORY);
-       if (!file.exists()) {
-           file.mkdir();
-       }
-       mContent= (LinearLayout) findViewById(R.id.linearLayout);
-       mSignature = new signature(getApplicationContext(), null);
-       mSignature.setBackgroundColor(Color.WHITE);
-       // Dynamically generating Layout through java code
-       mContent.addView(mSignature, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-       mGetSign= (Button) findViewById(R.id.getsign);
-       //by default disable it when , person do sign it will enable
-       mGetSign.setEnabled(false);
-       mClear= (Button) findViewById(R.id.clear);
-       mCancel= (Button) findViewById(R.id.cancel);
-       view=mContent;
+    public void signatureAllCode()
+    {
+        file = new File(DIRECTORY);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        mContent= (LinearLayout) findViewById(R.id.linearLayout);
+        mSignature = new signature(getApplicationContext(), null);
+        mSignature.setBackgroundColor(Color.WHITE);
+        // Dynamically generating Layout through java code
+        mContent.addView(mSignature, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        mGetSign= (Button) findViewById(R.id.getsign);
+        //by default disable it when , person do sign it will enable
+        mGetSign.setEnabled(false);
+        mClear= (Button) findViewById(R.id.clear);
+        mCancel= (Button) findViewById(R.id.cancel);
+        view=mContent;
 
-       mClear.setOnClickListener(new View.OnClickListener() {
-           public void onClick(View v) {
-               Log.v("log_tag", "Panel Cleared");
-               mSignature.clear();
-               mGetSign.setEnabled(false);
-               signOrNot=false;
-           }
-       });
+        mClear.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Log.v("log_tag", "Panel Cleared");
+                mSignature.clear();
+                mGetSign.setEnabled(false);
+                signOrNot=false;
+            }
+        });
 
-       mGetSign.setOnClickListener(new View.OnClickListener() {
+        mGetSign.setOnClickListener(new View.OnClickListener() {
 
-           public void onClick(View v) {
+            public void onClick(View v) {
 
-               Log.v("log_tag", "Panel Saved");
-               view.setDrawingCacheEnabled(true);
-               mSignature.save(view, StoredPath);
+                Log.v("log_tag", "Panel Saved");
+                view.setDrawingCacheEnabled(true);
+                mSignature.save(view, StoredPath);
 
-               Toast.makeText(getApplicationContext(),getResources().getString(R.string.txtSuccessfullySaved), Toast.LENGTH_SHORT).show();
-               // Calling the same class
-             //  recreate();
-           }
-       });
+                Toast.makeText(getApplicationContext(),getResources().getString(R.string.txtSuccessfullySaved), Toast.LENGTH_SHORT).show();
+                // Calling the same class
+                //  recreate();
+            }
+        });
 
-       mCancel.setOnClickListener(new View.OnClickListener() {
-           public void onClick(View v) {
-               Log.v("log_tag", "Panel Canceled");
+        mCancel.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Log.v("log_tag", "Panel Canceled");
 
-               // Calling the same class
-            //   recreate();
-           }
-       });
-       transparent_image=(ImageView)findViewById(R.id.transparent_image);
-       scrollViewParentOfMap=(ScrollView)findViewById(R.id.scrollViewParentOfMap);
+                // Calling the same class
+                //   recreate();
+            }
+        });
+        transparent_image=(ImageView)findViewById(R.id.transparent_image);
+        scrollViewParentOfMap=(ScrollView)findViewById(R.id.scrollViewParentOfMap);
 
-       transparent_image.setOnTouchListener(new View.OnTouchListener() {
-           @Override
-           public boolean onTouch(View view, MotionEvent motionEvent) {
-               int action = motionEvent.getAction();
-               switch (action) {
-                   case MotionEvent.ACTION_DOWN:
-                       // Disallow ScrollView to intercept touch events.
-                       scrollViewParentOfMap.requestDisallowInterceptTouchEvent(true);
-                       // Disable touch on transparent view
-                       return false;
+        transparent_image.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                int action = motionEvent.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Disallow ScrollView to intercept touch events.
+                        scrollViewParentOfMap.requestDisallowInterceptTouchEvent(true);
+                        // Disable touch on transparent view
+                        return false;
 
-                   case MotionEvent.ACTION_UP:
-                       // Allow ScrollView to intercept touch events.
-                       scrollViewParentOfMap.requestDisallowInterceptTouchEvent(false);
-                       return true;
+                    case MotionEvent.ACTION_UP:
+                        // Allow ScrollView to intercept touch events.
+                        scrollViewParentOfMap.requestDisallowInterceptTouchEvent(false);
+                        return true;
 
-                   case MotionEvent.ACTION_MOVE:
-                       scrollViewParentOfMap.requestDisallowInterceptTouchEvent(true);
-                       return false;
+                    case MotionEvent.ACTION_MOVE:
+                        scrollViewParentOfMap.requestDisallowInterceptTouchEvent(true);
+                        return false;
 
-                   default:
-                       return true;
-               }
-           }
-       });
-   }
-   public  void saveDataToDataBase()
-   {
-       getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-      // showAlertForEveryOne("Everything is fine");
-       //saving sign to folder
-       view.setDrawingCacheEnabled(true);
-       mSignature.save(view, StoredPath);
-       String ddd= pic_name;
+                    default:
+                        return true;
+                }
+            }
+        });
+    }
+    public  void saveDataToDataBase()
+    {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        // showAlertForEveryOne("Everything is fine");
+        //saving sign to folder
+        view.setDrawingCacheEnabled(true);
+        mSignature.save(view, StoredPath);
+        String ddd= pic_name;
 
-       String IMEI_string=CommonInfo.imei;
-       String ClickedDateTime_string="0";
-       String FirstName_string="0";
-       String LastName_string="0";
-       String ContactNo_string="0";
-       String DOB_string="0";
-       String Sex_string="0";
-       String MaritalStatus_string="0";
-       String MarriedDate_string="NA";
-       String Qualification_string="0";
-       String SelfieName_string="0";
-       String SelfiePath_string="0";
-       String EmailID_string="NA";
-       String BloodGroup_string="0";
-       String SignName_string="0";
-       String SignPath_string="0";
-       String PhotoName_string=photoNameGlobal;
-       String PersonNodeId_string=userNodeIdGlobal;
-       String PersonNodeType_string=userNodetypeGlobal;
+        String IMEI_string=CommonInfo.imei;
+        String ClickedDateTime_string="0";
+        String FirstName_string="0";
+        String LastName_string="0";
+        String ContactNo_string="0";
+        String DOB_string="0";
+        String Sex_string="0";
+        String MaritalStatus_string="0";
+        String MarriedDate_string="NA";
+        String Qualification_string="0";
+        String SelfieName_string="0";
+        String SelfiePath_string="0";
+        String EmailID_string="NA";
+        String BloodGroup_string="0";
+        String SignName_string="0";
+        String SignPath_string="0";
+        String PhotoName_string=photoNameGlobal;
+        String PersonNodeId_string=userNodeIdGlobal;
+        String PersonNodeType_string=userNodetypeGlobal;
 
 
-       long syncTIMESTAMP = System.currentTimeMillis();
-       Date datefromat = new Date(syncTIMESTAMP);
-       SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss",Locale.ENGLISH);
-       String VisitEndFinalTS = df.format(datefromat);
+        long syncTIMESTAMP = System.currentTimeMillis();
+        Date datefromat = new Date(syncTIMESTAMP);
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss",Locale.ENGLISH);
+        String VisitEndFinalTS = df.format(datefromat);
 
-       ClickedDateTime_string=VisitEndFinalTS;
-       FirstName_string=ET_firstname.getText().toString().trim();
-       LastName_string=ET_lastname.getText().toString().trim();
-       ContactNo_string=ET_contact_no.getText().toString().trim();
-       DOB_string=Text_Dob.getText().toString().trim();
-       if(radio_Male.isChecked()){
-           Sex_string="Male";
-       }
-       if(radio_Female.isChecked()){
-           Sex_string="Female";
-       }
-       if(radio_married.isChecked()){
-           MaritalStatus_string="1";
-           MarriedDate_string= Text_married_date.getText().toString().trim();
-       }
-       if(radio_unmarried.isChecked()){
-           MaritalStatus_string="0";
-       }
-       Qualification_string=spinnerQualification.getText().toString().trim();
-       SelfieName_string=  hmapImageData.get("ImageData").split(Pattern.quote("~"))[1];
-       SelfiePath_string=  hmapImageData.get("ImageData").split(Pattern.quote("~"))[0];
-       if(!editText_emailID.getText().toString().trim().equals("")){
-           EmailID_string=editText_emailID.getText().toString().trim();
-       }
-       BloodGroup_string=spinner_bloodgrp.getText().toString().trim();
-       SignName_string=pic_name + ".png";
-       SignPath_string=StoredPath;
+        ClickedDateTime_string=VisitEndFinalTS;
+        FirstName_string=ET_firstname.getText().toString().trim();
+        LastName_string=ET_lastname.getText().toString().trim();
+        ContactNo_string=ET_contact_no.getText().toString().trim();
+        DOB_string=Text_Dob.getText().toString().trim();
+        if(radio_Male.isChecked()){
+            Sex_string="Male";
+        }
+        if(radio_Female.isChecked()){
+            Sex_string="Female";
+        }
+        if(radio_married.isChecked()){
+            MaritalStatus_string="1";
+            MarriedDate_string= Text_married_date.getText().toString().trim();
+        }
+        if(radio_unmarried.isChecked()){
+            MaritalStatus_string="0";
+        }
+        Qualification_string=spinnerQualification.getText().toString().trim();
+        SelfieName_string=  hmapImageData.get("ImageData").split(Pattern.quote("~"))[1];
+        SelfiePath_string=  hmapImageData.get("ImageData").split(Pattern.quote("~"))[0];
+        if(!editText_emailID.getText().toString().trim().equals("")){
+            EmailID_string=editText_emailID.getText().toString().trim();
+        }
+        BloodGroup_string=spinner_bloodgrp.getText().toString().trim();
+        SignName_string=pic_name + ".png";
+        SignPath_string=StoredPath;
 
-       dbengine.open();
-       dbengine.Delete_tblDsrRegDetails();
-       dbengine.savetblDsrRegDetails(IMEI_string,ClickedDateTime_string,FirstName_string,LastName_string,ContactNo_string,DOB_string,Sex_string,MaritalStatus_string,MarriedDate_string,Qualification_string,SelfieName_string,SelfiePath_string,EmailID_string,BloodGroup_string,SignName_string,SignPath_string,3,PhotoName_string,PersonNodeId_string,PersonNodeType_string);
-       dbengine.close();
-       getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-       if(FROM.equals("DAYEND"))
-       {
-           Intent trans2storeList = new Intent(DSR_Registration.this, StoreSelection.class);
-           trans2storeList.putExtra("imei", imei);
-           trans2storeList.putExtra("userDate", userDate);
-           trans2storeList.putExtra("pickerDate", pickerDate);
+        dbengine.open();
+        dbengine.Delete_tblDsrRegDetails();
+        dbengine.savetblDsrRegDetails(IMEI_string,ClickedDateTime_string,FirstName_string,LastName_string,ContactNo_string,DOB_string,Sex_string,MaritalStatus_string,MarriedDate_string,Qualification_string,SelfieName_string,SelfiePath_string,EmailID_string,BloodGroup_string,SignName_string,SignPath_string,3,PhotoName_string,PersonNodeId_string,PersonNodeType_string);
+        dbengine.close();
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        if(FROM.equals("DAYEND"))
+        {
+            Intent trans2storeList = new Intent(DSR_Registration.this, StoreSelection.class);
+            trans2storeList.putExtra("imei", imei);
+            trans2storeList.putExtra("userDate", userDate);
+            trans2storeList.putExtra("pickerDate", pickerDate);
 
-           startActivity(trans2storeList);
-           finish();
-       }
-       else
-       {
-           Intent i=new Intent(DSR_Registration.this,SalesValueTarget.class);
-           i.putExtra("IntentFrom", 0);
-           startActivity(i);
-           finish();
-       }
+            startActivity(trans2storeList);
+            finish();
+        }
+        else if(FROM.equals("AllButtonActivity")){
+            Intent trans2storeList = new Intent(DSR_Registration.this, AllButtonActivity.class);
+            trans2storeList.putExtra("imei", imei);
+            trans2storeList.putExtra("userDate", userDate);
+            trans2storeList.putExtra("pickerDate", pickerDate);
 
-   }
+            startActivity(trans2storeList);
+            finish();
+        }
+        else
+        {
+            if(!sPrefAttandance.contains("AttandancePref"))
+            {
+                callDayStartActivity();
+
+            }
+            else{
+                Intent i=new Intent(DSR_Registration.this,SalesValueTarget.class);
+                i.putExtra("IntentFrom", 0);
+                startActivity(i);
+                finish();
+            }
+
+        }
+
+    }
 
     private class ValidateAndGetDsrData extends AsyncTask<Void, Void, Void>
     {
@@ -2057,13 +2191,13 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
             {
                 chkFlgForErrorToCloseApp=0;
                 Toast.makeText(getApplicationContext(),getResources().getString(R.string.internetError), Toast.LENGTH_LONG).show();
-               // finish();
+                // finish();
             }
             else
             {
                 String flag="0";
                 String message="0";
-              String FlagAndMessage=  dbengine.fnGettblUserRegistarationStatus();
+                String FlagAndMessage=  dbengine.fnGettblUserRegistarationStatus();
                 if(!FlagAndMessage.equals("0"))
                 {
                     flag    =   FlagAndMessage.split(Pattern.quote("^"))[0];
@@ -2093,10 +2227,17 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
                         public void onClick(DialogInterface dialog, int which)
                         {
                             dialog.dismiss();
-                            Intent i=new Intent(DSR_Registration.this,SalesValueTarget.class);
-                            i.putExtra("IntentFrom", 0);
-                            startActivity(i);
-                            finish();
+                            if(!sPrefAttandance.contains("AttandancePref"))
+                            {
+                                callDayStartActivity();
+
+                            }
+                            else{
+                                Intent i=new Intent(DSR_Registration.this,SalesValueTarget.class);
+                                i.putExtra("IntentFrom", 0);
+                                startActivity(i);
+                                finish();
+                            }
 
                         }
                     });
@@ -2130,7 +2271,7 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
         hmapDsrRegAllDetails=  dbengine.fnGettblDsrRegDetails();
         if(hmapDsrRegAllDetails!=null && !hmapDsrRegAllDetails.isEmpty())
         {
-         String DSR_All_DATA=   hmapDsrRegAllDetails.get("DSRDETAILS");
+            String DSR_All_DATA=   hmapDsrRegAllDetails.get("DSRDETAILS");
 
             String FirstNameServer=   DSR_All_DATA.split(Pattern.quote("^"))[2];
             String LastNameServer=   DSR_All_DATA.split(Pattern.quote("^"))[3];
@@ -2148,7 +2289,7 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
             }
 
 
-          userNodeIdGlobal  =   DSR_All_DATA.split(Pattern.quote("^"))[17];
+            userNodeIdGlobal  =   DSR_All_DATA.split(Pattern.quote("^"))[17];
             userNodetypeGlobal=   DSR_All_DATA.split(Pattern.quote("^"))[18];
 
             if(!FirstNameServer.equals("0")){
@@ -2173,16 +2314,16 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
 
             }
 
-                if(MaritalStatusServer.equals("1")){
-                    radio_married.setChecked(true);
-                    parent_of_marriedSection.setVisibility(View.VISIBLE);
-                    if(!MarriedDateServer.equals("0")){
-                        Text_married_date.setText(MarriedDateServer);
-                    }
+            if(MaritalStatusServer.equals("1")){
+                radio_married.setChecked(true);
+                parent_of_marriedSection.setVisibility(View.VISIBLE);
+                if(!MarriedDateServer.equals("0")){
+                    Text_married_date.setText(MarriedDateServer);
                 }
-                if(MaritalStatusServer.equals("0")){
-                    radio_unmarried.setChecked(true);
-                }
+            }
+            if(MaritalStatusServer.equals("0")){
+                radio_unmarried.setChecked(true);
+            }
 
 
 
@@ -2269,4 +2410,27 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
 
 
     }
+    public void callDayStartActivity()
+    {
+        dbengine.open();
+        int flgPersonTodaysAtt=dbengine.FetchflgPersonTodaysAtt();
+        dbengine.close();
+
+        if(flgPersonTodaysAtt==0)
+        {
+            Intent intent=new Intent(this,DayStartActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        else
+        {
+            Intent intent = new Intent(DSR_Registration.this, AllButtonActivity.class);
+            intent.putExtra("imei", imei);
+            DSR_Registration.this.startActivity(intent);
+            finish();
+        }
+
+
+    }
+
 }

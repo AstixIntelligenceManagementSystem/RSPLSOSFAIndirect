@@ -2625,9 +2625,13 @@ if(NoOfOutletID.length>0)
 				}
 				else if(whereTo.contentEquals("DayStart"))
 				{
-					Intent intent=new Intent(SyncMaster.this,AllButtonActivity.class);
+				/*	Intent intent=new Intent(SyncMaster.this,AllButtonActivity.class);
 					startActivity(intent);
-					finish();;
+					finish();;*/
+					Intent i=new Intent(SyncMaster.this,SalesValueTarget.class);
+					i.putExtra("IntentFrom", 0);
+					startActivity(i);
+					finish();
 
 				}
 				else

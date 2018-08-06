@@ -4,6 +4,7 @@ package project.astix.com.rsplsosfaindirect;
 
         import android.app.Activity;
         import android.content.Intent;
+        import android.content.SharedPreferences;
         import android.os.Bundle;
         import android.text.Html;
         import android.text.TextUtils;
@@ -21,6 +22,23 @@ public class SalesValueTarget extends Activity {
     TextView txt_stv;
     ImageView imgVw_next,imgVw_back;
     String imei,pickerDate,userDate;
+    SharedPreferences sPrefAttandance;
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(CommonInfo.DayStartClick==2)
+        {
+            SharedPreferences.Editor editor1=sPrefAttandance.edit();
+            editor1.clear();
+            editor1.commit();
+            CommonInfo.DayStartClick=0;
+            finish();
+
+        }
+    }
+
 
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
@@ -50,6 +68,7 @@ public class SalesValueTarget extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sales_value_target);
+        sPrefAttandance=getSharedPreferences(CommonInfo.AttandancePreference, MODE_PRIVATE);
         txt_stv=(TextView) findViewById(R.id.txt_stv);
         imgVw_next=(ImageView) findViewById(R.id.imgVw_next);
         imgVw_back=(ImageView) findViewById(R.id.imgVw_back);

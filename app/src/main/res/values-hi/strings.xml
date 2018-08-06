@@ -6,8 +6,10 @@
     <!-- <string name="app_name">RSPL TSO SFA Dev</string>-->
      <!--<string name="app_name">RSPL TSO SFA Test</string>-->
     <string name="app_name">RSPL TSO SFA Test Release</string>
-
-
+   <string name="Coverage_Area">कवरेज क्षेत्र</string>
+   <string name="Contact_No">संपर्क नंबर</string>
+   <string name="DOB">जन्म तिथि</string>
+   <string name="DSR_Profile">एसओ प्रोफाइल</string>
     <string name="DSR_Wise_Report">डीएसआर रिपोर्ट</string>
    <string name="today_working">आज का काम</string>
    <string name="today_Notworking">काम नहीं कर रहे हो</string>

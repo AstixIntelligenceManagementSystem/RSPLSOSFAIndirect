@@ -156,7 +156,7 @@ public class SplashScreen extends AppCompatActivity
        //imei="866924020424622"; // Test release
 
        // imei="356813085816045"; //given by gaurav sir
-        // imei="351976082331444"; //for development given by avinash sir
+         imei="351976082331444"; //for development given by avinash sir
 
         CommonInfo.imei = imei;
 
@@ -1197,7 +1197,11 @@ public class SplashScreen extends AppCompatActivity
 
                                 if(!sPrefAttandance.contains("AttandancePref"))
                                 {
-                                    callDayStartActivity();
+                                    //callDayStartActivity();
+                                    Intent i = new Intent(SplashScreen.this, DSR_Registration.class);
+                                    i.putExtra("IntentFrom", "SPLASH");
+                                    startActivity(i);
+                                    finish();
                                 }
                                 else {
                                     Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);
@@ -1218,7 +1222,11 @@ public class SplashScreen extends AppCompatActivity
 
                                 if(!sPrefAttandance.contains("AttandancePref"))
                                 {
-                                    callDayStartActivity();
+                                   // callDayStartActivity();
+                                    Intent i = new Intent(SplashScreen.this, DSR_Registration.class);
+                                    i.putExtra("IntentFrom", "SPLASH");
+                                    startActivity(i);
+                                    finish();
                                 }
                                 else {
                                     Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);
@@ -1233,7 +1241,11 @@ public class SplashScreen extends AppCompatActivity
                             sPref.edit().putString("DatePref", serverDateForSPref).commit();
                             if(!sPrefAttandance.contains("AttandancePref"))
                             {
-                                callDayStartActivity();
+                                //callDayStartActivity();
+                                Intent i = new Intent(SplashScreen.this, DSR_Registration.class);
+                                i.putExtra("IntentFrom", "SPLASH");
+                                startActivity(i);
+                                finish();
                             }
                             else {
                                 Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);

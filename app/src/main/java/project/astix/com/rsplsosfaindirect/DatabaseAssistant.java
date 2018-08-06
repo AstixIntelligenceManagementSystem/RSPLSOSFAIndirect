@@ -144,7 +144,7 @@ public class DatabaseAssistant
 			exportTable("tblLatLongDetails");
 			exportTable("tblsameLocationForStoreRestartDone");
 
-			exportTable("tblDsrRegDetails");
+			exportTable("tblSoRegDetails");
 			exportTable("tblStoreCloseLocationDetails");
 			exportTable("tblStoreClosedPhotoDetail");
 			exportTable("tblStoreCloseReasonSaving");

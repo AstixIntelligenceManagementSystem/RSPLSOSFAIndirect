@@ -823,8 +823,45 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
             @Override
             public void onClick(View view)
             {
+                String	PersonNameAndFlgRegistered=  dbengine.fnGetPersonNameAndFlgRegistered();
+                String personName="";
+                String FlgRegistered="";
+                int DsrRegTableCount=0;
+                DsrRegTableCount=dbengine.fngetcounttblDsrRegDetails();
+                if(!PersonNameAndFlgRegistered.equals("0")) {
+                    personName = PersonNameAndFlgRegistered.split(Pattern.quote("^"))[0];
+                    FlgRegistered = PersonNameAndFlgRegistered.split(Pattern.quote("^"))[1];
+                }
+                if( FlgRegistered.equals("0")&& DsrRegTableCount==0)
+                {
+                    android.app.AlertDialog.Builder alertDialogNoConn = new android.app.AlertDialog.Builder(AllButtonActivity.this);
+                    alertDialogNoConn.setTitle(getResources().getString(R.string.genTermNoDataConnection));
+                    alertDialogNoConn.setMessage(getResources().getString(R.string.Dsrmessage));
+                    alertDialogNoConn.setCancelable(false);
+                    alertDialogNoConn.setNeutralButton(getResources().getString(R.string.AlertDialogOkButton),new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            dialog.dismiss();
+                            Intent intent=new Intent(AllButtonActivity.this,DSR_Registration.class);
+                            intent.putExtra("IntentFrom", "AllButtonActivity");
+                            intent.putExtra("imei", imei);
+                            intent.putExtra("userDate", "NA");
+                            intent.putExtra("pickerDate", "NA");
 
+                            startActivity(intent);
+                            finish();
 
+                        }
+                    });
+                    alertDialogNoConn.setIcon(R.drawable.info_ico);
+                    android.app.AlertDialog alert = alertDialogNoConn.create();
+                    alert.show();
+
+                }
+                else
+
+                {
 
                 File del = new File(Environment.getExternalStorageDirectory(), CommonInfo.OrderXMLFolder);
 
@@ -892,7 +929,7 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
 
 
 
-            }
+            }}
         });
 
     }

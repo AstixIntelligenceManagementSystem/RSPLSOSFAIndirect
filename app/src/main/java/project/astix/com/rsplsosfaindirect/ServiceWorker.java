@@ -1,7 +1,13 @@
 package project.astix.com.rsplsosfaindirect;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -34,6 +40,7 @@ import org.xml.sax.InputSource;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.os.Environment;
 
 import com.astix.Common.CommonInfo;
 
@@ -860,65 +867,150 @@ public class ServiceWorker
 					dbengine.createtblManagerMstr();
 
 	            NodeList tblSchemeStoreMappingNode = doc.getElementsByTagName("tblUserAuthentication");
-	            for (int i = 0; i < tblSchemeStoreMappingNode.getLength(); i++)
-	            {
-					String flgUserAuthenticated="0";
-					int flgAllRoutesData=0;
-					int PersonNodeID=0;
-					int PersonNodeType=0;
-					int CoverageAreaNodeID=0;
-					int CoverageAreaNodeType=0;
-					String flgPersonTodaysAtt="0";
+			for (int i = 0; i < tblSchemeStoreMappingNode.getLength(); i++)
+			{
+				String flgUserAuthenticated="0";
+				String PersonName="0";
+				String FlgRegistered="0";
+				String flgInventory="1";
+				String flgAppStatus="1";
+				String DisplayMessage="No Message";
+				String flgValidApplication="1";
+				String MessageForInvalid="No Message";
+				String flgPersonTodaysAtt="0";
+				int PersonNodeID=0;
+				int PersonNodeType=0;
+				String ContactNo="0";
+				String DOB="0";
+				String SelfieName="0";
+				String SelfieNameURL="0";
+				String SalesAreaName="0";
 
-					Element element = (Element) tblSchemeStoreMappingNode.item(i);
+				Element element = (Element) tblSchemeStoreMappingNode.item(i);
 
-					NodeList StoreIDNode = element.getElementsByTagName("flgUserAuthenticated");
-					Element line = (Element) StoreIDNode.item(0);
-					flgUserAuthenticated=xmlParser.getCharacterDataFromElement(line);
+				NodeList StoreIDNode = element.getElementsByTagName("flgUserAuthenticated");
+				Element line = (Element) StoreIDNode.item(0);
+				flgUserAuthenticated=xmlParser.getCharacterDataFromElement(line);
 
-					NodeList flgToShowAllRoutesDataNode = element.getElementsByTagName("flgToShowAllRoutesData");
-					line = (Element) flgToShowAllRoutesDataNode.item(0);
-					if(flgToShowAllRoutesDataNode.getLength()>0)
-					{
-						flgAllRoutesData=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
-					}
+				NodeList PersonNameNode = element.getElementsByTagName("PersonName");
+				line = (Element) PersonNameNode.item(0);
+				PersonName=xmlParser.getCharacterDataFromElement(line);
 
-					NodeList SONodeIDNode = element.getElementsByTagName("PersonNodeID");
-					line = (Element) SONodeIDNode.item(0);
-					if(SONodeIDNode.getLength()>0)
-					{
-						PersonNodeID=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
-					}
+				NodeList FlgRegisteredNode = element.getElementsByTagName("FlgRegistered");
+				line = (Element) FlgRegisteredNode.item(0);
+				FlgRegistered=xmlParser.getCharacterDataFromElement(line);
 
-					NodeList SONodeTypeNode = element.getElementsByTagName("PersonNodeType");
-					line = (Element) SONodeTypeNode.item(0);
-					if(SONodeTypeNode.getLength()>0)
-					{
-						PersonNodeType=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
-					}
 
-					NodeList CoverageAreaNodeIDNode = element.getElementsByTagName("CoverageAreaNodeID");
-					line = (Element) CoverageAreaNodeIDNode.item(0);
-					if(CoverageAreaNodeIDNode.getLength()>0)
-					{
-						CoverageAreaNodeID=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
-					}
-
-					NodeList CoverageAreaNodeTypeNode = element.getElementsByTagName("CoverageAreaNodeType");
-					line = (Element) CoverageAreaNodeTypeNode.item(0);
-					if(CoverageAreaNodeTypeNode.getLength()>0)
-					{
-						CoverageAreaNodeType=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
-					}
-					NodeList flgPersonTodaysAttNode = element.getElementsByTagName("flgPersonTodaysAtt");
-					line = (Element) flgPersonTodaysAttNode.item(0);
-					if(flgPersonTodaysAttNode.getLength()>0)
-					{
-						flgPersonTodaysAtt=xmlParser.getCharacterDataFromElement(line);
-					}
-
-					dbengine.savetblUserAuthenticationMstr(flgUserAuthenticated,flgAllRoutesData,PersonNodeID,PersonNodeType,CoverageAreaNodeID,CoverageAreaNodeType,flgPersonTodaysAtt);
+				NodeList flgAppStatusNode = element.getElementsByTagName("flgAppStatus");
+				line = (Element) flgAppStatusNode.item(0);
+				if(flgAppStatusNode.getLength()>0)
+				{
+					flgAppStatus=xmlParser.getCharacterDataFromElement(line);
 				}
+				NodeList DisplayMessageNode = element.getElementsByTagName("DisplayMessage");
+				line = (Element) DisplayMessageNode.item(0);
+				if(DisplayMessageNode.getLength()>0)
+				{
+					DisplayMessage=xmlParser.getCharacterDataFromElement(line);
+				}
+
+				NodeList flgValidApplicationNode = element.getElementsByTagName("flgValidApplication");
+				line = (Element) flgValidApplicationNode.item(0);
+				if(flgValidApplicationNode.getLength()>0)
+				{
+					flgValidApplication=xmlParser.getCharacterDataFromElement(line);
+				}
+				NodeList MessageForInvalidNode = element.getElementsByTagName("MessageForInvalid");
+				line = (Element) MessageForInvalidNode.item(0);
+				if(MessageForInvalidNode.getLength()>0)
+				{
+					MessageForInvalid=xmlParser.getCharacterDataFromElement(line);
+				}
+				NodeList flgPersonTodaysAttNode = element.getElementsByTagName("flgPersonTodaysAtt");
+				line = (Element) flgPersonTodaysAttNode.item(0);
+				if(flgPersonTodaysAttNode.getLength()>0)
+				{
+					flgPersonTodaysAtt=xmlParser.getCharacterDataFromElement(line);
+				}
+
+				NodeList SONodeIDNode = element.getElementsByTagName("PersonNodeID");
+				line = (Element) SONodeIDNode.item(0);
+				if(SONodeIDNode.getLength()>0)
+				{
+					PersonNodeID=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
+				}
+
+				NodeList SONodeTypeNode = element.getElementsByTagName("PersonNodeType");
+				line = (Element) SONodeTypeNode.item(0);
+				if(SONodeTypeNode.getLength()>0)
+				{
+					PersonNodeType=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
+				}
+				if(!element.getElementsByTagName("ContactNo").equals(null))
+				{
+					NodeList ContactNode = element.getElementsByTagName("ContactNo");
+					line = (Element) ContactNode.item(0);
+					if(ContactNode.getLength()>0)
+					{
+						ContactNo=xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+
+				if(!element.getElementsByTagName("SalesAreaName").equals(null))
+				{
+					NodeList SalesAreaNameNode = element.getElementsByTagName("SalesAreaName");
+					line = (Element) SalesAreaNameNode.item(0);
+					if(SalesAreaNameNode.getLength()>0)
+					{
+						SalesAreaName=xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(FlgRegistered.equals("1"))
+				{
+
+					if(!element.getElementsByTagName("DOB").equals(null))
+					{
+						NodeList DOBNode = element.getElementsByTagName("DOB");
+						line = (Element) DOBNode.item(0);
+						if(DOBNode.getLength()>0)
+						{
+							DOB=xmlParser.getCharacterDataFromElement(line);
+						}
+					}
+					if(!element.getElementsByTagName("SelfieName").equals(null))
+					{
+						NodeList SelfieNameNode = element.getElementsByTagName("SelfieName");
+						line = (Element) SelfieNameNode.item(0);
+						if(SelfieNameNode.getLength()>0)
+						{
+							SelfieName=xmlParser.getCharacterDataFromElement(line);
+						}
+					}
+					if(!element.getElementsByTagName("SelfieNameURL").equals(null))
+					{
+						NodeList SelfieNameURLNode = element.getElementsByTagName("SelfieNameURL");
+						line = (Element) SelfieNameURLNode.item(0);
+						if(SelfieNameURLNode.getLength()>0)
+						{
+							SelfieNameURL=xmlParser.getCharacterDataFromElement(line);
+						}
+					}
+
+					if(SelfieNameURL!=null && SelfieName!=null){
+						if((!SelfieNameURL.equals("")) && (!SelfieName.equals("")) && (!SelfieNameURL.equals("0")) && (!SelfieName.equals("0"))){
+							downLoadingSelfieImage(SelfieNameURL,SelfieName);
+						}
+					}
+
+
+				}
+
+
+				dbengine.savetblUserAuthenticationMstr(flgUserAuthenticated,PersonName,FlgRegistered,
+						flgAppStatus,DisplayMessage,flgValidApplication,MessageForInvalid,flgPersonTodaysAtt,
+						PersonNodeID,PersonNodeType,ContactNo,DOB,SelfieName,SelfieNameURL,SalesAreaName);
+
+			}
 
 	            NodeList tblSchemeMstrNode = doc.getElementsByTagName("tblAvailableVersion");
 	            for (int i = 0; i < tblSchemeMstrNode.getLength(); i++)
@@ -17962,20 +18054,20 @@ public class ServiceWorker
 
 				if(!element.getElementsByTagName("Flag").equals(null))
 				{
-				NodeList FlagNode = element.getElementsByTagName("Flag");
-				Element line = (Element) FlagNode.item(0);
-				if(FlagNode.getLength()>0)
-				{
-					Flag=xmlParser.getCharacterDataFromElement(line);
-				}}
+					NodeList FlagNode = element.getElementsByTagName("Flag");
+					Element line = (Element) FlagNode.item(0);
+					if(FlagNode.getLength()>0)
+					{
+						Flag=xmlParser.getCharacterDataFromElement(line);
+					}}
 				if(!element.getElementsByTagName("MsgToDisplay").equals(null))
 				{
-				NodeList MsgToDisplayNode = element.getElementsByTagName("MsgToDisplay");
+					NodeList MsgToDisplayNode = element.getElementsByTagName("MsgToDisplay");
 					Element	 line = (Element) MsgToDisplayNode.item(0);
-				if(MsgToDisplayNode.getLength()>0)
-				{
-					MsgToDisplay=xmlParser.getCharacterDataFromElement(line);
-				}}
+					if(MsgToDisplayNode.getLength()>0)
+					{
+						MsgToDisplay=xmlParser.getCharacterDataFromElement(line);
+					}}
 
 				dbengine.savetblUserRegistarationStatus(Flag,MsgToDisplay);
 
@@ -18009,30 +18101,30 @@ public class ServiceWorker
 
 				if(!element.getElementsByTagName("FirstName").equals(null))
 				{
-				NodeList FirstNameNode = element.getElementsByTagName("FirstName");
-				Element line = (Element) FirstNameNode.item(0);
-				if(FirstNameNode.getLength()>0)
-				{
-					FirstName=xmlParser.getCharacterDataFromElement(line);
-				}
+					NodeList FirstNameNode = element.getElementsByTagName("FirstName");
+					Element line = (Element) FirstNameNode.item(0);
+					if(FirstNameNode.getLength()>0)
+					{
+						FirstName=xmlParser.getCharacterDataFromElement(line);
+					}
 				}
 
 				if(!element.getElementsByTagName("LastName").equals(null))
 				{
-				NodeList LastNameNode = element.getElementsByTagName("LastName");
+					NodeList LastNameNode = element.getElementsByTagName("LastName");
 					Element line = (Element) LastNameNode.item(0);
-				if(LastNameNode.getLength()>0)
-				{
-					LastName=xmlParser.getCharacterDataFromElement(line);
-				}}
+					if(LastNameNode.getLength()>0)
+					{
+						LastName=xmlParser.getCharacterDataFromElement(line);
+					}}
 				if(!element.getElementsByTagName("ContactNo").equals(null))
 				{
-				NodeList ContactNoNode = element.getElementsByTagName("ContactNo");
+					NodeList ContactNoNode = element.getElementsByTagName("ContactNo");
 					Element line = (Element) ContactNoNode.item(0);
-				if(ContactNoNode.getLength()>0)
-				{
-					ContactNo=xmlParser.getCharacterDataFromElement(line);
-				}}
+					if(ContactNoNode.getLength()>0)
+					{
+						ContactNo=xmlParser.getCharacterDataFromElement(line);
+					}}
 				if(!element.getElementsByTagName("DOB").equals(null)) {
 					NodeList DOBNode = element.getElementsByTagName("DOB");
 					Element line = (Element) DOBNode.item(0);
@@ -18041,20 +18133,20 @@ public class ServiceWorker
 					}
 				}
 				if(!element.getElementsByTagName("Gender").equals(null)) {
-				NodeList GenderNode = element.getElementsByTagName("Gender");
+					NodeList GenderNode = element.getElementsByTagName("Gender");
 					Element line = (Element) GenderNode.item(0);
-				if(GenderNode.getLength()>0)
-				{
-					Gender=xmlParser.getCharacterDataFromElement(line);
-				}}
+					if(GenderNode.getLength()>0)
+					{
+						Gender=xmlParser.getCharacterDataFromElement(line);
+					}}
 
 				if(!element.getElementsByTagName("IsMarried").equals(null)) {
-				NodeList IsMarriedNode = element.getElementsByTagName("IsMarried");
+					NodeList IsMarriedNode = element.getElementsByTagName("IsMarried");
 					Element line = (Element) IsMarriedNode.item(0);
-				if(IsMarriedNode.getLength()>0)
-				{
-					IsMarried=xmlParser.getCharacterDataFromElement(line);
-				}}
+					if(IsMarriedNode.getLength()>0)
+					{
+						IsMarried=xmlParser.getCharacterDataFromElement(line);
+					}}
 
 				if(!element.getElementsByTagName("MarriageDate").equals(null)) {
 					NodeList MarriageDateNode = element.getElementsByTagName("MarriageDate");
@@ -18080,12 +18172,12 @@ public class ServiceWorker
 				}
 
 				if(!element.getElementsByTagName("BloodGroup").equals(null)) {
-				NodeList BloodGroupNode = element.getElementsByTagName("BloodGroup");
+					NodeList BloodGroupNode = element.getElementsByTagName("BloodGroup");
 					Element line = (Element) BloodGroupNode.item(0);
-				if(BloodGroupNode.getLength()>0)
-				{
-					BloodGroup=xmlParser.getCharacterDataFromElement(line);
-				}}
+					if(BloodGroupNode.getLength()>0)
+					{
+						BloodGroup=xmlParser.getCharacterDataFromElement(line);
+					}}
 
 
 				if(!element.getElementsByTagName("PhotoName").equals(null)) {
@@ -18096,19 +18188,19 @@ public class ServiceWorker
 					}
 				}
 				if(!element.getElementsByTagName("PersonNodeId").equals(null)) {
-				NodeList PersonNodeIdNode = element.getElementsByTagName("PersonNodeId");
+					NodeList PersonNodeIdNode = element.getElementsByTagName("PersonNodeId");
 					Element line = (Element) PersonNodeIdNode.item(0);
-				if(PersonNodeIdNode.getLength()>0)
-				{
-					PersonNodeId=xmlParser.getCharacterDataFromElement(line);
-				}}
-					if(!element.getElementsByTagName("PersonNodeType").equals(null)) {
-				NodeList PersonNodeTypeNode = element.getElementsByTagName("PersonNodeType");
-						Element	line = (Element) PersonNodeTypeNode.item(0);
-				if(PersonNodeTypeNode.getLength()>0)
-				{
-					PersonNodeType=xmlParser.getCharacterDataFromElement(line);
-				}}
+					if(PersonNodeIdNode.getLength()>0)
+					{
+						PersonNodeId=xmlParser.getCharacterDataFromElement(line);
+					}}
+				if(!element.getElementsByTagName("PersonNodeType").equals(null)) {
+					NodeList PersonNodeTypeNode = element.getElementsByTagName("PersonNodeType");
+					Element	line = (Element) PersonNodeTypeNode.item(0);
+					if(PersonNodeTypeNode.getLength()>0)
+					{
+						PersonNodeType=xmlParser.getCharacterDataFromElement(line);
+					}}
 
 				dbengine.savetblDsrRegDetails(IMEI_string,ClickedDateTime_string,FirstName,LastName,ContactNo,DOB_string,Gender,IsMarried,MarriageDate,Qualification,SelfieName_string,SelfiePath_string,EmailId,BloodGroup,SignName_string,SignPath_string,0,PhotoName,PersonNodeId,PersonNodeType);
 
@@ -21151,4 +21243,56 @@ public class ServiceWorker
 
 	}
 
+	public void downLoadingSelfieImage(String SelfieNameURL,String SelfieName){
+		String URL_String=  SelfieNameURL;
+		String Video_Name=  SelfieName;
+
+		try {
+
+			URL url = new URL(URL_String);
+			URLConnection connection = url.openConnection();
+			HttpURLConnection urlConnection = (HttpURLConnection) connection;
+			urlConnection.setRequestMethod("GET");
+			urlConnection.setDoInput(true);
+			urlConnection.connect();
+			String PATH = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolderServer + "/";
+
+			File file2 = new File(PATH + Video_Name);
+			if (file2.exists()) {
+				file2.delete();
+			}
+
+			File file1 = new File(PATH);
+			if (!file1.exists()) {
+				file1.mkdirs();
+			}
+
+
+			File file = new File(file1, Video_Name);
+
+			int size = connection.getContentLength();
+
+
+			FileOutputStream fileOutput = new FileOutputStream(file);
+
+			InputStream inputStream = urlConnection.getInputStream();
+
+			byte[] buffer = new byte[size];
+			int bufferLength = 0;
+			long total = 0;
+			int current = 0;
+			while ((bufferLength = inputStream.read(buffer)) != -1) {
+				total += bufferLength;
+
+				fileOutput.write(buffer, 0, bufferLength);
+			}
+
+			fileOutput.close();
+
+		}
+		catch (Exception e){
+
+		}
+
+	}
 }

@@ -94,7 +94,12 @@
 
 
     <!--DSR_Registrion starts here-->
-    <string name="txtWelcome">Welcome</string>
+
+   <string name="txtWelcome">Welcome</string>
+
+   <string name="Coverage_Area">Coverage Area</string>
+   <string name="Contact_No">Contact No</string>
+   <string name="DOB">DOB</string>
     <string name="txtDayStart">Day Start</string>
     <string name="radioYes">Yes</string>
     <string name="radioNo">No</string>
@@ -889,7 +894,7 @@
  <string name="ConnectingServer">Connecting Server for generating reports.....</string>
  <string name="PlsPaymentStage">Please select Payment Stage</string>
 
-
+   <string name="DSR_Profile">So Profile</string>
  <string name="prod_name">Prod Name</string>
  <string name="ret_qty">Ret Qty</string>
  <string name="ret_value">Ret Value</string>

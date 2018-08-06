@@ -10,6 +10,7 @@ public class CommonInfo
 	// Its for Live Path on 194 Server
 
 
+/*
 
 
     public static int flgAllRoutesData=1;
@@ -86,7 +87,8 @@ public class CommonInfo
 	public static int flgNewStoreORStoreValidation=0;
 	public static String URLImageLinkToViewStoreOverWebProtal="http://103.20.212.194/RSPL/Reports/frmPDAImgsdev.aspx";
 	public static String WebPageUrlDSMWiseReport="http://103.20.212.194/RSPL/Mobile/frmDSMWiseReportCard.aspx?imei=";
-
+	public static String ImagesFolderServer="RMMSFAImagesServer";
+*/
 
 
 
@@ -181,7 +183,7 @@ public class CommonInfo
 	public static int flgLTFoodsSOOnlineOffLine=0;
 	public static int flgNewStoreORStoreValidation=0;
 	public static String URLImageLinkToViewStoreOverWebProtal="http://103.20.212.194/RSPL_dev/Reports/frmPDAImgsdev.aspx";
-
+  public static String ImagesFolderServer="RMMSFAImagesServer";
 
 */
 
@@ -193,7 +195,7 @@ public class CommonInfo
 	// Its for Dev Path on 194 Server
 
 
-/*
+
 
 
 	 public static int flgAllRoutesData=1;
@@ -280,11 +282,11 @@ public class CommonInfo
 	  public static int flgNewStoreORStoreValidation=0;
 	  public static String URLImageLinkToViewStoreOverWebProtal="http://103.20.212.194/RSPL_dev/Reports/frmPDAImgsdev.aspx";
 	  public static String WebPageUrlDSMWiseReport="http://103.20.212.194/RSPL_dev/Mobile/frmDSMWiseReportCard.aspx?imei=";
+        public static String ImagesFolderServer="RMMSFAImagesServer";
 
 
 
 
-*/
 
 
 
@@ -382,7 +384,7 @@ public class CommonInfo
 	public static String URLImageLinkToViewStoreOverWebProtal="http://103.20.212.194/RSPL_Testrelease/Reports/frmPDAImgsdev.aspx";
 
     public static String WebPageUrlDSMWiseReport="http://103.20.212.194/RSPL_testrelease/Mobile/frmDSMWiseReportCard.aspx?imei=";
-
+      public static String ImagesFolderServer="RMMSFAImagesServer";
 
 
 
@@ -486,7 +488,7 @@ public class CommonInfo
 	public static int flgNewStoreORStoreValidation=0;
 	//public static String URLImageLinkToViewStoreOverWebProtal="http://103.20.212.194/RSPL/Reports/frmPDAImgsdev.aspx?";
 	public static String URLImageLinkToViewStoreOverWebProtal="http://103.20.212.194/RSPL_Training/Reports/frmPDAImgsLive.aspx";
-
+      public static String ImagesFolderServer="RMMSFAImagesServer";
 */
 
 }
