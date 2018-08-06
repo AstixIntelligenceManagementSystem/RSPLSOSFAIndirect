@@ -160,9 +160,11 @@ public class DatabaseAssistant
 
 	private void exportTableAttandance(final String tableName) throws IOException {
 
+
+
 		xmlBuilder.openTable(tableName);
 		//String sql = "select * from " + tableName;
-		String sql = "select AttandanceTime,PersonNodeID,PersonNodeType,ReasonID,ReasonDesc,Comment,fnLati,fnLongi,fnAccuracy,fnAddress,AllProvidersLocation,flgLocNotFound,DistributorId,DistributorNodeType,DistributorName from " + tableName + " where Sstat = 3";		// chk for flag - DB adapter
+		String sql = "select AttandanceTime,PersonNodeID,PersonNodeType,ReasonID,ReasonDesc,Comment,fnLati,fnLongi,fnAccuracy,fnAddress,AllProvidersLocation,flgLocNotFound,DistributorId,DistributorNodeType,DistributorName,ServerTimeValidation,SubmitTime,ReasonForLate,OtherReasonForLate from " + tableName + " where Sstat = 3";		// chk for flag - DB adapter
 		Cursor c = db.rawQuery(sql, new String[0]);
 		if (c.moveToFirst()) {
 			int cols = c.getColumnCount();

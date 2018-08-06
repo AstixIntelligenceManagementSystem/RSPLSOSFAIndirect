@@ -302,6 +302,47 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:id="@+id/ll_reason">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reason for Late"
+                android:textStyle="bold"
+                android:textSize="17dp"
+
+                android:layout_marginTop="5dp"/>
+<Spinner
+    android:id="@+id/spnr_late"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:background="@drawable/spinner_distribtr_bckgrnd"
+    android:spinnerMode="dialog"
+    >
+
+</Spinner>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/rsnLatetext"
+                android:background="@drawable/et_boundary_retrun"
+                android:digits="@string/only_alpha_numeric_new"
+                android:inputType="textMultiLine"
+                android:padding="2dp"
+                android:ems="10"
+                android:enabled="true"
+                android:maxLines="10"/>
+
+        </LinearLayout>
         <Button
             android:id="@+id/but_Next"
             android:layout_width="wrap_content"

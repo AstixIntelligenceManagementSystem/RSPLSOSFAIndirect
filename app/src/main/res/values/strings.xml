@@ -9,7 +9,7 @@
  <!--  <string name="app_name">RSPL TSO SFA Test Release</string>-->
 
 
-
+ <string name="genTermFetchingTime">Fetching Current Time..</string>
  <string name="coverage_area">Select Coverage Area</string>
  <string name="dsrcoverage_area">Select DSR Coverage Area </string>
 
@@ -775,6 +775,8 @@
     <string name="selectDSRProceeds">Please select DSR to Proceeds.</string>
     <string name="title_activity_dialog__report">DialogActivity_Report</string>
     <string name="selectDistributorProceeds">Please select Distributor to Proceed.</string>
+ <string name="selectReasonForLate">To proceed, please select a reason why you were late.</string>
+ <string name="selectOtherReasonForLate">To proceed, please specify other reason why you were late.</string>
 
     <string name="searchingcurrentposition">Searching Your Current Position</string>
     <string name="saveAlertOKMsg"><small>Details submitted successfully!</small></string>
