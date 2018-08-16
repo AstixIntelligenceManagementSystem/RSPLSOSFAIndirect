@@ -226,9 +226,13 @@ public class DialogActivity_Report extends BaseActivity
                 }
                 else if(rb_dsrAttendance.isChecked())
                 {
-                      Intent i=new Intent(DialogActivity_Report.this,WebViewDSRAttendanceReportActivity.class);
+                    Intent intent=new Intent(DialogActivity_Report.this,WebViewAttndnc_ScndryUpdt.class);
+                    intent.putExtra("flgToShow",0);
+                    startActivity(intent);
+                    finish();
+                      /*Intent i=new Intent(DialogActivity_Report.this,WebViewDSRAttendanceReportActivity.class);
                       startActivity(i);
-                      finish();
+                      finish();*/
   }
                 else
                 {

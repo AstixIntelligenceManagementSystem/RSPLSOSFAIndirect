@@ -107,6 +107,26 @@
         android:drawableRight="@drawable/ic_right2"
         android:textSize="14sp"
         android:text="@string/txtReport" />
+    <Button
+        android:id="@+id/btnAttndnc"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/alert_text_background"
+        android:textColor="#000000"
+        android:gravity="left|center_vertical"
+        android:drawableRight="@drawable/ic_right2"
+        android:textSize="14sp"
+        android:text="@string/txtAttndnc" />
+    <Button
+        android:id="@+id/btnScndryUdt"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/alert_text_background"
+        android:textColor="#000000"
+        android:gravity="left|center_vertical"
+        android:drawableRight="@drawable/ic_right2"
+        android:textSize="14sp"
+        android:text="@string/txtScndryUpdate" />
 
      <Button
         android:id="@+id/btnstoreMapping"

@@ -74,6 +74,7 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
     String otherReasonForLate="NA";
     static int flgDaySartWorking = 0;
     String crntServerTime;
+    String crntAttndncTime="9:30 AM";
     DatabaseAssistant DASFA = new DatabaseAssistant(this);
     public long syncTIMESTAMP;
     ProgressDialog pDialog2;
@@ -100,9 +101,9 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
     int countSubmitClicked=0;
     public LocationManager locationManager;
     int intentFrom=0;
-    LinearLayout ll_map,ll_comment;
+    LinearLayout ll_map,ll_comment,ll_DBR_Name;
 
-    EditText et_otherPleaseSpecify,rsnLatetext;
+    EditText et_DBR_Name,rsnLatetext;
     public String ReasonId="0";;
     public String ReasonText="NA";
     public int chkFlgForErrorToCloseApp=0;
@@ -110,7 +111,7 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
     String[] reasonLate;
     DBAdapterKenya dbengine = new DBAdapterKenya(this);
 
-
+    TextView txt_DBR_Name;
     public String fDate;
     public SimpleDateFormat sdf;
     SharedPreferences sPrefAttandance;
@@ -131,6 +132,7 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
     LinkedHashMap<String,String>  hmapSelectedCheckBoxData=new LinkedHashMap<String,String>();
 
     LinkedHashMap<Integer, String> hmapReasonIdAndDescrForWorking_details=new LinkedHashMap<Integer, String>();
+    ArrayList<String> listTxtBxToShow;
     LinkedHashMap<Integer, String> hmapReasonIdAndDescrForNotWorking_details=new LinkedHashMap<Integer, String>();
 
     public CheckBox[] cb;
@@ -143,9 +145,11 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
 
 
     RadioButton rb_workingYes,rb_workingNo;//=null;
-    Spinner spinner_for_filter,spnr_late;
+    Spinner spinner_for_filter,spnr_late,spinner_location;
+    ArrayAdapter<String> adapterLocation;
+    ArrayAdapter<String> adapterDBR;
 
-
+    String[] listLocationWrkng={"Select Working Location","Existing Distributor","New Distributor","Other Location"};
     String DistributorName_Global="Select Distributor";
     String DistributorId_Global="0";
     String DistributorNodeType_Global="0";
@@ -206,6 +210,7 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
     {
         hmapReasonIdAndDescrForWorking_details=dbengine.fetch_Reason_List_for_option();
         hmapReasonIdAndDescrForNotWorking_details=dbengine.fetch_NoWorking_Reason_List();
+        listTxtBxToShow=dbengine.fetch_Text_To_Show();
     }
 
 
@@ -216,12 +221,24 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
         int i = 0;
         for (Map.Entry<Integer, String> entry : hmapReasonIdAndDescrForWorking_details.entrySet())
         {
+            EditText editText = null;
             cb[i] = new CheckBox(this);
             cb[i].setText(entry.getValue());
             cb[i].setTag(entry.getKey().toString().trim());
-            cb[i].setOnCheckedChangeListener(this);
+
+
+            if(listTxtBxToShow!=null && listTxtBxToShow.contains(entry.getKey().toString().trim()))
+            {
+                editText= getEditText(entry.getKey().toString().trim()+"_ed");
+            }
 
             ll_Working.addView(cb[i]);
+            if(editText!=null)
+            {
+                ll_Working.addView(editText);
+                editText.setVisibility(View.GONE);
+            }
+            cb[i].setOnCheckedChangeListener(this);
             i = i + 1;
         }
 
@@ -230,68 +247,39 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
     public void onCheckedChanged(CompoundButton cb, boolean isChecked){
         String checkedText = cb.getText()+"";
         String checkedID = cb.getTag()+"";
+        EditText editText= (EditText) ll_Working.findViewWithTag(checkedID+"_ed");
+        if(listTxtBxToShow!=null && listTxtBxToShow.contains(checkedID))
+        {
+            if(isChecked)
+            {
+                if(editText!=null)
+                {
+                    editText.setVisibility(View.VISIBLE);
+                }
 
-        if(Integer.parseInt(checkedID.trim())==6)
-        {
-            et_otherPleaseSpecify=(EditText)findViewById(R.id.et_otherPleaseSpecify);
-            et_otherPleaseSpecify.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                if(editText!=null)
+                {
+                    editText.setVisibility(View.GONE);
+                }
+
+            }
         }
-        else
-        {
-            et_otherPleaseSpecify=(EditText)findViewById(R.id.et_otherPleaseSpecify);
-            et_otherPleaseSpecify.setVisibility(View.GONE);
-        }
+
 
       if(isChecked)
            {
+              hmapSelectedCheckBoxData.put(checkedID.trim(),checkedText.trim());
 
-              // for unchecked all the Radio Button in NoT Working
-               int i=0;
-               for (Map.Entry<Integer, String> entry : hmapReasonIdAndDescrForNotWorking_details.entrySet())
-               {
-                   RadioButton rb = (RadioButton)ll_NoWorking.getChildAt(i);
-                   rb.setChecked(false);
-                   i = i + 1;
-               }
-
-               if(Integer.parseInt(checkedID.trim())==6)
-               {
-                   et_otherPleaseSpecify=(EditText)findViewById(R.id.et_otherPleaseSpecify);
-                   et_otherPleaseSpecify.setVisibility(View.VISIBLE);
-               }
-               else
-               {
-                   et_otherPleaseSpecify=(EditText)findViewById(R.id.et_otherPleaseSpecify);
-                   et_otherPleaseSpecify.setVisibility(View.GONE);
-               }
-               if(Integer.parseInt(checkedID.trim())==6)
-               {
-                   if(!TextUtils.isEmpty(et_otherPleaseSpecify.getText().toString().trim()))
-                   {
-                       hmapSelectedCheckBoxData.put(checkedID.trim(),et_otherPleaseSpecify.getText().toString().trim());
-                   }
-                   else
-                   {
-                       hmapSelectedCheckBoxData.put(checkedID.trim(),"NA");
-                   }
-
-               }
-               else
-               {
-                   hmapSelectedCheckBoxData.put(checkedID.trim(),checkedText.trim());
-               }
 
                 CommonInfo.DayStartClick=1;
 
            }
            else
            {
-               if(Integer.parseInt(checkedID.trim())==6)
-               {
-                   et_otherPleaseSpecify=(EditText)findViewById(R.id.et_otherPleaseSpecify);
-                   et_otherPleaseSpecify.setVisibility(View.GONE);
-                   et_otherPleaseSpecify.setText("");
-               }
+
 
               hmapSelectedCheckBoxData.remove(checkedID.trim());
                if(hmapSelectedCheckBoxData.size()==0)
@@ -455,10 +443,10 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
             DbrArray.add(DbrName);
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(DayStartActivity.this,R.layout.initial_spinner_text,DbrArray);
-        adapter.setDropDownViewResource(R.layout.spina);
+        adapterDBR = new ArrayAdapter<String>(DayStartActivity.this,R.layout.initial_spinner_text,DbrArray);
+        adapterDBR.setDropDownViewResource(R.layout.spina);
 
-        spinner_for_filter.setAdapter(adapter);
+        spinner_for_filter.setAdapter(adapterDBR);
 
     }
     private void getReasonDetail()
@@ -482,8 +470,8 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
                 index=index+1;
             }
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(DayStartActivity.this,R.layout.initial_spinner_text,reasonLate);
-            adapter.setDropDownViewResource(R.layout.spina);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(DayStartActivity.this, android.R.layout.simple_spinner_item,reasonLate);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
             spnr_late.setAdapter(adapter);
         }
@@ -596,6 +584,7 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
         sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
         fDate = sdf.format(date1).toString().trim();
 
+        txt_DBR_Name=(TextView) findViewById(R.id.txt_DBR_Name);
         ll_start=(LinearLayout)findViewById(R.id.ll_start);
         ll_start.setVisibility(View.VISIBLE);
         ll_startAfterDayEndFirst=(LinearLayout)findViewById(R.id.ll_startAfterDayEndFirst);
@@ -604,7 +593,9 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
         ll_startAfterDayEndSecond.setVisibility(View.GONE);
         ll_map=(LinearLayout)findViewById(R.id.ll_map);
         ll_map.setVisibility(View.GONE);
-
+        ll_DBR_Name= (LinearLayout) findViewById(R.id.ll_DBR_Name);
+        ll_DBR_Name.setVisibility(View.GONE);
+        et_DBR_Name= (EditText) findViewById(R.id.et_DBR_Name);
         ll_Working=(LinearLayout)findViewById(R.id.ll_Working);
         ll_Working.setVisibility(View.GONE);
         ll_NoWorking=(LinearLayout)findViewById(R.id.ll_NoWorking);
@@ -627,17 +618,115 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
         rb_workingYes.setVisibility(View.GONE);
         rb_workingNo=(RadioButton)findViewById(R.id.rb_workingNo);
         rb_workingNo.setVisibility(View.GONE);
-
+        spinner_location=(Spinner)findViewById(R.id.spinner_location);
+         adapterLocation = new ArrayAdapter<String>(DayStartActivity.this, android.R.layout.simple_spinner_item,listLocationWrkng);
+        adapterLocation.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_location.setAdapter(adapterLocation);
+        spinner_location.setVisibility(View.GONE);
         spinner_for_filter=(Spinner)findViewById(R.id.spinner_for_filter);
 
         spinner_for_filter.setVisibility(View.GONE);
         spnr_late=(Spinner)findViewById(R.id.spnr_late);
+        spinner_location.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(!spinner_location.getSelectedItem().toString().equals("Select Working Location"))
+                {
+
+                    ll_map.setVisibility(View.VISIBLE);
+                    ll_Working_parent.setVisibility(View.VISIBLE);
+                    ll_NoWorking_parent.setVisibility(View.GONE);
+                    ll_map.setVisibility(View.VISIBLE);
+                    ll_comment.setVisibility(View.VISIBLE);
+                    if(isLateApplicable)
+                    {
+                        ll_reason.setVisibility(View.VISIBLE);
+                    }
+
+                    but_Next.setVisibility(View.VISIBLE);
+
+                    rg_yes_no.setVisibility(View.VISIBLE);
+
+                    btn_refresh.setVisibility(View.VISIBLE);
+                    tv_MapLocationCorrectText.setVisibility(View.VISIBLE);
+
+                    if(spinner_location.getSelectedItem().toString().equals("New Distributor"))
+                    {
+                        spinner_for_filter.setSelection(adapterDBR.getPosition("Select Distributor"));
+                        spinner_for_filter.setVisibility(View.GONE);
+                        ll_DBR_Name.setVisibility(View.VISIBLE);
+                        txt_DBR_Name.setText(getString(R.string.DistbtrName));
+                        CheckBox checkBox= (CheckBox) ll_Working.findViewWithTag("7");
+                        if(checkBox!=null)
+                        {
+                            checkBox.setChecked(true);
+                        }
+
+                    }
+                    else  if(spinner_location.getSelectedItem().toString().equals("Other Location"))
+                    {
+                        spinner_for_filter.setSelection(adapterDBR.getPosition("Select Distributor"));
+                        spinner_for_filter.setVisibility(View.GONE);
+                        ll_DBR_Name.setVisibility(View.VISIBLE);
+                        txt_DBR_Name.setText(getString(R.string.other_loc));
+                        CheckBox checkBox= (CheckBox) ll_Working.findViewWithTag("7");
+                        if(checkBox!=null)
+                        {
+                            checkBox.setChecked(false);
+                        }
+                    }
+                    else
+                    {
+                        spinner_for_filter.setVisibility(View.VISIBLE);
+                        ll_DBR_Name.setVisibility(View.GONE);
+                        CheckBox checkBox= (CheckBox) ll_Working.findViewWithTag("7");
+                        if(checkBox!=null)
+                        {
+                            checkBox.setChecked(false);
+                        }
+                    }
+                }
+                else
+                {
+                    spinner_for_filter.setSelection(adapterDBR.getPosition("Select Distributor"));
+                    spinner_for_filter.setVisibility(View.GONE);
+                    ll_map.setVisibility(View.GONE);
+                    ll_Working_parent.setVisibility(View.GONE);
+
+                    ll_map.setVisibility(View.GONE);
+                    ll_reason.setVisibility(View.GONE);
+                    btn_refresh.setVisibility(View.GONE);
+                    ll_refresh.setVisibility(View.GONE);
+                    rg_yes_no.setVisibility(View.GONE);
+                    tv_MapLocationCorrectText.setVisibility(View.GONE);
+
+                    ll_DBR_Name.setVisibility(View.GONE);
+
+                    CheckBox checkBox= (CheckBox) ll_Working.findViewWithTag("7");
+                    if(checkBox!=null)
+                    {
+                        checkBox.setChecked(false);
+                    }
+
+                    but_Next.setVisibility(View.GONE);
+
+                    DistributorName_Global="Select Distributor";
+                    DistributorId_Global="0";
+                    DistributorNodeType_Global="0";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         spnr_late.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if((!spnr_late.getSelectedItem().toString().equals("Select Reason")) && (!spnr_late.getSelectedItem().toString().equals("No Reason")))
                 {
-                    if(spnr_late.getSelectedItem().toString().equals("Others."))
+                    if(listTxtBxToShow.contains(hmapReasonIdAndDescr_details.get(spnr_late.getSelectedItem().toString())))
                     {
                         rsnLatetext.setVisibility(View.VISIBLE);
                     }
@@ -645,7 +734,7 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
                     {
                         rsnLatetext.setVisibility(View.GONE);
                     }
-
+                    otherReasonForLate=spnr_late.getSelectedItem().toString();
                       reasonId=hmapReasonIdAndDescr_details.get(spnr_late.getSelectedItem().toString());
                 }
                 else
@@ -740,12 +829,13 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
                 else
                 {
 
-                    ll_Working.setVisibility(View.VISIBLE);
-                     ll_NoWorking.setVisibility(View.VISIBLE);
+                   ll_Working.setVisibility(View.VISIBLE);
+                    ll_NoWorking.setVisibility(View.VISIBLE);
                     createCheckBoxForWorking();
                     createRadioButtonForNotWorking();
                     txt_DayStarttime=(TextView)findViewById(R.id.txt_DayStarttime);
                     txt_DayStarttime.setText(getDateAndTimeInSecond());
+
 
                     rb_workingYes.setVisibility(View.VISIBLE);
                     rb_workingNo.setVisibility(View.VISIBLE);
@@ -791,36 +881,17 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
             @Override
             public void onClick(View view)
             {
-
-                if(parseDateTime(crntServerTime).after(crntDateTime("9:30 AM")) && parseDateTime(crntServerTime).before(crntDateTime("10:30 AM")) )
+                otherReasonForLate="NA";
+                if(rb_workingYes.isChecked())
                 {
-                   // Toast.makeText(DayStartActivity.this,"Time between 9:30 and 10:30",Toast.LENGTH_SHORT).show();
-                    if(reasonId.equals("0"))
+                    if(parseDateTime(crntServerTime).after(crntDateTime(crntAttndncTime)))
                     {
-                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(DayStartActivity.this);
-                        alertDialog.setTitle(getResources().getString(R.string.AlertDialogHeaderErrorMsg));
-                        alertDialog.setMessage(getResources().getString(R.string.selectReasonForLate));
-                        alertDialog.setIcon(R.drawable.error);
-                        alertDialog.setCancelable(false);
-
-                        alertDialog.setPositiveButton(getResources().getString(R.string.AlertDialogOkButton), new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog,int which)
-                            {
-                                dialog.dismiss();
-                            }
-                        });
-                        alertDialog.show();
-                        return;
-
-                    }
-                    else if(spnr_late.getSelectedItem().toString().equals("Others."))
-                    {
-                        if(TextUtils.isEmpty(rsnLatetext.getText().toString()))
+                        // Toast.makeText(DayStartActivity.this,"Time between 9:30 and 10:30",Toast.LENGTH_SHORT).show();
+                        if(reasonId.equals("0"))
                         {
                             AlertDialog.Builder alertDialog = new AlertDialog.Builder(DayStartActivity.this);
                             alertDialog.setTitle(getResources().getString(R.string.AlertDialogHeaderErrorMsg));
-                            alertDialog.setMessage(getResources().getString(R.string.selectOtherReasonForLate));
+                            alertDialog.setMessage(getResources().getString(R.string.selectReasonForLate));
                             alertDialog.setIcon(R.drawable.error);
                             alertDialog.setCancelable(false);
 
@@ -833,15 +904,57 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
                             });
                             alertDialog.show();
                             return;
+
+                        }
+                        else if(spnr_late.getSelectedItem().toString().equals("Others."))
+                        {
+
+                            if(TextUtils.isEmpty(rsnLatetext.getText().toString()))
+                            {
+                                AlertDialog.Builder alertDialog = new AlertDialog.Builder(DayStartActivity.this);
+                                alertDialog.setTitle(getResources().getString(R.string.AlertDialogHeaderErrorMsg));
+                                alertDialog.setMessage(getResources().getString(R.string.selectOtherReasonForLate));
+                                alertDialog.setIcon(R.drawable.error);
+                                alertDialog.setCancelable(false);
+
+                                alertDialog.setPositiveButton(getResources().getString(R.string.AlertDialogOkButton), new DialogInterface.OnClickListener()
+                                {
+                                    public void onClick(DialogInterface dialog,int which)
+                                    {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                alertDialog.show();
+                                return;
+
+                            }
+                            else
+                            {
+                                otherReasonForLate=rsnLatetext.getText().toString();
+                            }
+                        }
+                        else
+                        {
+                            otherReasonForLate=spnr_late.getSelectedItem().toString();
                         }
                     }
-                }
-                else if(parseDateTime(crntServerTime).after(crntDateTime("10:30 AM")))
-                {
 
-                     /*   AlertDialog.Builder alertDialog = new AlertDialog.Builder(DayStartActivity.this);
+
+                    else
+                    {
+                        //Toast.makeText(DayStartActivity.this,"Time before 9:30",Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+                //New Distributor","Other Location"
+                if((!spinner_location.getSelectedItem().toString().equals("New Distributor")) && (!spinner_location.getSelectedItem().toString().equals("Other Location")) )
+
+                {
+                    if(rb_workingYes.isChecked() && DistributorName_Global.equals("Select Distributor"))
+                    {
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(DayStartActivity.this);
                         alertDialog.setTitle(getResources().getString(R.string.AlertDialogHeaderErrorMsg));
-                        alertDialog.setMessage(getResources().getString(R.string.selectReasonForLate));
+                        alertDialog.setMessage(getResources().getString(R.string.selectDistributorProceeds));
                         alertDialog.setIcon(R.drawable.error);
                         alertDialog.setCancelable(false);
 
@@ -853,37 +966,11 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
                             }
                         });
                         alertDialog.show();
-                        return;*/
-
-
-                   // Toast.makeText(DayStartActivity.this,"Time after 10:30",Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    //Toast.makeText(DayStartActivity.this,"Time before 9:30",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                 }
 
-
-
-                if(rb_workingYes.isChecked() && DistributorName_Global.equals("Select Distributor"))
-                {
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(DayStartActivity.this);
-                    alertDialog.setTitle(getResources().getString(R.string.AlertDialogHeaderErrorMsg));
-                    alertDialog.setMessage(getResources().getString(R.string.selectDistributorProceeds));
-                    alertDialog.setIcon(R.drawable.error);
-                    alertDialog.setCancelable(false);
-
-                    alertDialog.setPositiveButton(getResources().getString(R.string.AlertDialogOkButton), new DialogInterface.OnClickListener()
-                    {
-                        public void onClick(DialogInterface dialog,int which)
-                        {
-                            dialog.dismiss();
-                        }
-                    });
-                    alertDialog.show();
-                    return;
-                }
-                else if (CommonInfo.DayStartClick==0)
+                 if (CommonInfo.DayStartClick==0)
                 {
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(DayStartActivity.this);
                     alertDialog.setTitle(getResources().getString(R.string.AlertDialogHeaderErrorMsg));
@@ -901,43 +988,28 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
                     alertDialog.show();
                     return;
                 }
-                else if(hmapSelectedCheckBoxData.containsKey("6") && TextUtils.isEmpty(et_otherPleaseSpecify.getText().toString().trim()))
+                else if(validateEditText())
                 {
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(DayStartActivity.this);
-                    alertDialog.setTitle(getResources().getString(R.string.AlertDialogHeaderErrorMsg));
-                    alertDialog.setMessage(getResources().getString(R.string.selectAtleastOneOptionwithedittext));
-                    alertDialog.setIcon(R.drawable.error);
-                    alertDialog.setCancelable(false);
 
-                    alertDialog.setPositiveButton(getResources().getString(R.string.AlertDialogOkButton), new DialogInterface.OnClickListener()
-                    {
-                        public void onClick(DialogInterface dialog,int which)
-                        {
-                            dialog.dismiss();
-
-
-                        }
-                    });
-                    alertDialog.show();
                     return;
                 }
                else
                 {
-                    if(hmapSelectedCheckBoxData.containsKey("6"))
-                    {
-                        hmapSelectedCheckBoxData.remove("6");
-
-                        hmapSelectedCheckBoxData.put("6",et_otherPleaseSpecify.getText().toString().trim());
-                    }
-
-                     if(hmapSelectedCheckBoxData.size()>0)
+                    if(hmapSelectedCheckBoxData.size()>0)
                       {
                         ReasonId="";
                         ReasonText="";
+                          if(isLateApplicable)
+                          {
+                              ReasonId=reasonId;
+                              ReasonText=otherReasonForLate;
+                          }
                         for(Map.Entry<String, String> entry:hmapSelectedCheckBoxData.entrySet())
                         {
                             String key = entry.getKey().toString().trim();
                             String value = entry.getValue().toString().trim();
+
+
 
                             if(ReasonId.equals(""))
                             {
@@ -982,7 +1054,7 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
                         DistributorNodeType_Global="0";
                     }
 
-                    dbengine.updatetblAttandanceDetails("33","No Working",ReasonId,ReasonText,commentValue,DistributorId_Global,DistributorNodeType_Global,DistributorName_Global,crntServerTime,getDateAndTimeAMPM(),reasonId,otherReasonForLate);
+                    dbengine.updatetblAttandanceDetails("33","No Working",ReasonId,ReasonText,commentValue,DistributorId_Global,DistributorNodeType_Global,DistributorName_Global,parseDateRmvAMPMTime(crntServerTime),getDateAndTimeAMPM(),reasonId,otherReasonForLate);
                     syncStartAfterSavindData();
                 }
 
@@ -996,24 +1068,26 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
             {
                 if(rb_workingYes.isChecked())
                 {
-                    rb_workingNo.setChecked(false);
-                    spinner_for_filter.setVisibility(View.VISIBLE);
-                    ll_map.setVisibility(View.VISIBLE);
-                    ll_Working_parent.setVisibility(View.VISIBLE);
-                    ll_NoWorking_parent.setVisibility(View.GONE);
-                    ll_map.setVisibility(View.VISIBLE);
-                    ll_comment.setVisibility(View.VISIBLE);
-                    if(isLateApplicable)
+                    for(int i=0;i<ll_NoWorking.getChildCount();i++)
                     {
-                        ll_reason.setVisibility(View.VISIBLE);
+                        View view=ll_NoWorking.getChildAt(i);
+                        if(view instanceof RadioButton)
+                        {
+                            RadioButton rbBtn= (RadioButton) view;
+                            if(rbBtn.isChecked())
+                            {
+                                rbBtn.setChecked(false);
+                            }
+                        }
+
+
                     }
 
-                    but_Next.setVisibility(View.VISIBLE);
-
-                    rg_yes_no.setVisibility(View.VISIBLE);
-
-                    btn_refresh.setVisibility(View.VISIBLE);
-                    tv_MapLocationCorrectText.setVisibility(View.VISIBLE);
+                    rb_workingNo.setChecked(false);
+                    ll_NoWorking_parent.setVisibility(View.GONE);
+                    ll_comment.setVisibility(View.GONE);
+                    spinner_location.setVisibility(View.VISIBLE);
+                    spinner_location.setSelection(adapterLocation.getPosition("Select Working Location"));
                 }
             }
         });
@@ -1024,12 +1098,40 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
             {
                 if(rb_workingNo.isChecked())
                 {
+                    for(int i=0;i<ll_Working.getChildCount();i++)
+                    {
+                        View view=ll_Working.getChildAt(i);
+                        if(view instanceof CheckBox)
+                        {
+                            CheckBox chckBox= (CheckBox) view;
+                            if(chckBox.isChecked())
+                            {
+                                chckBox.setChecked(false);
+                            }
+                        }
+                        else if(view instanceof EditText)
+                        {
+                            EditText editText= (EditText) view;
+                            if(editText!=null)
+                            {
+                                editText.setText("");
+                            }
+                        }
+                    }
                     rb_workingYes.setChecked(false);
                     spinner_for_filter.setVisibility(View.GONE);
                     ll_map.setVisibility(View.GONE);
                     ll_Working_parent.setVisibility(View.GONE);
                     ll_NoWorking_parent.setVisibility(View.VISIBLE);
                     ll_map.setVisibility(View.GONE);
+                    ll_reason.setVisibility(View.GONE);
+                    btn_refresh.setVisibility(View.GONE);
+                    ll_refresh.setVisibility(View.GONE);
+                    rg_yes_no.setVisibility(View.GONE);
+                    tv_MapLocationCorrectText.setVisibility(View.GONE);
+                    spinner_location.setSelection(adapterLocation.getPosition("Select Working Location"));
+                    spinner_location.setVisibility(View.GONE);
+
                     ll_comment.setVisibility(View.VISIBLE);
 
                     but_Next.setText(getText(R.string.txtSubmit));
@@ -1038,11 +1140,7 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
                      DistributorName_Global="Select Distributor";
                      DistributorId_Global="0";
                      DistributorNodeType_Global="0";
-                    ll_reason.setVisibility(View.GONE);
-                    btn_refresh.setVisibility(View.GONE);
-                    ll_refresh.setVisibility(View.GONE);
-                    rg_yes_no.setVisibility(View.GONE);
-                    tv_MapLocationCorrectText.setVisibility(View.GONE);
+
 
                 }
             }
@@ -1191,7 +1289,7 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
             }
             else
             {
-
+                    countSubmitClicked++;
                 LattitudeFromLauncher=String.valueOf(fnLati);
                 LongitudeFromLauncher=String.valueOf(fnLongi);
                 AccuracyFromLauncher=String.valueOf(finalAccuracy);
@@ -1901,8 +1999,17 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
             if((!TextUtils.isEmpty(result)) && (result!=null))
             {
 
-                crntServerTime=result;
-                if(parseDateTime(crntServerTime).after(crntDateTime("9:30 AM")) && parseDateTime(crntServerTime).before(crntDateTime("10:30 AM")) )
+                if(result.contains("^"))
+                {
+                    crntServerTime=result.split(Pattern.quote("^"))[0];
+                    crntAttndncTime=result.split(Pattern.quote("^"))[1];
+                }
+                else
+                {
+                    crntServerTime=result;
+                }
+
+                if(parseDateTime(crntServerTime).after(crntDateTime(crntAttndncTime)) )
                 {
                     isLateApplicable=true;
                     if(rb_workingYes.isChecked())
@@ -1910,19 +2017,20 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
                         ll_reason.setVisibility(View.VISIBLE);
                     }
 
-                    Toast.makeText(DayStartActivity.this,"Time between 9:30 and 10:30",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(DayStartActivity.this,"Time between 9:30 and 10:30",Toast.LENGTH_SHORT).show();
                 }
-                else if(parseDateTime(crntServerTime).after(crntDateTime("10:30 AM")))
-                {
-                    isLateApplicable=false;
-                    Toast.makeText(DayStartActivity.this,"Time after 10:30",Toast.LENGTH_SHORT).show();
-                }
+
                 else
                 {
                     isLateApplicable=false;
-                    Toast.makeText(DayStartActivity.this,"Time before 9:30",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(DayStartActivity.this,"Time before 9:30",Toast.LENGTH_SHORT).show();
                 }
 
+                if(countSubmitClicked==2)
+                {
+                     LocationRetreivingGlobal llaaa=new LocationRetreivingGlobal();
+                    llaaa.locationRetrievingAndDistanceCalculating(DayStartActivity.this,true,50);
+                }
 
             }
             else
@@ -1934,12 +2042,30 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
         }
     }
 
+    public String parseDateRmvAMPMTime(String time) {
+        String inputPattern = "dd-MMM-yyyy hh:mm:ss aa";
+        String outputPattern = "dd-MMM-yyyy hh:mm:ss";
+        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern,Locale.ENGLISH);
+        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern,Locale.ENGLISH);
+        String dateFnl = "NA";
+        Date date = null;
+        String str = null;
 
+        try {
+            date = inputFormat.parse(time);
+            dateFnl = outputFormat.format(date);
+          
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        // Date fnldate = formatter.parse(dateInString);;
+        return dateFnl;
+    }
     public Date parseDateTime(String time) {
         String inputPattern = "dd-MMM-yyyy hh:mm:ss aa";
         String outputPattern = "hh:mm aa";
-        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
-        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern);
+        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern,Locale.ENGLISH);
+        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern,Locale.ENGLISH);
 
         Date date,dateFnl = null;
         String str = null;
@@ -1958,7 +2084,7 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
     public Date crntDateTime(String time) {
         String inputPattern = "hh:mm aa";
 
-        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
+        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern,Locale.ENGLISH);
 
 
         Date date = null;
@@ -1978,8 +2104,113 @@ public class DayStartActivity extends BaseActivity implements InterfaceClass,OnM
     {
         long  syncTIMESTAMP = System.currentTimeMillis();
         Date dateobj = new Date(syncTIMESTAMP);
-        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss aa", Locale.ENGLISH);
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss", Locale.ENGLISH);
         String curTime = df.format(dateobj);
         return curTime;
+    }
+
+    public EditText getEditText(String tagVal)
+    {
+        EditText editText=new EditText(DayStartActivity.this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams
+                ((int) LinearLayout.LayoutParams.WRAP_CONTENT, (int) LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        params.leftMargin = 50;
+        params.rightMargin = 50;
+        editText.setBackground(getResources().getDrawable(R.drawable.et_boundary_retrun));
+        editText.setLayoutParams(params);
+        editText.setTag(tagVal);
+        editText.setEms(10);
+        return editText;
+    }
+
+
+    public boolean validateEditText()
+    {
+        boolean isEdiTextFilled=false;
+        if(spinner_location.getSelectedItem().toString().equals("New Distributor"))
+        {
+           if(TextUtils.isEmpty(et_DBR_Name.getText().toString().trim()))
+           {
+               alertForValidation(getString(R.string.AlertDialogHeaderErrorMsg),getString(R.string.specifyDBRName));
+               isEdiTextFilled=true;
+               return isEdiTextFilled;
+           }
+           else
+           {
+               CheckBox checkBox= (CheckBox) ll_Working.findViewWithTag("7");
+               if(checkBox!=null)
+               {
+
+                   hmapSelectedCheckBoxData.put("7",et_DBR_Name.getText().toString().trim());
+               }
+
+           }
+
+        }
+        else  if(spinner_location.getSelectedItem().toString().equals("Other Location"))
+        {
+            if(TextUtils.isEmpty(et_DBR_Name.getText().toString().trim()))
+            {
+                alertForValidation(getString(R.string.AlertDialogHeaderErrorMsg),getString(R.string.specifyLocatione));
+                isEdiTextFilled=true;
+                return isEdiTextFilled;
+            }
+            else
+            {
+                hmapSelectedCheckBoxData.put("15","Other Location"+"^"+et_DBR_Name.getText().toString().trim());
+            }
+        }
+        if(listTxtBxToShow!=null)
+        {
+           for(int i=0;i<listTxtBxToShow.size();i++)
+           {
+               CheckBox checkBox= (CheckBox) ll_Working.findViewWithTag(listTxtBxToShow.get(i));
+               if(checkBox!=null)
+               {
+                   if(checkBox.isChecked())
+                   {
+                       EditText editText= (EditText) ll_Working.findViewWithTag(listTxtBxToShow.get(i)+"_ed");
+                       if(editText!=null)
+                       {
+                           if(TextUtils.isEmpty(editText.getText().toString().trim()))
+                           {
+                               isEdiTextFilled=true;
+                               alertForValidation(getString(R.string.AlertDialogHeaderErrorMsg),getString(R.string.selectAtleastOneOptionwithedittext));
+                               break;
+                           }
+                           else
+                           {
+                               hmapSelectedCheckBoxData.put(listTxtBxToShow.get(i),editText.getText().toString().trim());
+                           }
+                       }
+
+                   }
+
+               }
+
+           }
+        }
+        return isEdiTextFilled;
+    }
+
+    public void alertForValidation(String title,String msg)
+    {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(DayStartActivity.this);
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(msg);
+        alertDialog.setIcon(R.drawable.error);
+        alertDialog.setCancelable(false);
+
+        alertDialog.setPositiveButton(getResources().getString(R.string.AlertDialogOkButton), new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog,int which)
+            {
+                dialog.dismiss();
+
+
+            }
+        });
+        alertDialog.show();
     }
 }

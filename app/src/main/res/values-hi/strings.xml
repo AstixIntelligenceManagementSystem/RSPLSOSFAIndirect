@@ -8,8 +8,13 @@
    <string name="genTermFetchingTime">वर्तमान समय ला रहा है..</string>
    <string name="selectReasonForLate">आगे बढ़ने के लिए, कृपया एक कारण का चयन करें कि आप देर क्यों कर रहे थे.</string>
    <string name="selectOtherReasonForLate">आगे बढ़ने के लिए, कृपया अन्य कारण बताएं कि आप देर क्यों कर रहे थे।</string>
+   <string name="specifyDBRName">आगे बढ़ने के लिए कृपया वितरक नाम निर्दिष्ट करें।</string>
+   <string name="specifyLocatione">आगे बढ़ने के लिए कृपया अन्य स्थान निर्दिष्ट करें।</string>
+   <string name="txtAttndnc">डीएसआर उपस्थिति।</string>
+   <string name="txtScndryUpdate">दिन के परिणाम</string>
     <string name="app_name">RSPL TSO SFA Test Release</string>
    <string name="Coverage_Area">कवरेज क्षेत्र</string>
+   <string name="other_loc">कृपया निर्दिष्ट करें : </string>
    <string name="Contact_No">संपर्क नंबर</string>
    <string name="DOB">जन्म तिथि</string>
    <string name="DSR_Profile">एसओ प्रोफाइल</string>

@@ -224,7 +224,7 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
     int countSubmitClicked=0;
     private String fusedData;
 
-    private LinearLayout ll_DistrbtrTarget;
+    private LinearLayout ll_DistrbtrTarget,ll_EDR;
 
 
     @Override
@@ -499,11 +499,20 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
 
         ll_dsrTracker = (LinearLayout) findViewById(R.id.ll_dsrTracker);
         ll_DayEnd = (LinearLayout) findViewById(R.id.ll_DayEnd);
+        ll_EDR= (LinearLayout) findViewById(R.id.ll_EDR);
         ll_PurchaseOrder = (LinearLayout) findViewById(R.id.ll_PurchaseOrder);
 
         ll_DistrbtrTarget= (LinearLayout) findViewById(R.id.ll_DistrbtrTarget);
 
+        ll_EDR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(AllButtonActivity.this,WebViewAttndnc_ScndryUpdt.class);
+                intent.putExtra("flgToShow",1);
 
+                startActivity(intent);
+            }
+        });
         try
         {
             getReasonDetail();

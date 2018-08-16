@@ -886,6 +886,9 @@ public class ServiceWorker
 				String SelfieNameURL="0";
 				String SalesAreaName="0";
 
+				String CoverageAreaNodeID="0";
+				String CoverageAreaNodeType="0";
+
 				Element element = (Element) tblSchemeStoreMappingNode.item(i);
 
 				NodeList StoreIDNode = element.getElementsByTagName("flgUserAuthenticated");
@@ -996,6 +999,26 @@ public class ServiceWorker
 						}
 					}
 
+					if(!element.getElementsByTagName("CoverageAreaNodeID").equals(null))
+					{
+						NodeList CoverageAreaNodeIdNode = element.getElementsByTagName("CoverageAreaNodeID");
+						line = (Element) CoverageAreaNodeIdNode.item(0);
+						if(CoverageAreaNodeIdNode.getLength()>0)
+						{
+							CoverageAreaNodeID=xmlParser.getCharacterDataFromElement(line);
+						}
+					}
+					if(!element.getElementsByTagName("CoverageAreaNodeType").equals(null))
+					{
+						NodeList CoverageAreaNodeTypeNode = element.getElementsByTagName("CoverageAreaNodeType");
+						line = (Element) CoverageAreaNodeTypeNode.item(0);
+						if(CoverageAreaNodeTypeNode.getLength()>0)
+						{
+							CoverageAreaNodeType=xmlParser.getCharacterDataFromElement(line);
+						}
+					}
+					//,
+
 					if(SelfieNameURL!=null && SelfieName!=null){
 						if((!SelfieNameURL.equals("")) && (!SelfieName.equals("")) && (!SelfieNameURL.equals("0")) && (!SelfieName.equals("0"))){
 							downLoadingSelfieImage(SelfieNameURL,SelfieName);
@@ -1008,7 +1031,7 @@ public class ServiceWorker
 
 				dbengine.savetblUserAuthenticationMstr(flgUserAuthenticated,PersonName,FlgRegistered,
 						flgAppStatus,DisplayMessage,flgValidApplication,MessageForInvalid,flgPersonTodaysAtt,
-						PersonNodeID,PersonNodeType,ContactNo,DOB,SelfieName,SelfieNameURL,SalesAreaName);
+						PersonNodeID,PersonNodeType,ContactNo,DOB,SelfieName,SelfieNameURL,SalesAreaName,CoverageAreaNodeID,CoverageAreaNodeType);
 
 			}
 
@@ -6550,7 +6573,7 @@ public class ServiceWorker
 				                {
 									
 				                	ProductRLP=Double.parseDouble(xmlParser.getCharacterDataFromElement(line));
-				                	ProductRLP=Double.parseDouble(decimalFormat.format(ProductMRP));
+				                	ProductRLP=Double.parseDouble(decimalFormat.format(ProductRLP));
 				                }
 			            	 }
 						
@@ -6564,7 +6587,7 @@ public class ServiceWorker
 				                {
 									
 				                	ProductTaxAmount=Double.parseDouble(xmlParser.getCharacterDataFromElement(line));
-				                	ProductTaxAmount=Double.parseDouble(decimalFormat.format(ProductMRP));
+				                	ProductTaxAmount=Double.parseDouble(decimalFormat.format(ProductTaxAmount));
 				                }
 			            	 }
 						

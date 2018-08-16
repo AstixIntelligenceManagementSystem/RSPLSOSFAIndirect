@@ -249,7 +249,7 @@ public class DBAdapterKenya
 
     // Tables Data Coming at Splash Screen Starts
 	private static final String TABLE_tblUserAuthenticationMstr_Define = "tblUserAuthenticationMstr";
-    private static final String TABLE_tblUserAuthenticationMstr_Definition = "create table tblUserAuthenticationMstr (flgUserAuthenticated text null,PersonName text null,PersonNodeID integer null,PersonNodeType integer null,FlgRegistered text null,flgAppStatus text null,DisplayMessage text null,flgValidApplication text null,MessageForInvalid text null,flgPersonTodaysAtt text null,ContactNo text null,DOB text null,SelfieName text null,SelfieNameURL text null,SalesAreaName text null);";
+    private static final String TABLE_tblUserAuthenticationMstr_Definition = "create table tblUserAuthenticationMstr (flgUserAuthenticated text null,PersonName text null,PersonNodeID integer null,PersonNodeType integer null,FlgRegistered text null,flgAppStatus text null,DisplayMessage text null,flgValidApplication text null,MessageForInvalid text null,flgPersonTodaysAtt text null,ContactNo text null,DOB text null,SelfieName text null,SelfieNameURL text null,SalesAreaName text null,CoverageAreaNodeID text null,CoverageAreaNodeType text null);";
 
 	//private static final String TABLE_tblUserAuthenticationMstr_Definition = "create table tblUserAuthenticationMstr (flgUserAuthenticated text null,PersonName text null,FlgRegistered text null);";
 
@@ -19758,7 +19758,7 @@ open();
                                                           String MessageForInvalid,String flgPersonTodaysAtt,
                                                           int PersonNodeID,int PersonNodeType,
                                                           String ContactNo,String DOB,String SelfieName,
-                                                          String SelfieNameURL,String SalesAreaName)
+                                                          String SelfieNameURL,String SalesAreaName,String CoverageAreaNodeID,String CoverageAreaNodeType)
                 {
 
                     ContentValues initialValues = new ContentValues();
@@ -19780,8 +19780,10 @@ open();
                     initialValues.put("SelfieName", SelfieName.trim());
                     initialValues.put("SelfieNameURL", SelfieNameURL);
                     initialValues.put("SalesAreaName", SalesAreaName);
+                    initialValues.put("CoverageAreaNodeID", CoverageAreaNodeID);
+                    initialValues.put("CoverageAreaNodeType", CoverageAreaNodeType);
 
-
+// text null,
 
                     return db.insert(TABLE_tblUserAuthenticationMstr_Define, null, initialValues);
                 }
@@ -21466,7 +21468,7 @@ open();
     {
         open();
         LinkedHashMap<String, String> hmapCatgry = new LinkedHashMap<>();
-        Cursor cursor = db.rawQuery("SELECT ReasonId,ReasonDescr FROM tblNoVisitReasonMaster where flgDelayedReason=1",null);
+        Cursor cursor = db.rawQuery("SELECT ReasonId,ReasonDescr FROM tblNoVisitReasonMaster where flgSOApplicable=1 and  flgDelayedReason=1",null);
         try
         {
             if(cursor.getCount()>0)
@@ -34090,7 +34092,7 @@ if(cursor.getCount()>0)
     {
         open();
         LinkedHashMap<Integer, String> hmapCatgry = new LinkedHashMap<Integer, String>();
-        Cursor cursor = db.rawQuery("SELECT ReasonId,ReasonDescr FROM tblNoVisitReasonMaster where flgSOApplicable='"+1+"' and flgNoVisitOption='"+0+"' order by SeqNo asc",null);
+        Cursor cursor = db.rawQuery("SELECT ReasonId,ReasonDescr FROM tblNoVisitReasonMaster where flgSOApplicable='"+1+"' and flgNoVisitOption='"+0+"' and flgDelayedReason='"+0+"' and ReasonId<>'15' order by SeqNo asc",null);
         try
         {
             if(cursor.getCount()>0)
@@ -34119,11 +34121,44 @@ if(cursor.getCount()>0)
         }
     }
 
+    public ArrayList<String> fetch_Text_To_Show()
+    {
+        open();
+        ArrayList<String> listTxtBxToShow = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT ReasonId FROM tblNoVisitReasonMaster where flgSOApplicable='"+1+"' and FlgToShowTextBox='"+1+"' order by SeqNo asc",null);
+        try
+        {
+            if(cursor.getCount()>0)
+            {
+                if (cursor.moveToFirst())
+                {
+                    for (int i = 0; i <= (cursor.getCount() - 1); i++)
+                    {
+                        listTxtBxToShow.add(cursor.getString(0).toString().trim());
+                        cursor.moveToNext();
+                    }
+                }
+
+            }
+
+            else
+            {
+                // hmapCatgry.put(0, "No Reason");
+            }
+            return listTxtBxToShow;
+        }
+        finally
+        {
+            cursor.close();
+            close();
+        }
+    }
+
     public LinkedHashMap<Integer, String> fetch_NoWorking_Reason_List()
     {
         open();
         LinkedHashMap<Integer, String> hmapCatgry = new LinkedHashMap<Integer, String>();
-        Cursor cursor = db.rawQuery("SELECT ReasonId,ReasonDescr FROM tblNoVisitReasonMaster where flgSOApplicable='"+1+"' and flgNoVisitOption="+1,null);
+        Cursor cursor = db.rawQuery("SELECT ReasonId,ReasonDescr FROM tblNoVisitReasonMaster where flgSOApplicable='"+1+"' and flgNoVisitOption="+1+" and flgDelayedReason='"+0+"'" ,null);
         try
         {
             if(cursor.getCount()>0)
@@ -34178,7 +34213,7 @@ if(cursor.getCount()>0)
             db.update(TABLE_tblAttandanceDetails,values,"",new String[]{});
         }catch(SQLiteException exception)
         {
-
+            System.out.println();
         }finally
         {
             close();
@@ -34388,5 +34423,9 @@ if(cursor.getCount()>0)
 
         return count;
     }
+
+
+
+
 }
 

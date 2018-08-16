@@ -4377,6 +4377,27 @@ public void DayEndWithoutalert()
 
 
 		 Button btnDSMWiseReport= (Button) dialog.findViewById(R.id.btnDSMWiseReport);
+		 Button btnAttndnc= (Button) dialog.findViewById(R.id.btnAttndnc);
+		 Button btnScndryUdt= (Button) dialog.findViewById(R.id.btnScndryUdt);
+		 btnAttndnc.setOnClickListener(new OnClickListener() {
+			 @Override
+			 public void onClick(View v) {
+				 Intent intent=new Intent(StoreSelection.this,WebViewAttndnc_ScndryUpdt.class);
+				 intent.putExtra("flgToShow",0);
+
+				 startActivity(intent);
+			 }
+		 });
+		 btnScndryUdt.setOnClickListener(new OnClickListener() {
+			 @Override
+			 public void onClick(View v) {
+				 Intent intent=new Intent(StoreSelection.this,WebViewAttndnc_ScndryUpdt.class);
+				 intent.putExtra("flgToShow",1);
+
+				 startActivity(intent);
+
+			 }
+		 });
 		 btnDSMWiseReport.setOnClickListener(new OnClickListener() {
 			 @Override
 			 public void onClick(View v)
