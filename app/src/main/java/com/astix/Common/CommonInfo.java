@@ -9,6 +9,7 @@ public class CommonInfo
 
 	// Its for Live Path on 194 Server
 
+/*
 
 
     public static int flgAllRoutesData=1;
@@ -92,6 +93,7 @@ public class CommonInfo
 	public static String WebPageUrlDSMWiseReport="http://103.20.212.194/RSPL/Mobile/frmDSMWiseReportCard.aspx?imei=";
 	public static String ImagesFolderServer="RMMSFAImagesServer";
 
+*/
 
 
 
