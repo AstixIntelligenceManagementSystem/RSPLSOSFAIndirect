@@ -10,6 +10,7 @@ public class CommonInfo
 	// Its for Live Path on 194 Server
 
 
+/*
 
     public static int flgAllRoutesData=1;
 	public static File imageF_savedInstance=null;
@@ -44,8 +45,8 @@ public class CommonInfo
 	public static String DATABASE_NAME = "DbRSPLSFAApp";
 	public static int AnyVisit = 0;
 
-	public static int DATABASE_VERSIONID = 49;     // put this field value based on value in table on the server
-	public static String AppVersionID = "1.10";     // put this field value based on value in table on the server
+	public static int DATABASE_VERSIONID = 52;     // put this field value based on value in table on the server
+	public static String AppVersionID = "1.12";     // put this field value based on value in table on the server
 
 	public static int Application_TypeID = 4;      //1=Parag Store Mapping,2=Parag SFA Indirect,3=Parag SFA Direct
 
@@ -91,6 +92,7 @@ public class CommonInfo
 	public static String URLImageLinkToViewStoreOverWebProtal="http://103.20.212.194/RSPL/Reports/frmPDAImgsdev.aspx";
 	public static String WebPageUrlDSMWiseReport="http://103.20.212.194/RSPL/Mobile/frmDSMWiseReportCard.aspx?imei=";
 	public static String ImagesFolderServer="RMMSFAImagesServer";
+*/
 
 
 
@@ -98,8 +100,7 @@ public class CommonInfo
 
 	// Its for Test Path on 194 Server
 
-	/*
-    public static int flgAllRoutesData=1;
+	/*public static int flgAllRoutesData=1;
 	public static File imageF_savedInstance=null;
 	public static String imageName_savedInstance=null;
 	public static String clickedTagPhoto_savedInstance=null;
@@ -114,44 +115,42 @@ public class CommonInfo
 	public static String newQuottionID="NULL";
 	public static String globalValueOfPaymentStage="0"+"_"+"0"+"_"+"0";
 
+	public static String WebDSRAttendanceUrl="http://103.20.212.194/rspl_test/Reports/frmDSRAttendanceReport.aspx";
 	public static String WebManageDSRUrl="http://103.20.212.194/RSPL_test/pda/frmIMEImanagement.aspx";
-	public static String WebPurchaseOrderUrl="http://103.20.212.194/Rspl_Testrelease/frmPO.aspx";
-    public static String WebPageUrlDataReport="http://103.20.212.194/RSPL_TestRelease/Mobile/fnSalesmanWiseSummaryRpt.aspx";
-	public static String WebPageUrl="http://103.20.212.194/RSPL_TestRelease/Mobile/frmRouteTracking.aspx";
+	public static String WebPageUrlDataReport="http://103.20.212.194/RSPL_test/Mobile/fnSalesmanWiseSummaryRpt.aspx";
+	public static String WebPageUrl="http://103.20.212.194/RSPL_test/Mobile/frmRouteTracking.aspx";
 
 	public static String WebServicePath="http://103.20.212.194/WebServiceAndroidRSPLTest/Service.asmx";
+
+
+
 	public static String VersionDownloadPath="http://103.20.212.194/downloads/";
 	public static String VersionDownloadAPKName="RSPLTSOSFATest.apk";
 
 	public static String DATABASE_NAME = "DbRSPLSFAApp";
+
 	public static int AnyVisit = 0;
 
-	public static int DATABASE_VERSIONID = 54;      // put this field value based on value in table on the server
-	public static String AppVersionID = "1.9";   // put this field value based on value in table on the server
-
-*/
-/*
-	public static int DATABASE_VERSIONID = 33;      // put this field value based on value in table on the server
-	public static String AppVersionID = "1.4";   // put this field value based on value in table on the server
-*//*
-
-
+	public static int DATABASE_VERSIONID = 52;      // put this field value based on value in table on the server
+	public static String AppVersionID = "1.13";   // put this field value based on value in table on the server
 	public static int Application_TypeID = 4; //1=Parag Store Mapping,2=Parag SFA Indirect,3=Parag SFA Direct
 
 	public static String OrderSyncPath="http://103.20.212.194/ReadXML_RSPLTest/DefaultSOSFA.aspx";
 	public static String ImageSyncPath="http://103.20.212.194/ReadXML_RSPLImagesTest/Default.aspx";
 
+	public static String OrderTextSyncPath="http://103.20.212.194/ReadTxtFileForRSPLSFATest/default.aspx";
+
 	public static String OrderSyncPathDistributorMap="http://103.20.212.194/ReadXML_RSPLTest/DefaultSODistributorMapping.aspx";
 
-	public static String OrderTextSyncPath="http://103.20.212.194/ReadTxtFileForRSPLSFATest/default.aspx";
+	public static String NewStoreSyncPath="http://103.20.212.194/ReadXML_RSPLTest/DefaultSO.aspx";
+
+	public static String OrderSyncPathDistributorTarget="http://103.20.212.194/ReadXML_RSPLTest/DefaultSODistributorTarget.aspx";
 
 	public static String InvoiceSyncPath="http://103.20.212.194/ReadXML_RSPLInvoiceTest/Default.aspx";
 
 	public static String DistributorSyncPath="http://103.20.212.194/ReadXML_RSPLSFADistributionTest/Default.aspx";
 
-	public static String OrderSyncPathDistributorTarget="http://103.20.212.194/ReadXML_RSPLTest/DefaultSODistributorTarget.aspx";
-
-	public static String NewStoreSyncPath="http://103.20.212.194/ReadXML_RSPLTest/DefaultSO.aspx";
+	public static String WebPurchaseOrderUrl="http://103.20.212.194/Rspl_Test/frmPO.aspx";
 
 	public static String OrderXMLFolder="RSPLSFAXml";
 	public static String ImagesFolder="RSPLSFAImages";
@@ -169,7 +168,6 @@ public class CommonInfo
 	public static String SalesPersonTodaysTargetMsg="";
 	public static final String Preference="RSPLPrefrence";
 	public static final String AttandancePreference="RSPLAttandancePreference";
-	public static final String DistributorXMLFolder="RSPLDistributorXMLFolder";
 
 	public static int PersonNodeID=0;
 	public static int PersonNodeType=0;
@@ -182,23 +180,27 @@ public class CommonInfo
 	public static int FlgDSRSO=0;
 	public static int DayStartClick=0;
 
-
 	public static int flgLTFoodsSOOnlineOffLine=0;
 	public static int flgNewStoreORStoreValidation=0;
-	public static String URLImageLinkToViewStoreOverWebProtal="http://103.20.212.194/RSPL_dev/Reports/frmPDAImgsdev.aspx";
-  public static String ImagesFolderServer="RMMSFAImagesServer";
+	public static String URLImageLinkToViewStoreOverWebProtal="http://103.20.212.194/RSPL_Test/Reports/frmPDAImgsdev.aspx";
+
+	public static String WebPageUrlDSMWiseReport="http://103.20.212.194/RSPL_test/Mobile/frmDSMWiseReportCard.aspx?imei=";
+	public static String ImagesFolderServer="RMMSFAImagesServer";
+
+	public static String WebAttendanceReport="http://103.20.212.194/RSPL_test/Mobile/frmTodayAttendence.aspx";
+
+	public static String WebScndryUpdate="http://103.20.212.194/RSPL_test/Mobile/frmDailySecondaryUpdate.aspx";
+
+
 
 */
-
-
-
-
 
 
 	// Its for Dev Path on 194 Server
 
 
-/*
+
+
 
 
 
@@ -294,7 +296,8 @@ public class CommonInfo
         public static String ImagesFolderServer="RMMSFAImagesServer";
 
 
-*/
+
+
 
 
 
@@ -308,11 +311,12 @@ public class CommonInfo
 
 
 
+
+
+
+
+
 /*
-
-
-
-
 	public static int flgAllRoutesData=1;
 	public static File imageF_savedInstance=null;
 	public static String imageName_savedInstance=null;
@@ -328,12 +332,12 @@ public class CommonInfo
 	public static String newQuottionID="NULL";
 	public static String globalValueOfPaymentStage="0"+"_"+"0"+"_"+"0";
 
-    public static String WebDSRAttendanceUrl="http://103.20.212.194/rspl_testrelease/Reports/frmDSRAttendanceReport.aspx";
-	public static String WebManageDSRUrl="http://103.20.212.194/RSPL_testrelease/pda/frmIMEImanagement.aspx";
-	public static String WebPageUrlDataReport="http://103.20.212.194/RSPL_testrelease/Mobile/fnSalesmanWiseSummaryRpt.aspx";
-	public static String WebPageUrl="http://103.20.212.194/RSPL_testrelease/Mobile/frmRouteTracking.aspx";
+    public static String WebDSRAttendanceUrl="http://103.20.212.194/rspl_test/Reports/frmDSRAttendanceReport.aspx";
+	public static String WebManageDSRUrl="http://103.20.212.194/RSPL_test/pda/frmIMEImanagement.aspx";
+	public static String WebPageUrlDataReport="http://103.20.212.194/RSPL_test/Mobile/fnSalesmanWiseSummaryRpt.aspx";
+	public static String WebPageUrl="http://103.20.212.194/RSPL_test/Mobile/frmRouteTracking.aspx";
 
-	public static String WebServicePath="http://103.20.212.194/WebServiceAndroidRSPLTestRelease/Service.asmx";
+	public static String WebServicePath="http://103.20.212.194/WebServiceAndroidRSPLTest/Service.asmx";
 
 
 
@@ -344,26 +348,26 @@ public class CommonInfo
 
 	public static int AnyVisit = 0;
 
-	public static int DATABASE_VERSIONID = 69;      // put this field value based on value in table on the server
-	public static String AppVersionID = "1.27";   // put this field value based on value in table on the server
+	public static int DATABASE_VERSIONID = 52;      // put this field value based on value in table on the server
+	public static String AppVersionID = "1.13";   // put this field value based on value in table on the server
 	public static int Application_TypeID = 4; //1=Parag Store Mapping,2=Parag SFA Indirect,3=Parag SFA Direct
 
-	public static String OrderSyncPath="http://103.20.212.194/ReadXML_RSPLTestRelease/DefaultSOSFA.aspx";
-	public static String ImageSyncPath="http://103.20.212.194/ReadXML_RSPLImagesTestRelease/Default.aspx";
+	public static String OrderSyncPath="http://103.20.212.194/ReadXML_RSPLTest/DefaultSOSFA.aspx";
+	public static String ImageSyncPath="http://103.20.212.194/ReadXML_RSPLImagesTest/Default.aspx";
 
-	public static String OrderTextSyncPath="http://103.20.212.194/ReadTxtFileForRSPLSFATestRelease/default.aspx";
+	public static String OrderTextSyncPath="http://103.20.212.194/ReadTxtFileForRSPLSFATest/default.aspx";
 
-	public static String OrderSyncPathDistributorMap="http://103.20.212.194/ReadXML_RSPLTestRelease/DefaultSODistributorMapping.aspx";
+	public static String OrderSyncPathDistributorMap="http://103.20.212.194/ReadXML_RSPLTest/DefaultSODistributorMapping.aspx";
 
-	public static String NewStoreSyncPath="http://103.20.212.194/ReadXML_RSPLTestRelease/DefaultSO.aspx";
+	public static String NewStoreSyncPath="http://103.20.212.194/ReadXML_RSPLTest/DefaultSO.aspx";
 
-	public static String OrderSyncPathDistributorTarget="http://103.20.212.194/ReadXML_RSPLTestRelease/DefaultSODistributorTarget.aspx";
+	public static String OrderSyncPathDistributorTarget="http://103.20.212.194/ReadXML_RSPLTest/DefaultSODistributorTarget.aspx";
 
-	public static String InvoiceSyncPath="http://103.20.212.194/ReadXML_RSPLInvoiceTestRelease/Default.aspx";
+	public static String InvoiceSyncPath="http://103.20.212.194/ReadXML_RSPLInvoiceTest/Default.aspx";
 
-	public static String DistributorSyncPath="http://103.20.212.194/ReadXML_RSPLSFADistributionTestRelease/Default.aspx";
+	public static String DistributorSyncPath="http://103.20.212.194/ReadXML_RSPLSFADistributionTest/Default.aspx";
 
-	public static String WebPurchaseOrderUrl="http://103.20.212.194/Rspl_TestRelease/frmPO.aspx";
+	public static String WebPurchaseOrderUrl="http://103.20.212.194/Rspl_Test/frmPO.aspx";
 
 	public static String OrderXMLFolder="RSPLSFAXml";
 	public static String ImagesFolder="RSPLSFAImages";
@@ -395,17 +399,18 @@ public class CommonInfo
 
 	public static int flgLTFoodsSOOnlineOffLine=0;
 	public static int flgNewStoreORStoreValidation=0;
-	public static String URLImageLinkToViewStoreOverWebProtal="http://103.20.212.194/RSPL_Testrelease/Reports/frmPDAImgsdev.aspx";
+	public static String URLImageLinkToViewStoreOverWebProtal="http://103.20.212.194/RSPL_Test/Reports/frmPDAImgsdev.aspx";
 
-    public static String WebPageUrlDSMWiseReport="http://103.20.212.194/RSPL_testrelease/Mobile/frmDSMWiseReportCard.aspx?imei=";
+    public static String WebPageUrlDSMWiseReport="http://103.20.212.194/RSPL_test/Mobile/frmDSMWiseReportCard.aspx?imei=";
       public static String ImagesFolderServer="RMMSFAImagesServer";
 
-	public static String WebAttendanceReport="http://103.20.212.194/RSPL_testrelease/Mobile/frmTodayAttendence.aspx";
+	public static String WebAttendanceReport="http://103.20.212.194/RSPL_test/Mobile/frmTodayAttendence.aspx";
 
-	public static String WebScndryUpdate="http://103.20.212.194/RSPL_testrelease/Mobile/frmDailySecondaryUpdate.aspx";
-
-
+	public static String WebScndryUpdate="http://103.20.212.194/RSPL_test/Mobile/frmDailySecondaryUpdate.aspx";
 */
+
+
+
 
 
 

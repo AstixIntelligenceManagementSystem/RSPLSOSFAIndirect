@@ -18697,7 +18697,8 @@ public class ServiceWorker
 				String PersonNodeID ="0";
 				String PersonNodeType ="0";
 				String PersonName ="0";
-
+				String flgRegistered ="0";
+				String LastProfileUpdateDate ="0";
 				Element element = (Element) tblDSRCoverageMasterNode.item(i);
 
 				if(!element.getElementsByTagName("CoverageAreaNodeID").equals(null))
@@ -18755,10 +18756,27 @@ public class ServiceWorker
 						PersonName=xmlParser.getCharacterDataFromElement(line);
 					}
 				}
+				if(!element.getElementsByTagName("flgRegistered").equals(null))
+				{
+					NodeList flgRegisteredNode = element.getElementsByTagName("flgRegistered");
+					Element     line = (Element) flgRegisteredNode.item(0);
+					if (flgRegisteredNode.getLength()>0)
+					{
+						flgRegistered=xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("TimeLastProfileupdated").equals(null))
+				{
+					NodeList LastProfileUpdateDateNode = element.getElementsByTagName("TimeLastProfileupdated");
+					Element     line = (Element) LastProfileUpdateDateNode.item(0);
+					if (LastProfileUpdateDateNode.getLength()>0)
+					{
+						LastProfileUpdateDate=xmlParser.getCharacterDataFromElement(line);
+					}
+				}
 
 
-
-				dbengine.savetblDSRCoverageMaster(CoverageAreaNodeID, CoverageAreaNodeType, CoverageArea, PersonNodeID, PersonNodeType,PersonName);
+				dbengine.savetblDSRCoverageMaster(CoverageAreaNodeID, CoverageAreaNodeType, CoverageArea, PersonNodeID, PersonNodeType,PersonName,flgRegistered,LastProfileUpdateDate);
 
 			}
 

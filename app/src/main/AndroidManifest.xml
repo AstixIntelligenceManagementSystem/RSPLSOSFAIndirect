@@ -166,6 +166,11 @@
             android:excludeFromRecents="true"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".SyncJointVisit"
+            android:configChanges="orientation|keyboardHidden"
+            android:excludeFromRecents="true"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".SyncMasterSO"
             android:configChanges="orientation|keyboardHidden"
             android:excludeFromRecents="true"
@@ -410,6 +415,11 @@
         </activity>
         <activity
             android:name=".SurveyActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/StorelistTheme"
+            android:windowSoftInputMode="stateHidden"></activity>
+        <activity
+            android:name=".SurveyActivityTwo"
             android:screenOrientation="portrait"
             android:theme="@style/StorelistTheme"
             android:windowSoftInputMode="stateHidden"></activity>

@@ -3706,7 +3706,10 @@ public void backButtonFuntion(){
                 inputSearch.setText("");
                 if(hmapStoreNameID.containsKey(abc)){
                  String storeID=   hmapStoreNameID.get(abc);
+                    //uncomment if you want old survey
                     Intent intent=new Intent(SurveyStoreList.this,SurveyActivity.class);
+                    //new surwey added
+                    //Intent intent=new Intent(SurveyStoreList.this,SurveyActivityTwo.class);
                     intent.putExtra("imei", imei);
                     intent.putExtra("userDate", userDate);
                     intent.putExtra("pickerDate", pickerDate);
@@ -6212,6 +6215,7 @@ public void backButtonFuntion(){
                     inputSearch.setText("");
                     if(hmapStoreNameID.containsKey(abc)){
                         String storeID=   hmapStoreNameID.get(abc);
+                        //Intent intent=new Intent(SurveyStoreList.this,SurveyActivityTwo.class);
                         Intent intent=new Intent(SurveyStoreList.this,SurveyActivity.class);
                         intent.putExtra("imei", imei);
                         intent.putExtra("userDate", userDate);

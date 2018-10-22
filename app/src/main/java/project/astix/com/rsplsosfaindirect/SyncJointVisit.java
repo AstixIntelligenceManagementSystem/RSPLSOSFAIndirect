@@ -1,5 +1,35 @@
 package project.astix.com.rsplsosfaindirect;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.util.Base64;
+import android.util.Log;
+
+import com.astix.Common.CommonInfo;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -26,38 +56,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-
-import android.media.MediaScannerConnection;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Environment;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
-import android.util.Log;
-
-import com.astix.Common.CommonInfo;
-
-
-public class SyncMaster extends Activity
+public class SyncJointVisit extends Activity
 {
 	public String userDate="";
 	public String pickerDate="";
@@ -115,7 +114,7 @@ public class SyncMaster extends Activity
 
 	//public TextView chkString;
 	HttpEntity resEntity;
-	private SyncMaster _activity;
+	private SyncJointVisit _activity;
 
 	private static final String DATASUBDIRECTORY = "NMPphotos";
 
@@ -139,47 +138,24 @@ public class SyncMaster extends Activity
 
 	public void showSyncError() {
 		AlertDialog.Builder alertDialogSyncError = new AlertDialog.Builder(
-				SyncMaster.this);
+				SyncJointVisit.this);
 		alertDialogSyncError.setTitle(getText(R.string.genTermSyncErrornew));
 		alertDialogSyncError.setCancelable(false);
 		/*alertDialogSyncError
 				.setMessage("Sync was not successful! Please try again.");*/
-		if(whereTo.contentEquals("11"))
-		{
-			alertDialogSyncError.setMessage(getText(R.string.syncAlertErrMsgDayEndOrChangeRoute));
-		}
-		else if(whereTo.contentEquals("SurveyActivity")){
-			alertDialogSyncError.setMessage(getText(R.string.syncAlertErrMsg));
-		}
-		else
-		{
+
 		alertDialogSyncError.setMessage(getText(R.string.syncAlertErrMsg));
-		}
+
 		alertDialogSyncError.setNeutralButton(getText(R.string.AlertDialogOkButton),
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 
 
 						dialog.dismiss();
-						if(whereTo.contentEquals("DayStart"))
-						{
-							finish();
-						}
-						else if(whereTo.contentEquals("SurveyActivity")){
 
-							Intent     intent=new Intent(SyncMaster.this,SurveyStoreList.class);
-							intent.putExtra("imei", imei);
-							intent.putExtra("userDate", userDate);
-							intent.putExtra("pickerDate", pickerDate);
-							startActivity(intent);
-							finish();
-						}
-						else {
-							Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
+							Intent submitStoreIntent = new Intent(SyncJointVisit.this, AllButtonActivity.class);
 							startActivity(submitStoreIntent);
 							finish();
-						}
-						//SyncMaster.this.finish();
 					}
 				});
 		alertDialogSyncError.setIcon(R.drawable.sync_error_ico);
@@ -189,7 +165,7 @@ public class SyncMaster extends Activity
 		// alertDialogLowbatt.show();
 	}
 	public void showSyncErrorStart() {
-		AlertDialog.Builder alertDialogSyncError = new AlertDialog.Builder(SyncMaster.this);
+		AlertDialog.Builder alertDialogSyncError = new AlertDialog.Builder(SyncJointVisit.this);
 		alertDialogSyncError.setTitle(getText(R.string.genTermSyncErrornew));
 		alertDialogSyncError.setCancelable(false);
 		alertDialogSyncError.setMessage(getText(R.string.genTermSyncErrorFullMsg));
@@ -199,7 +175,7 @@ public class SyncMaster extends Activity
 
 
 						dialog.dismiss();
-						Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
+						Intent submitStoreIntent = new Intent(SyncJointVisit.this, AllButtonActivity.class);
 						startActivity(submitStoreIntent);
 						finish();
 
@@ -214,17 +190,11 @@ public class SyncMaster extends Activity
 	}
 	public void showSyncSuccessStart()
 	{
-		AlertDialog.Builder alertDialogSyncOK = new AlertDialog.Builder(SyncMaster.this);
+		AlertDialog.Builder alertDialogSyncOK = new AlertDialog.Builder(SyncJointVisit.this);
 		alertDialogSyncOK.setTitle(getText(R.string.genTermInformation));
 		alertDialogSyncOK.setCancelable(false);
-		if(StoreSelection.flgChangeRouteOrDayEnd==3)
-		{
-			alertDialogSyncOK.setMessage(getText(R.string.syncAlertStoreQuotationOKMsg));
-		}
-		else
-		{
-			alertDialogSyncOK.setMessage(getText(R.string.syncAlertOKMsg));
-		}
+
+			alertDialogSyncOK.setMessage(getText(R.string.syncAlertOKMsgJointVisit));
 
 		alertDialogSyncOK.setNeutralButton(getText(R.string.AlertDialogOkButton),
 				new DialogInterface.OnClickListener()
@@ -234,18 +204,8 @@ public class SyncMaster extends Activity
 
 					dialog.dismiss();
 
-					db.open();
-					//System.out.println("Indubati flgChangeRouteOrDayEnd :"+StoreSelection_Old.flgChangeRouteOrDayEnd);
-					/*if(StoreSelection.flgChangeRouteOrDayEnd==1 || StoreSelection.flgChangeRouteOrDayEnd==2)
-					{
-						db.reTruncateRouteTbl();
-					}*/
 
-
-					db.reCreateDB();
-					db.close();
-
-					Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
+					Intent submitStoreIntent = new Intent(SyncJointVisit.this, AllButtonActivity.class);
 					startActivity(submitStoreIntent);
 					finish();
 					/*destroyNcleanup(1);
@@ -583,27 +543,11 @@ public class SyncMaster extends Activity
 	 }
 	public void showSyncSuccess()
 	{
-		AlertDialog.Builder alertDialogSyncOK = new AlertDialog.Builder(SyncMaster.this);
+		AlertDialog.Builder alertDialogSyncOK = new AlertDialog.Builder(SyncJointVisit.this);
 		alertDialogSyncOK.setTitle(getText(R.string.genTermInformation));
 		alertDialogSyncOK.setCancelable(false);
-		if(whereTo.contentEquals("DistributorMap"))
-		{
-			alertDialogSyncOK.setMessage(getText(R.string.SubmitDistrbtr));
-		}
-		else if(whereTo.contentEquals("SurveyActivity")){
-			alertDialogSyncOK.setMessage(getText(R.string.SubmitSurvey));
-		}
-		else
-		{
-			if(StoreSelection.flgChangeRouteOrDayEnd==3)
-			{
-				alertDialogSyncOK.setMessage(getText(R.string.syncAlertStoreQuotationOKMsg));
-			}
-			else
-			{
-				alertDialogSyncOK.setMessage(getText(R.string.syncAlertOKMsg));
-			}
-		}
+
+			alertDialogSyncOK.setMessage(getText(R.string.syncAlertOKMsgJointVisit));
 
 		alertDialogSyncOK.setNeutralButton(getText(R.string.AlertDialogOkButton),new DialogInterface.OnClickListener()
 		    {
@@ -641,87 +585,9 @@ public class SyncMaster extends Activity
 				    			}
 			    		}
 
-
-
-
-
-
-
-
-
-
-						// finishing activity & stepping back
-						if(whereTo.contentEquals("DistributorMap"))
-						{
-							Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
+							Intent submitStoreIntent = new Intent(SyncJointVisit.this, AllButtonActivity.class);
 							startActivity(submitStoreIntent);
 							finish();
-						}
-
-
-						else if(whereTo.contentEquals("11"))
-						{
-							int chkSct=0;
-							/*db.open();
-							chkSct=db.getExistingPicNosOnRemStoreOnChangeRoute();
-							db.close();*/
-							if(chkSct>0)
-							{
-								whereTo = "";
-								//sysncStart();
-
-								File dirORIGimg = new File(Environment.getExternalStorageDirectory(),DATASUBDIRECTORY);
-								deleteFolderFiles(dirORIGimg);
-
-
-							}
-							else
-							{
-								whereTo = "";
-
-								File dirORIGimg = new File(Environment.getExternalStorageDirectory(),DATASUBDIRECTORY);
-								deleteFolderFiles(dirORIGimg);
-
-
-								db.open();
-								if(StoreSelection.flgChangeRouteOrDayEnd==1 || StoreSelection.flgChangeRouteOrDayEnd==2)
-								{
-									db.reTruncateRouteTbl();
-									//db.reTruncateRouteMstrTbl();
-								}
-								db.reCreateDB();
-								db.close();
-
-								Intent submitStoreIntent = new Intent(SyncMaster.this, SplashScreen.class);
-								startActivity(submitStoreIntent);
-								finish();
-							}
-						/*	whereTo = "";
-							db.open();
-							db.reCreateDB();
-							db.close();
-
-							Intent submitStoreIntent = new Intent(SyncMaster.this, LauncherActivity.class);
-							startActivity(submitStoreIntent);
-							finish();*/
-						}
-						else if(whereTo.contentEquals("SurveyActivity")){
-							Intent     intent=new Intent(SyncMaster.this,SurveyStoreList.class);
-							intent.putExtra("imei", imei);
-							intent.putExtra("userDate", userDate);
-							intent.putExtra("pickerDate", pickerDate);
-							startActivity(intent);
-							finish();
-						}
-						else
-						{
-						//Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
-							Intent submitStoreIntent = new Intent(SyncMaster.this, LauncherActivity.class);
-						startActivity(submitStoreIntent);
-						finish();
-						}
-						//finish();
-						//SyncMaster.this.finish();
 					}
 				});
 		alertDialogSyncOK.setIcon(R.drawable.info_ico);
@@ -792,12 +658,7 @@ public class SyncMaster extends Activity
 		Intent syncIntent = getIntent();
 		 xmlForWeb[0] = syncIntent.getStringExtra("xmlPathForSync");
 		zipFileName = syncIntent.getStringExtra("OrigZipFileName");
-		whereTo = syncIntent.getStringExtra("whereTo");
-		if(whereTo.contentEquals("SurveyActivity")){
-			imei = syncIntent.getStringExtra("imei");
-			userDate = syncIntent.getStringExtra("userDate");
-			pickerDate = syncIntent.getStringExtra("pickerDate");
-		}
+		whereTo = "Regular";
 
 
 		try
@@ -807,7 +668,7 @@ public class SyncMaster extends Activity
 
 			try
 			{
-			 task1 = new SyncImageData(SyncMaster.this);
+			 task1 = new SyncImageData(SyncJointVisit.this);
 			 task1.execute();
 
 				if (timerForDataSubmission != null) {
@@ -824,27 +685,6 @@ public class SyncMaster extends Activity
 
 			}
 
-		    // task = new SyncPROdata(SyncMaster.this);
-			// task.execute();
-
-				/*if(whereTo.equals("Regular"))
-				{
-				  if (timer!=null)
-				      {
-				       timer.cancel();
-				       timer = null;
-				      }
-				      timer = new Timer();
-				      myTimerTask = new MyTimerTask();
-
-				      timer.schedule(myTimerTask, 30000);
-				      if(timer2!=null)
-				      {
-				    	  timer2.cancel();
-					       timer2 = null;
-				      }
-
-				}*/
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -852,138 +692,13 @@ public class SyncMaster extends Activity
 
 	}
 
-	/*class MyTimerTask extends TimerTask {
-
-	    @Override
-	    public void run() {
-
-	     runOnUiThread(new Runnable(){
-
-
-	      @Override
-	      public void run() {
-
-	    	  if(task.getStatus()==AsyncTask.Status.RUNNING)
-	    	  {
-	    		//last...........
-
-	    		  task.cancel(true);
-	    		  System.out.println("cancleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-	    		  pDialogGetStores.dismiss();
-
-	    		  //  Intent submitStoreIntent = new Intent(SyncMaster.this, LauncherActivity.class);
-				//	startActivity(submitStoreIntent);
-				//	finish();
-
-
-	    		//  pDialogGetStores.dismiss();
-	    		//  progressMsg="Internet is slow,submitting again";
-	    		// new SyncPROdata(SyncMaster.this).execute();
-	    		  AlertDialog.Builder alertDialogSyncOKk = new AlertDialog.Builder(SyncMaster.this);
-		    		 alertDialogSyncOKk.setTitle("Internet issue");
-		    		 alertDialogSyncOKk.setCancelable(false);
-		    		 alertDialogSyncOKk.setMessage(getText(R.string.syncAlertErrMsggg));
-		    		 alertDialogSyncOKk.setNeutralButton("OK",
-		    					new DialogInterface.OnClickListener() {
-		    						public void onClick(DialogInterface dialog, int which) {
-
-		    					dialog.dismiss();
-		    					// progressMsg="Internet is slow,submitting again";
-		    			    	//	new SyncPROdata(SyncMaster.this).execute();
-		    					ProductOrderSearch pd=new ProductOrderSearch();
-	    						Intent submitStoreIntent = new Intent(SyncMaster.this, LauncherActivity.class);
-	    						startActivity(submitStoreIntent);
-	    						finish();
-
-
-		    						}
-		    				});
-		    		 alertDialogSyncOKk.setIcon(R.drawable.error_info_ico);
-
-		    			AlertDialog alert = alertDialogSyncOKk.create();
-		    			alert.show();
-	    	  }
-
-	      }});
-	    }
-
-	   }
-	class MyTimerTask2 extends TimerTask {
-
-	    @Override
-	    public void run() {
-
-	     runOnUiThread(new Runnable(){
-
-
-	      @Override
-	      public void run() {
-
-	    	  if(task.getStatus()==AsyncTask.Status.RUNNING)
-
-	    	  {
-
-	    		 task.cancel(true);
-	    		 pDialogGetStores.dismiss();
-	    		  //  Intent submitStoreIntent = new Intent(SyncMaster.this, LauncherActivity.class);
-				//		startActivity(submitStoreIntent);
-				//		finish();
-
-
-
-	    		 AlertDialog.Builder alertDialogSyncOKk = new AlertDialog.Builder(SyncMaster.this);
-	    		 alertDialogSyncOKk.setTitle("Information");
-	    		 alertDialogSyncOKk.setCancelable(false);
-	    		 alertDialogSyncOKk.setMessage(getText(R.string.syncAlertErrMsggg));
-	    		 alertDialogSyncOKk.setNeutralButton("OK",
-	    					new DialogInterface.OnClickListener() {
-	    						public void onClick(DialogInterface dialog, int which) {
-
-	    						dialog.dismiss();
-
-	    					//	db.open();
-	    						//System.out.println("Indubati flgChangeRouteOrDayEnd :"+StoreSelection_Old.flgChangeRouteOrDayEnd);
-	    						if(StoreSelection.flgChangeRouteOrDayEnd==1 || StoreSelection.flgChangeRouteOrDayEnd==2)
-	    						{
-	    							db.reTruncateRouteTbl();
-	    						}
-
-
-	    					//	db.reCreateDB();
-	    					//	db.close();
-	    						ProductOrderSearch pd=new ProductOrderSearch();
-	    						Intent submitStoreIntent = new Intent(SyncMaster.this, LauncherActivity.class);
-	    						startActivity(submitStoreIntent);
-	    						finish();
-	    						destroyNcleanup(1);
-	    						imgs = null;
-	    						uComments.clear();
-
-	    					//	finish();
-
-
-	    						}
-	    					});
-	    		alertDialogSyncOKk.setIcon(R.drawable.info_ico);
-
-	    			AlertDialog alert = alertDialogSyncOKk.create();
-	    			alert.show();
-
-	    		//  progressMsg="Internet is slow,submitting againsssssssssss";
-	    		//  new SyncPROdata(SyncMaster.this).execute();
-	    	  }
-
-	      }});
-	    }
-
-	   }*/
 
 	private class SyncImageData extends AsyncTask<Void, Void, Void>
 	{
 		 String[] fp2s;
 		 String[] NoOfOutletID;
 
-		public SyncImageData(SyncMaster activity)
+		public SyncImageData(SyncJointVisit activity)
 		{
 			pDialogGetStores = new ProgressDialog(activity);
 		}
@@ -1000,30 +715,9 @@ public class SyncMaster extends Activity
 
 			    pDialogGetStores.setTitle(getText(R.string.genTermPleaseWaitNew));
 			  //  pDialogGetStores.setMessage("Uploading Data...");
-			    if(StoreSelection.flgChangeRouteOrDayEnd==1)
-				{
-				 pDialogGetStores.setMessage(getResources().getString(R.string.txtEndingDay));
-				}else if(StoreSelection.flgChangeRouteOrDayEnd==2)
-				{
-				 pDialogGetStores.setMessage(getResources().getString(R.string.txtChangeRoute));
-				}else if(StoreSelection.flgChangeRouteOrDayEnd==3)
-				{
-					 pDialogGetStores.setMessage(getResources().getString(R.string.txtSubmitQuoteDetail));
-					}
-				else if(DayStartActivity.flgDaySartWorking==1)
-				{
-					pDialogGetStores.setMessage(getResources().getString(R.string.submittingDayStart));
 
-				}
-				else if(whereTo.contentEquals("SurveyActivity"))
-				{
-					pDialogGetStores.setMessage(getResources().getString(R.string.SubmittingDataMsg));
+				 pDialogGetStores.setMessage(getResources().getString(R.string.submitingJointVisitDetails));
 
-				}
-				else
-				{
-				pDialogGetStores.setMessage(getResources().getString(R.string.SubmittingOrderDetails));
-				}
 				pDialogGetStores.setIndeterminate(false);
 				pDialogGetStores.setCancelable(false);
 				pDialogGetStores.setCanceledOnTouchOutside(false);
@@ -1912,7 +1606,7 @@ if(NoOfOutletID.length>0)
 
 						try
 						{
-							task2 = new SyncXMLfileData(SyncMaster.this);
+							task2 = new SyncXMLfileData(SyncJointVisit.this);
 							task2.execute();
 						}
 						catch (Exception e)
@@ -2008,7 +1702,7 @@ if(NoOfOutletID.length>0)
 
 
 
-		public SyncXMLfileData(SyncMaster activity)
+		public SyncXMLfileData(SyncJointVisit activity)
 		{
 			pDialogGetStores = new ProgressDialog(activity);
 		}
@@ -2027,35 +1721,9 @@ if(NoOfOutletID.length>0)
 				}
 
 			    pDialogGetStores.setTitle(getText(R.string.genTermPleaseWaitNew));
-			    if(StoreSelection.flgChangeRouteOrDayEnd==1)
-				{
-				 pDialogGetStores.setMessage(getResources().getString(R.string.txtEndingDay));
-				}else if(StoreSelection.flgChangeRouteOrDayEnd==2)
-				{
-				 pDialogGetStores.setMessage(getResources().getString(R.string.txtChangeRoute));
-				}
-				else if(StoreSelection.flgChangeRouteOrDayEnd==3)
-				{
-					 pDialogGetStores.setMessage(getResources().getString(R.string.txtSubmitQuoteDetail));
-					}
-					else if(whereTo.contentEquals("DistributorMap"))
-				{
-					pDialogGetStores.setMessage(getResources().getString(R.string.SubmitDistrbtrMapDetail));
-				}
-				else if(DayStartActivity.flgDaySartWorking==1)
-				{
-					pDialogGetStores.setMessage(getResources().getString(R.string.submittingDayStart));
 
-				}
-				else if(whereTo.contentEquals("SurveyActivity"))
-				{
-					pDialogGetStores.setMessage(getResources().getString(R.string.SubmittingDataMsg));
+				 pDialogGetStores.setMessage(getResources().getString(R.string.submitingJointVisitDetails));
 
-				}
-				else
-				{
-				pDialogGetStores.setMessage(getResources().getString(R.string.SubmittingOrderDetails));
-				}
 				pDialogGetStores.setIndeterminate(false);
 				pDialogGetStores.setCancelable(false);
 				pDialogGetStores.setCanceledOnTouchOutside(false);
@@ -2313,80 +1981,44 @@ if(NoOfOutletID.length>0)
 
 
 
-							if(whereTo.contentEquals("11"))
-								{
-			            			showSyncError();
-								}
-							else if(whereTo.contentEquals("SurveyActivity"))
-							{
-								showSyncError();
-							}
-							else if(whereTo.contentEquals("DayStart"))
-							{
-								showSyncError();
-							}
-			            		else
-			            		{
 
 
 
-			            			Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
+			            			Intent submitStoreIntent = new Intent(SyncJointVisit.this, AllButtonActivity.class);
 									startActivity(submitStoreIntent);
-									finish();
-			            		}
+							finish();
 
 			        	}
-			        	else
-			        	{
-							if(pDialogGetStores.isShowing())
-							{
+			        	else {
+							if (pDialogGetStores.isShowing()) {
 								pDialogGetStores.dismiss();
 							}
 
-							if (timerForDataSubmission!=null)
-							{
+							if (timerForDataSubmission != null) {
 								timerForDataSubmission.cancel();
 								timerForDataSubmission = null;
 							}
 							if (myTimerTaskForDataSubmission != null) {
 								myTimerTaskForDataSubmission.cancel();
-								myTimerTaskForDataSubmission=null;
+								myTimerTaskForDataSubmission = null;
 							}
 
 
-
-
-							if (timer!=null)
-							{
+							if (timer != null) {
 								timer.cancel();
 								timer = null;
 							}
-							if(timer2!=null)
-							{
+							if (timer2 != null) {
 								timer2.cancel();
 								timer2 = null;
 							}
 
+//Abhinav Raj
 
+							SyncStockData task1 = new SyncStockData(SyncJointVisit.this);
 
-							if(whereTo.contentEquals("SurveyActivity")){
-								showSyncSuccess();
-							}
-							else{
-								SyncStockData task1=new SyncStockData(SyncMaster.this);
-
-								task1.execute();
-							}
-
-
-
-
-
-		            	}
-
-
-
-
+							task1.execute();
+						}
 			        	}}
 
 
@@ -2399,7 +2031,7 @@ if(NoOfOutletID.length>0)
 		public void run()
 		{
 
-			SyncMaster.this.runOnUiThread(new Runnable() {
+			SyncJointVisit.this.runOnUiThread(new Runnable() {
 
 				@Override
 				public void run() {
@@ -2427,7 +2059,7 @@ if(NoOfOutletID.length>0)
 					}
 
 
-					Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
+					Intent submitStoreIntent = new Intent(SyncJointVisit.this, AllButtonActivity.class);
 					startActivity(submitStoreIntent);
 					finish();
 				}});
@@ -2501,7 +2133,7 @@ if(NoOfOutletID.length>0)
 		boolean serviceException=false;
 
 
-		public SyncStockData(SyncMaster activity)
+		public SyncStockData(SyncJointVisit activity)
 		{
 			pDialogGetStores = new ProgressDialog(activity);
 
@@ -2514,15 +2146,8 @@ if(NoOfOutletID.length>0)
 
 			pDialogGetStores.setTitle(getText(R.string.genTermPleaseWaitNew));
 			//  pDialogGetStores.setMessage("Uploading Data...");
-        if(DayStartActivity.flgDaySartWorking==1)
-		{
-			pDialogGetStores.setMessage(getResources().getString(R.string.submittingDayStart));
-			DayStartActivity.flgDaySartWorking=0;
-		}
-		else
-		{
-			pDialogGetStores.setMessage(getResources().getString(R.string.txtGetStockData));
-		}
+
+			pDialogGetStores.setMessage(getResources().getString(R.string.submitingJointVisitDetails));
 
 			pDialogGetStores.setIndeterminate(false);
 			pDialogGetStores.setCancelable(false);
@@ -2534,14 +2159,14 @@ if(NoOfOutletID.length>0)
 		@Override
 		protected Void doInBackground(Void... params)
 		{
-			ServiceWorker newservice=new ServiceWorker();
+			/*ServiceWorker newservice=new ServiceWorker();
 
 			newservice=newservice.fnGetDistStockData(getApplicationContext(),CommonInfo.imei);
 			if(newservice.flagExecutedServiceSuccesfully!=38)
 			{
 				serviceException=true;
 
-			}
+			}*/
 
 			return null;
 		}
@@ -2566,79 +2191,6 @@ if(NoOfOutletID.length>0)
 			}
 			else
 			{
-				if(whereTo.contentEquals("11"))
-				{
-					int Sstat=4;
-					db.open();
-					db.updateRecordsSyncd(Sstat);		// update syncd' records
-					db.close();
-					Date pdaDate=new Date();
-					SimpleDateFormat	sdfPDaDate = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
-					String getPDADate = sdfPDaDate.format(pdaDate).toString().trim();
-
-					db.open();
-					String getServerDate=db.fnGetServerDate();
-					db.reCreateDB();
-					db.close();
-
-					if(!getPDADate.equals(""))
-					{
-						if(StoreSelection.flgChangeRouteOrDayEnd==1)
-						{
-							db.deleteViewAddedStore();
-						}
-						if(getServerDate.equals(getPDADate))
-						{
-
-											/*try
-							        		{
-							        			task3 = new SyncTextFileTaster(SyncMaster.this);
-							        			task3.execute();
-							        		}
-							        		catch (Exception e)
-							        		{
-						        			// TODO Auto-generated catch block
-							        			e.printStackTrace();
-							        		}*/
-							dbengine.open();
-							dbengine.updateRecordstblDsrLocationDetails();
-							dbengine.close();
-							UploadImageFromFolder(1);
-
-
-
-						}
-						else
-						{
-							UploadImageFromFolder(2);
-
-						}
-					}
-					else
-					{
-						//Image sending from folder code
-                   UploadImageFromFolder( 3);
-
-
-
-					}
-
-
-
-				}
-				else if(whereTo.contentEquals("DayStart"))
-				{
-				/*	Intent intent=new Intent(SyncMaster.this,AllButtonActivity.class);
-					startActivity(intent);
-					finish();;*/
-					Intent i=new Intent(SyncMaster.this,SalesValueTarget.class);
-					i.putExtra("IntentFrom", 0);
-					startActivity(i);
-					finish();
-
-				}
-				else
-				{
 					int Sstat=6;
 					db.open();
 					dbengine.updateRecordstblDsrLocationDetails();
@@ -2647,7 +2199,7 @@ if(NoOfOutletID.length>0)
 					showSyncSuccess();
 
 
-				}
+
 			}
 
 		}
@@ -2658,7 +2210,7 @@ if(NoOfOutletID.length>0)
         String[] NoOfOutletID;
 		int flagForWheresendAfterSyncComplete;
 
-        public SyncImageDataFromFolder(SyncMaster activity,int flagForWheresendAfterSyncComplete)
+        public SyncImageDataFromFolder(SyncJointVisit activity, int flagForWheresendAfterSyncComplete)
         {
             pDialogGetStoresImage = new ProgressDialog(activity);
 			this.flagForWheresendAfterSyncComplete=flagForWheresendAfterSyncComplete;
@@ -2850,55 +2402,13 @@ if(NoOfOutletID.length>0)
 
             //  version checkup
 
-			if(flagForWheresendAfterSyncComplete==1){
-				Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
+
+				Intent submitStoreIntent = new Intent(SyncJointVisit.this, AllButtonActivity.class);
 				startActivity(submitStoreIntent);
 				finish();
-			}
-			if(flagForWheresendAfterSyncComplete==2){
-				Intent submitStoreIntent = new Intent(SyncMaster.this, SplashScreen.class);
-				startActivity(submitStoreIntent);
-				finish();
-			}
-			if(flagForWheresendAfterSyncComplete==3){
-				showSyncSuccess();
-			}
 
         }
     }
- public void	UploadImageFromFolder(int flagForWheresendAfterSyncComplete){
-	 dbengine.open();
-	 int tableCount1=  dbengine.CheckTableImageHaveData();
-	 int tableCount2=  dbengine.ChecktblStoreMaterialPhotoDetailHaveData();
-	 int tableCount3=  dbengine.ChecktblStoreProductPhotoDetailHaveData();
-	 int tableCount4=  dbengine.ChecktblStoreClosedPhotoDetailHaveData();
-	 int tableCount5=  dbengine.ChecktblDsrRegDetailsHaveData();
-	 dbengine.close();
-	 File   fileintial = new File(Environment.getExternalStorageDirectory()
-			 + File.separator + CommonInfo.ImagesFolder);
-
-	 if(tableCount1==0 && tableCount2==0 && tableCount3==0 && tableCount4==0 && tableCount5==0 && fileintial.isDirectory() && (fileintial.listFiles()!=null) && (fileintial.listFiles().length>0)){
-		 SyncImageDataFromFolder syncImage=new SyncImageDataFromFolder(SyncMaster.this,flagForWheresendAfterSyncComplete);
-		 syncImage.execute();
-	 }
-	 else{
-		 if(flagForWheresendAfterSyncComplete==1){
-			 Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
-			 startActivity(submitStoreIntent);
-			 finish();
-		 }
-		 if(flagForWheresendAfterSyncComplete==2){
-			 Intent submitStoreIntent = new Intent(SyncMaster.this, SplashScreen.class);
-			 startActivity(submitStoreIntent);
-			 finish();
-		 }
-		 if(flagForWheresendAfterSyncComplete==3){
-			 showSyncSuccess();
-		 }
-
-	 }
-
- }
 
 	public String compressImage(String imageUri) {
 

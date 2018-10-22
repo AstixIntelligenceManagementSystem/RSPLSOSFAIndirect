@@ -59,6 +59,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -66,6 +67,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 
@@ -75,10 +77,10 @@ public class DialogActivity_MarketVisit extends BaseActivity implements Location
     private int chkFlgForErrorToCloseApp=0;
     private ProgressDialog pDialogGetStores;
     private boolean serviceException=false;
-
+    DatabaseAssistant DASFA = new DatabaseAssistant(this);
     private SimpleDateFormat sdf;
     private String passDate;
-
+    private ProgressDialog pDialog2;
 TextView txt_HdrVst;
 
     private Date currDate;
@@ -92,35 +94,35 @@ TextView txt_HdrVst;
     String FROM="";
     private final LinkedHashMap<String, String> hmapOutletListForNearUpdated= new LinkedHashMap<>();
     private LinkedHashMap<String, String> hmapOutletListForNear= new LinkedHashMap<>();
-    private String fusedData;
-    private String fnAccurateProvider="";
-    private String fnLati="0";
-    private String fnLongi="0";
-    private Double fnAccuracy=0.0;
+    public String fusedData;
+    public String fnAccurateProvider="";
+    public String fnLati="0";
+    public String fnLongi="0";
+    public Double fnAccuracy=0.0;
     private String fDate;
 
-    private String FusedLocationLatitudeWithFirstAttempt="0";
-    private String FusedLocationLongitudeWithFirstAttempt="0";
-    private String FusedLocationAccuracyWithFirstAttempt="0";
-    private String AllProvidersLocation="";
-    private final String FusedLocationLatitude="0";
-    private final String FusedLocationLongitude="0";
-    private final String FusedLocationProvider="";
-    private final String FusedLocationAccuracy="0";
+    public String FusedLocationLatitudeWithFirstAttempt="0";
+    public String FusedLocationLongitudeWithFirstAttempt="0";
+    public String FusedLocationAccuracyWithFirstAttempt="0";
+    public String AllProvidersLocation="";
+    public  String FusedLocationLatitude="0";
+    public  String FusedLocationLongitude="0";
+    public  String FusedLocationProvider="";
+    public  String FusedLocationAccuracy="0";
 
-    private String GPSLocationLatitude="0";
-    private String GPSLocationLongitude="0";
-    private String GPSLocationProvider="";
-    private String GPSLocationAccuracy="0";
+    public String GPSLocationLatitude="0";
+    public String GPSLocationLongitude="0";
+    public String GPSLocationProvider="";
+    public String GPSLocationAccuracy="0";
 
-    private String NetworkLocationLatitude="0";
-    private String NetworkLocationLongitude="0";
-    private String NetworkLocationProvider="";
-    private String NetworkLocationAccuracy="0";
-    private boolean isGPSEnabled = false;
-    private LocationRequest mLocationRequest;
-    private Location location;
-    private CoundownClass countDownTimer;
+    public String NetworkLocationLatitude="0";
+    public String NetworkLocationLongitude="0";
+    public String NetworkLocationProvider="";
+    public String NetworkLocationAccuracy="0";
+    public boolean isGPSEnabled = false;
+    public LocationRequest mLocationRequest;
+    public Location location;
+    public CoundownClass countDownTimer;
 
     private static final String TAG = "LocationActivity";
     private static final long INTERVAL = 1000 * 10;
@@ -131,14 +133,14 @@ TextView txt_HdrVst;
 
     private SharedPreferences sharedPref;
     private android.app.AlertDialog GPSONOFFAlert=null;
-    private AppLocationService appLocationService;
+    public AppLocationService appLocationService;
 
 
     private final DBAdapterKenya dbengine = new DBAdapterKenya(this);
 
 
     private String SelectedDSRValue="";
-    private LocationManager locationManager;
+    public LocationManager locationManager;
 
     private PowerManager pm;
 
@@ -714,18 +716,38 @@ TextView txt_HdrVst;
     {
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        //updateUI();
+        updateUI();
     }
+    private void updateUI() {
+        Location loc =mCurrentLocation;
+        if (null != mCurrentLocation) {
+            String lat = String.valueOf(mCurrentLocation.getLatitude());
+            String lng = String.valueOf(mCurrentLocation.getLongitude());
 
+            FusedLocationLatitude=lat;
+            FusedLocationLongitude=lng;
+            FusedLocationProvider=mCurrentLocation.getProvider();
+            FusedLocationAccuracy=""+mCurrentLocation.getAccuracy();
+            fusedData="At Time: " + mLastUpdateTime  +
+                    "Latitude: " + lat  +
+                    "Longitude: " + lng  +
+                    "Accuracy: " + mCurrentLocation.getAccuracy() +
+                    "Provider: " + mCurrentLocation.getProvider();
+
+        } else {
+
+        }
+    }
     @Override
     public void onConnected(@Nullable Bundle bundle)
     {
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, appLocationService);
+       // LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, appLocationService);
         startLocationUpdates();
     }
     @Override
     public void onConnectionSuspended(int i) {
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, appLocationService);
+        locationManager.removeUpdates(appLocationService);
     }
     private void startLocationUpdates()
     {
@@ -742,6 +764,7 @@ TextView txt_HdrVst;
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, appLocationService);
+        locationManager.removeUpdates(appLocationService);
     }
 
     private void createLocationRequest() {
@@ -957,6 +980,23 @@ TextView txt_HdrVst;
             if(fnAccurateProvider.equals(""))
             {
                 //because no location found so updating table with NA
+
+                String PersonNodeIDAndPersonNodeType=dbengine.FetchPersonNodeIDAndPersonNodeType(String.valueOf(sharedPref.getInt("CoverageAreaNodeID",0)),String.valueOf(sharedPref.getInt("CoverageAreaNodeType",0)));
+
+                String userName=PersonNodeIDAndPersonNodeType.split(Pattern.quote("^"))[0];
+                String ContactNo=PersonNodeIDAndPersonNodeType.split(Pattern.quote("^"))[1];
+
+
+                dbengine.open();
+                dbengine.deleteDsrLocationDetails(String.valueOf(sharedPref.getInt("CoverageAreaNodeID",0)),String.valueOf(sharedPref.getInt("CoverageAreaNodeType",0)));
+
+                dbengine.savetblDsrLocationData(String.valueOf(sharedPref.getInt("CoverageAreaNodeID",0)),String.valueOf(sharedPref.getInt("CoverageAreaNodeType",0)),PersonNodeIDAndPersonNodeType.split(Pattern.quote("^"))[0],PersonNodeIDAndPersonNodeType.split(Pattern.quote("^"))[1],"NA","NA","NA","NA","NA", "NA", "NA","NA",
+                        "NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA",
+                        "NA","NA","NA","NA","NA","NA");
+
+                dbengine.close();
+
+
                 dbengine.open();
                 dbengine.deleteLocationTable();
                 dbengine.saveTblLocationDetails("NA", "NA", "NA","NA","NA","NA","NA","NA", "NA", "NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA");
@@ -1038,6 +1078,31 @@ TextView txt_HdrVst;
                     city = FullAddress.split(Pattern.quote("^"))[2];
                     state = FullAddress.split(Pattern.quote("^"))[3];
                 }
+                dbengine.open();
+                dbengine.deleteDsrLocationDetails(String.valueOf(sharedPref.getInt("CoverageAreaNodeID",0)),String.valueOf(sharedPref.getInt("CoverageAreaNodeType",0)));
+
+                String PersonNodeIDAndPersonNodeType=dbengine.FetchPersonNodeIDAndPersonNodeType(String.valueOf(sharedPref.getInt("CoverageAreaNodeID",0)),String.valueOf(sharedPref.getInt("CoverageAreaNodeType",0)));
+
+                String userName=PersonNodeIDAndPersonNodeType.split(Pattern.quote("^"))[0];
+                String ContactNo=PersonNodeIDAndPersonNodeType.split(Pattern.quote("^"))[1];
+                DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss",Locale.ENGLISH);
+                Calendar cal = Calendar.getInstance();
+                String DateTime = dateFormat.format(cal.getTime());
+                dbengine.savetblDsrLocationData(String.valueOf(sharedPref.getInt("CoverageAreaNodeID",0)),String.valueOf(sharedPref.getInt("CoverageAreaNodeType",0)),
+                        PersonNodeIDAndPersonNodeType.split(Pattern.quote("^"))[0],PersonNodeIDAndPersonNodeType.split(Pattern.quote("^"))[1],
+                        DateTime, addr,zipcode, city, state,fnLati, fnLongi,String.valueOf(fnAccuracy),
+                        fnAccurateProvider,AllProvidersLocation,GpsLat,GpsLong,GpsAccuracy,GpsAddress,
+                        NetwLat,NetwLong,NetwAccuracy,NetwAddress,FusedLat, FusedLong,FusedAccuracy,FusedAddress,
+                        FusedLocationLatitudeWithFirstAttempt,FusedLocationLongitudeWithFirstAttempt,FusedLocationAccuracyWithFirstAttempt);
+
+             /*   System.out.println(String.valueOf(String.valueOf(sharedPref.getInt("CoverageAreaNodeID",0)))+"--"+String.valueOf(sharedPref.getInt("CoverageAreaNodeType",0)+"--"+
+                        DateTime+"--"+ addr+"--"+zipcode+"--"+ city+"--"+ state+"--"+fnLati+"--"+ fnLongi+"--"+String.valueOf(fnAccuracy)
+                        +"--"+fnAccurateProvider+"--"+AllProvidersLocation+"--"+GpsLat+"--"+GpsLong+"--"+GpsAccuracy+"--"+GpsAddress+"--"+
+                        NetwLat+"--"+NetwLong+"--"+NetwAccuracy+"--"+NetwAddress+"--"+FusedLat+"--"+ FusedLong+"--"+FusedAccuracy+"--"+FusedAddress+"--"+
+                        FusedLocationLatitudeWithFirstAttempt+"--"+FusedLocationLongitudeWithFirstAttempt+"--"+FusedLocationAccuracyWithFirstAttempt);
+*/
+                dbengine.close();
+
 
                 if(fnAccuracy>10000)
                 {
@@ -1221,9 +1286,20 @@ TextView txt_HdrVst;
             AllButtonActivity.this.startActivity(intent);
             finish();*/
 
-            Intent intent =new Intent(DialogActivity_MarketVisit.this,AllButtonActivity.class);
+          /*  Intent intent =new Intent(DialogActivity_MarketVisit.this,AllButtonActivity.class);
             DialogActivity_MarketVisit.this.startActivity(intent);
-            finish();
+            finish();*/
+           // SyncNow();
+            try {
+
+                new bgTasker().execute().get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                //System.out.println(e);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+                //System.out.println(e);
+            }
         }
 
         @Override
@@ -1287,6 +1363,62 @@ TextView txt_HdrVst;
         return FULLADDRESS2.toString();
 
     }*/
+   public void SyncNow()
+   {
+
+      long syncTIMESTAMP = System.currentTimeMillis();
+       Date dateobj = new Date(syncTIMESTAMP);
+
+
+       dbengine.open();
+       String presentRoute=dbengine.GetActiveRouteID();
+       dbengine.close();
+       //syncTIMESTAMP = System.currentTimeMillis();
+       //Date dateobj = new Date(syncTIMESTAMP);
+       SimpleDateFormat df = new SimpleDateFormat("dd.MMM.yyyy.HH.mm.ss",Locale.ENGLISH);
+       //fullFileName1 = df.format(dateobj);
+       String newfullFileName=imei+"."+presentRoute+"."+ df.format(dateobj);
+
+
+
+       try
+       {
+
+           File OrderXMLFolder = new File(Environment.getExternalStorageDirectory(), CommonInfo.OrderXMLFolder);
+
+           if (!OrderXMLFolder.exists())
+           {
+               OrderXMLFolder.mkdirs();
+           }
+
+           String routeID=dbengine.GetActiveRouteIDSunil();
+
+           DASFA.open();
+           DASFA.export(dbengine.DATABASE_NAME, newfullFileName,routeID);
+
+
+           DASFA.close();
+
+           dbengine.savetbl_XMLfiles(newfullFileName, "3","1");
+           dbengine.open();
+           dbengine.fnSettblDsrLocationDetails();
+           dbengine.close();
+
+           Intent syncIntent = new Intent(DialogActivity_MarketVisit.this, SyncJointVisit.class);
+           //syncIntent.putExtra("xmlPathForSync",Environment.getExternalStorageDirectory() + "/TJUKIndirectSFAxml/" + newfullFileName + ".xml");
+           syncIntent.putExtra("xmlPathForSync", Environment.getExternalStorageDirectory() + "/" + CommonInfo.OrderXMLFolder + "/" + newfullFileName + ".xml");
+           syncIntent.putExtra("OrigZipFileName", newfullFileName);
+           syncIntent.putExtra("whereTo", "Regular");
+           startActivity(syncIntent);
+           finish();
+
+       }
+       catch (IOException e)
+       {
+           e.printStackTrace();
+       }
+
+   }
 
     private String getAddressOfProviders(String latti, String longi){
 
@@ -2329,5 +2461,60 @@ private void marketVisitGetRoutesClick(){
         // Showing Alert Message
         alertDialog.show();
     }
+    private class bgTasker extends AsyncTask<Void, Void, Void> {
 
+        // obj(s) for services/sync..blah..blah
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            try {
+
+                    pDialog2.dismiss();
+
+
+                    SyncNow();
+
+
+
+            } catch (Exception e) {
+                Log.i("bgTasker", "bgTasker Execution Failed!", e);
+
+            }
+
+            finally {
+
+                Log.i("bgTasker", "bgTasker Execution Completed...");
+
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+
+            pDialog2 = ProgressDialog.show(DialogActivity_MarketVisit.this,getText(R.string.PleaseWaitMsg),getText(R.string.genTermProcessingRequest), true);
+            pDialog2.setIndeterminate(true);
+            pDialog2.setCancelable(false);
+            pDialog2.show();
+
+        }
+
+        @Override
+        protected void onCancelled() {
+            Log.i("bgTasker", "bgTasker Execution Cancelled");
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+
+            Log.i("bgTasker", "bgTasker Execution cycle completed");
+            pDialog2.dismiss();
+
+        }
+    }
 }

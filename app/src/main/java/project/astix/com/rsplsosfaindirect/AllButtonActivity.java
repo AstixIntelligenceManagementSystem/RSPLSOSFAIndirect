@@ -1277,6 +1277,7 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
 
             dbengine.savetbl_XMLfiles(newfullFileName, "3","1");
             dbengine.open();
+            dbengine.fnSettblDsrLocationDetails();
             for (int nosSelected = 0; nosSelected <= mSelectedItems.size() - 1; nosSelected++)
             {
                 String valSN = (String) mSelectedItems.get(nosSelected);

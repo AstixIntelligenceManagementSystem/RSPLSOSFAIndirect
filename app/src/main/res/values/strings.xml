@@ -6,7 +6,7 @@
     <!--<string name="app_name">RSPL TSO SFA Test</string>-->
     <!--  <string name="app_name">RSPL TSO SFA Dev</string>-->
     <!--<string name="app_name">RSPL TSO SFA Training</string>-->
-   <!-- <string name="app_name">RSPL TSO SFA Test Release</string>-->
+    <!--<string name="app_name">RSPL TSO SFA Test Release</string>-->
 
 
     <string name="genTermFetchingTime">Fetching Current Time..</string>
@@ -110,6 +110,7 @@
     <string name="hintMobileNo">Mobile No.</string>
     <string name="txtValidate">Validate</string>
     <string name="txtFName">First Name</string>
+
     <string name="txtStoreNotVisible">If store is not showing in list? Please click on Find Nearby Stores button. </string>
     <string name="txtLName">Last Name</string>
     <string name="txtContactNo">Contact No.</string>
@@ -335,6 +336,7 @@
     <!-- Day end menu header starts -->
     <string name="DayEndMsg">Do you realy want to end your visit ?.All Previous non-submitted orders will be Lost!</string>
     <string name="txtEndingDay">Ending your day visit ...</string>
+    <string name="submitingJointVisitDetails">Submitting Joint Visit Details...</string>
     <string name="txtChangeRoute">Changing the route....</string>
     <string name="txtSubmitQuoteDetail">Submitting Quotation Details...</string>
     <string name="txtGetStockData">Getting Stock Data</string>
@@ -424,7 +426,7 @@
     <string name="DefaultFreeQty">Default Free Qty for Slab :</string>
 
     <string name="syncAlertOKMsg"><small>Order submission was successful</small></string>
-
+    <string name="syncAlertOKMsgJointVisit"><small>Joint Visit Details Submitted Sucessfully</small></string>
     <string name="syncAlertsubmit"><small>Data submitted successfully.</small></string>
 
     <!-- Order view Activity ends -->
@@ -1091,6 +1093,12 @@
 
     <string name="validateTargetMin">Total of brand wise target for </string>
     <string name="validateTargetMinVal"> cannot be less than </string>
+    <string name="surveyQuest1">Did any customer come to your shop asking for 3 bar + scrubber free?</string>
+  <string name="surveyQuest2">Did any customer ask for 3+ scrubber by referring to Vidya Balan ad of dishwash?</string>
+  <string name="surveyQuest3">Did any customer ask by mentioning a tv ad of bar with free scrubber?</string>
+  <string name="surveyQuest4">Did any customer ask by mentioning Xpert ad of 3 bar and free scrubber?</string>
+  <string name="surveyQuest5">Did you see the ad of 3 bar + scrubber free?</string>
+    <string name="comment">Any feedback</string>
 
 
 </resources>

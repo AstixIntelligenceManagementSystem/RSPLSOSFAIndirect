@@ -1,10 +1,11 @@
 <resources>
 
-   <!-- <string name="app_name">RSPL TSO SFA</string>-->
+    <string name="app_name">RSPL TSO SFA</string>
     <!-- <string name="app_name">RSPL TSO SFA Stagging</string>-->
     <!--<string name="app_name">RSPL TSO SFA Training</string>-->
     <!-- <string name="app_name">RSPL TSO SFA Dev</string>-->
      <!--<string name="app_name">RSPL TSO SFA Test</string>-->
+   <!-- <string name="app_name">RSPL TSO SFA Test Release</string>-->
    <string name="genTermFetchingTime">वर्तमान समय ला रहा है..</string>
    <string name="selectReasonForLate">आगे बढ़ने के लिए, कृपया एक कारण का चयन करें कि आप देर क्यों कर रहे थे.</string>
    <string name="selectOtherReasonForLate">आगे बढ़ने के लिए, कृपया अन्य कारण बताएं कि आप देर क्यों कर रहे थे।</string>
@@ -12,7 +13,7 @@
    <string name="specifyLocatione">आगे बढ़ने के लिए कृपया अन्य स्थान निर्दिष्ट करें।</string>
    <string name="txtAttndnc">डीएसआर उपस्थिति।</string>
    <string name="txtScndryUpdate">दिन के परिणाम</string>
-    <string name="app_name">RSPL TSO SFA Test Release</string>
+
    <string name="Coverage_Area">कवरेज क्षेत्र</string>
    <string name="other_loc">कृपया निर्दिष्ट करें : </string>
    <string name="Contact_No">संपर्क नंबर</string>
@@ -319,6 +320,8 @@
     <!-- Day end menu header starts -->
     <string name="DayEndMsg">क्या आप वाकई अपना दिन का दौरा खत्म करना चाहते हैं?  आपके सभी पिछले बिना -सबमिट किए गए ऑर्डर खो जाएंगे!</string>
     <string name="txtEndingDay">आपके दिन की यात्रा समाप्त ...</string>
+   <string name="submitingJointVisitDetails">संयुक्त यात्रा विवरण सबमिट करना...</string>
+
     <string name="txtChangeRoute">मार्ग बदल रहा है ....</string>
     <string name="txtSubmitQuoteDetail">कोटेशन विवरण जमा करना ...</string>
     <string name="txtGetStockData">स्टॉक डेटा मिल रहा है</string>
@@ -414,7 +417,7 @@
     <string name="DefaultFreeQty">स्लैब के लिए डिफ़ॉल्ट निशुल्क मात्रा:</string>
 
     <string name="syncAlertOKMsg"><small>ऑर्डर सफलतापूर्वक सबमिट हो गया है</small></string>
-
+   <string name="syncAlertOKMsgJointVisit"><small>संयुक्त दौरे विवरण सुप्रसिद्ध रूप से सबमिट किया गया</small></string>
     <!-- Order view Activity ends -->
     <!-- Product order filter search Activity starts -->
 
@@ -1084,4 +1087,10 @@
     <string name="validateTargetMin"> ब्रांड वार लक्ष्य का कुल  </string>
     <string name="validateTargetMinVal"> के लिए से कम नहीं हो सकता है </string>
 
+    <string name="surveyQuest1">Did any customer come to your shop asking for 3 bar + scrubber free?</string>
+    <string name="surveyQuest2">Did any customer ask for 3+ scrubber by referring to Vidya Balan ad of dishwash?</string>
+    <string name="surveyQuest3">Did any customer ask by mentioning a tv ad of bar with free scrubber?</string>
+    <string name="surveyQuest4">Did any customer ask by mentioning Xpert ad of 3 bar and free scrubber?</string>
+    <string name="surveyQuest5">Did you see the ad of 3 bar + scrubber free?</string>
+    <string name="comment">Any feedback</string>
 </resources>
