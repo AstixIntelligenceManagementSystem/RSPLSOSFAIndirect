@@ -10,7 +10,7 @@ public class CommonInfo
 	// Its for Live Path on 194 Server
 
 
-/*
+
 
     public static int flgAllRoutesData=1;
 	public static File imageF_savedInstance=null;
@@ -45,8 +45,8 @@ public class CommonInfo
 	public static String DATABASE_NAME = "DbRSPLSFAApp";
 	public static int AnyVisit = 0;
 
-	public static int DATABASE_VERSIONID = 52;     // put this field value based on value in table on the server
-	public static String AppVersionID = "1.12";     // put this field value based on value in table on the server
+	public static int DATABASE_VERSIONID = 54;     // put this field value based on value in table on the server
+	public static String AppVersionID = "1.13";     // put this field value based on value in table on the server
 
 	public static int Application_TypeID = 4;      //1=Parag Store Mapping,2=Parag SFA Indirect,3=Parag SFA Direct
 
@@ -92,7 +92,7 @@ public class CommonInfo
 	public static String URLImageLinkToViewStoreOverWebProtal="http://103.20.212.194/RSPL/Reports/frmPDAImgsdev.aspx";
 	public static String WebPageUrlDSMWiseReport="http://103.20.212.194/RSPL/Mobile/frmDSMWiseReportCard.aspx?imei=";
 	public static String ImagesFolderServer="RMMSFAImagesServer";
-*/
+
 
 
 
@@ -131,8 +131,8 @@ public class CommonInfo
 
 	public static int AnyVisit = 0;
 
-	public static int DATABASE_VERSIONID = 52;      // put this field value based on value in table on the server
-	public static String AppVersionID = "1.13";   // put this field value based on value in table on the server
+	public static int DATABASE_VERSIONID = 53;      // put this field value based on value in table on the server
+	public static String AppVersionID = "1.14";   // put this field value based on value in table on the server
 	public static int Application_TypeID = 4; //1=Parag Store Mapping,2=Parag SFA Indirect,3=Parag SFA Direct
 
 	public static String OrderSyncPath="http://103.20.212.194/ReadXML_RSPLTest/DefaultSOSFA.aspx";
@@ -190,10 +190,10 @@ public class CommonInfo
 	public static String WebAttendanceReport="http://103.20.212.194/RSPL_test/Mobile/frmTodayAttendence.aspx";
 
 	public static String WebScndryUpdate="http://103.20.212.194/RSPL_test/Mobile/frmDailySecondaryUpdate.aspx";
-
-
-
 */
+
+
+
 
 
 	// Its for Dev Path on 194 Server
@@ -202,6 +202,7 @@ public class CommonInfo
 
 
 
+/*
 
 
 
@@ -296,6 +297,7 @@ public class CommonInfo
         public static String ImagesFolderServer="RMMSFAImagesServer";
 
 
+*/
 
 
 

@@ -139,7 +139,8 @@ public class DSR_Registration extends AppCompatActivity implements DatePickerDia
     File file;
     View view;
     String DIRECTORY = Environment.getExternalStorageDirectory().getPath() + "/" + CommonInfo.ImagesFolder + "/";
-    String pic_name = new SimpleDateFormat("yyyyMMMdd_HHmmss", Locale.ENGLISH).format(new Date());
+    String timeStamp = new SimpleDateFormat("yyyyMMMdd_HHmmss", Locale.ENGLISH).format(new Date());
+    String pic_name="IMG_" + CommonInfo.imei+ timeStamp;
     String StoredPath = DIRECTORY + pic_name + ".png";
     ScrollView scrollViewParentOfMap;
     ImageView transparent_image;
