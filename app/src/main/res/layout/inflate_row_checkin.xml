@@ -143,7 +143,7 @@
             android:inputType="number"
             android:padding="2dp"
             android:textSize="10sp"
-            android:maxLength="5"
+            android:maxLength="7"
             android:gravity="center"
             android:background="@android:drawable/editbox_background_normal"
             android:layout_weight=".4"

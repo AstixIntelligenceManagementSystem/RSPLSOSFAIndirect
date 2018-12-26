@@ -631,6 +631,8 @@
     <!--  Selection header starts -->
     <string name="ChangeLanguage">भाषा बदले</string>
    <string name="Survey">सर्वेक्षण</string>
+    <string name="genTermValidationOrder">निष्पादन मान्य…</string>
+    <string name="genTermNoDataForExecutionFullMsg">आदेश में निष्पादन के लिए उत्पाद नहीं हैं।</string>
 
     <string name="Language">भाषा</string>
     <string name="LanguageSelection">कृपया भाषा चुनें</string>

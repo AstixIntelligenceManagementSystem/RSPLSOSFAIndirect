@@ -45,8 +45,8 @@ public class CommonInfo
 	public static String DATABASE_NAME = "DbRSPLSFAApp";
 	public static int AnyVisit = 0;
 
-	public static int DATABASE_VERSIONID = 54;     // put this field value based on value in table on the server
-	public static String AppVersionID = "1.13";     // put this field value based on value in table on the server
+	public static int DATABASE_VERSIONID = 56;     // put this field value based on value in table on the server
+	public static String AppVersionID = "1.14";     // put this field value based on value in table on the server
 
 	public static int Application_TypeID = 4;      //1=Parag Store Mapping,2=Parag SFA Indirect,3=Parag SFA Direct
 
@@ -99,8 +99,9 @@ public class CommonInfo
 
 
 	// Its for Test Path on 194 Server
+/*
 
-	/*public static int flgAllRoutesData=1;
+	public static int flgAllRoutesData=1;
 	public static File imageF_savedInstance=null;
 	public static String imageName_savedInstance=null;
 	public static String clickedTagPhoto_savedInstance=null;
@@ -190,10 +191,10 @@ public class CommonInfo
 	public static String WebAttendanceReport="http://103.20.212.194/RSPL_test/Mobile/frmTodayAttendence.aspx";
 
 	public static String WebScndryUpdate="http://103.20.212.194/RSPL_test/Mobile/frmDailySecondaryUpdate.aspx";
+
+
+
 */
-
-
-
 
 
 	// Its for Dev Path on 194 Server

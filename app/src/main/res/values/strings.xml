@@ -3,7 +3,7 @@
      <string name="app_name">RSPL TSO SFA</string>
 
     <!-- <string name="app_name">RSPL TSO SFA Stagging</string>-->
-    <!--<string name="app_name">RSPL TSO SFA Test</string>-->
+   <!-- <string name="app_name">RSPL TSO SFA Test</string>-->
     <!--  <string name="app_name">RSPL TSO SFA Dev</string>-->
     <!--<string name="app_name">RSPL TSO SFA Training</string>-->
     <!--<string name="app_name">RSPL TSO SFA Test Release</string>-->
@@ -110,6 +110,9 @@
     <string name="hintMobileNo">Mobile No.</string>
     <string name="txtValidate">Validate</string>
     <string name="txtFName">First Name</string>
+
+    <string name="genTermValidationOrder">Validating Execution…</string>
+
 
     <string name="txtStoreNotVisible">If store is not showing in list? Please click on Find Nearby Stores button. </string>
     <string name="txtLName">Last Name</string>
@@ -652,6 +655,7 @@
     <string name="ExecuteOrder">Execute Order</string>
     <string name="txtCancelOrder">Cancel Order</string>
     <string name="genTernStoreOrderInvoicesubmitConfirmAlert"><small>Do you want to Submit Execution Details?</small></string>
+    <string name="genTermNoDataForExecutionFullMsg">Order does not have products for execution.</string>
     <!--invoice product list ends-->
 
     <!--surbhi ends-->

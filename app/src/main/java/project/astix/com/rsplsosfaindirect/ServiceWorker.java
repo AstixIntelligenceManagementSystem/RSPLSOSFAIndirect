@@ -77,6 +77,160 @@ public class ServiceWorker
 	public int newStat = 0;
 	public int timeout=0;
 
+
+	public HashMap<Integer,Integer>hmapPrdExecutionFaliedList=new HashMap<Integer,Integer>();
+	public int flgExecutionStatus=0;
+
+	public ServiceWorker getInvoiceDirectSaveInvoice(Context ctx, HashMap<Integer,String>hmapPrdForSaving,String strGblProductForServer,String TagOrderID,String additionalDiscountValuenew,Integer flg) {
+		this.context = ctx;
+
+		final String SOAP_ACTION = "http://tempuri.org/GetInvoiceDirectSaveInvoice";
+		final String METHOD_NAME = "GetInvoiceDirectSaveInvoice";
+		final String NAMESPACE = "http://tempuri.org/";
+		final String URL = UrlForWebService;
+
+		SoapObject table = null; // Contains table of dataset that returned
+		// through SoapObject
+		SoapObject client = null; // Its the client petition to the web service
+		SoapObject tableRow = null; // Contains row of table
+		SoapObject responseBody = null; // Contains XML content of dataset
+
+		//SoapObject param
+		HttpTransportSE transport = null; // That call webservice
+		SoapSerializationEnvelope sse = null;
+
+		sse = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+		sse.addMapping(NAMESPACE, "ServiceWorker", this.getClass());
+		// Note if class name isn't "ABC_CLASS_NAME" ,you must change
+		sse.dotNet = true; // if WebService written .Net is result=true
+		HttpTransportSE androidHttpTransport = new HttpTransportSE(
+				URL,timeout);
+
+		ServiceWorker setmovie = new ServiceWorker();
+		try {
+			client = new SoapObject(NAMESPACE, METHOD_NAME);
+
+			Date currDate= new Date();
+			SimpleDateFormat currDateFormat =new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss",Locale.ENGLISH);
+
+			currSysDate = currDateFormat.format(currDate).toString();
+			SysDate = currSysDate.trim().toString();
+
+			client.addProperty("PDA_IMEI", CommonInfo.imei);
+			client.addProperty("strData", strGblProductForServer);
+			client.addProperty("OrderID", TagOrderID);
+			client.addProperty("strDate", currSysDate);
+			client.addProperty("AddDisc", additionalDiscountValuenew);
+			client.addProperty("flgCancel", flg);
+
+
+			sse.setOutputSoapObject(client);
+			sse.bodyOut = client;
+			System.out.println("S1");
+
+			androidHttpTransport.call(SOAP_ACTION, sse);
+			responseBody = (SoapObject)sse.bodyIn;
+
+
+			int totalCount = responseBody.getPropertyCount();
+
+			// System.out.println("Kajol 2 :"+totalCount);
+			String resultString=androidHttpTransport.responseDump;
+
+			String name=responseBody.getProperty(0).toString();
+
+			// System.out.println("Kajol 3 :"+name);
+
+			XMLParser xmlParser = new XMLParser();
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			InputSource is = new InputSource();
+			is.setCharacterStream(new StringReader(name));
+			Document doc = db.parse(is);
+			flgExecutionStatus=0;
+
+			NodeList tblExecutionStatus = doc.getElementsByTagName("tblExecutionStatus");
+			for (int i = 0; i < tblExecutionStatus.getLength(); i++)
+			{
+
+				Element element = (Element) tblExecutionStatus.item(i);
+
+				if(!element.getElementsByTagName("flgExecuted").equals(null))
+				{
+
+					NodeList flgExecutionStatusNode = element.getElementsByTagName("flgExecuted");
+					Element     line = (Element) flgExecutionStatusNode.item(0);
+
+					if(flgExecutionStatusNode.getLength()>0)
+					{
+
+						setmovie.flgExecutionStatus=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
+					}
+				}
+			}
+			hmapPrdExecutionFaliedList.clear();
+			if(setmovie.flgExecutionStatus==2)
+			{
+				NodeList tblOrderUnExecutedProductList = doc.getElementsByTagName("tblOrderUnExecutedProductList");
+				for (int i = 0; i < tblOrderUnExecutedProductList.getLength(); i++)
+				{
+
+					Integer ProductID=0;
+					Integer MaxAllowedQtyForExecution=0;
+
+					Element element = (Element) tblOrderUnExecutedProductList.item(i);
+
+					if(!element.getElementsByTagName("PrdID").equals(null))
+					{
+
+						NodeList ProductIDNode = element.getElementsByTagName("PrdID");
+						Element     line = (Element) ProductIDNode.item(0);
+
+						if(ProductIDNode.getLength()>0)
+						{
+
+							ProductID=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
+						}
+					}
+
+					if(!element.getElementsByTagName("AvailableStock").equals(null))
+					{
+
+						NodeList MaxAllowedQtyForExecutionNode = element.getElementsByTagName("AvailableStock");
+						Element     line = (Element) MaxAllowedQtyForExecutionNode.item(0);
+
+						if(MaxAllowedQtyForExecutionNode.getLength()>0)
+						{
+
+							MaxAllowedQtyForExecution=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
+						}
+					}
+					setmovie.hmapPrdExecutionFaliedList.put(ProductID,MaxAllowedQtyForExecution);
+
+
+				}
+
+			}
+
+
+
+			setmovie.director = "1";
+
+			// System.out.println("ServiceWorkerNitish getallStores Completed ");
+			flagExecutedServiceSuccesfully=1;
+			return setmovie;
+
+
+		} catch (Exception e) {
+
+			setmovie.director = e.toString();
+			setmovie.movie_name = e.toString();
+			flagExecutedServiceSuccesfully=0;
+			return setmovie;
+		}
+
+	}
+
 	public ServiceWorker getallStores(Context ctx, String dateVAL, String uuid, String rID,String RouteType) {
 		this.context = ctx;
 		

@@ -17220,7 +17220,7 @@ public class DBAdapterKenya
     public HashMap<String, String> fnProductRelatedSchemesList()
     {
         open();
-        Cursor cursor = db.rawQuery("SELECT Distinct ProductID,PrdString from tblProductRelatedScheme", null);
+        Cursor cursor = db.rawQuery("SELECT Distinct tblProductRelatedScheme.ProductID,PrdString from tblProductRelatedScheme inner join tblProductList ON tblProductRelatedScheme.ProductID=tblProductList.ProductID", null);
         try
         {
             HashMap<String, String> SchemeIDFreePRodQtyDetails= new HashMap<>();
@@ -24575,7 +24575,7 @@ public class DBAdapterKenya
     public ArrayList<String> fectProductIDMappedInSchSlbSubBukRowIdTemp(int schSlbSubRowID)
     {
         open();
-        Cursor cursor = db.rawQuery("SELECT ProductID FROM tblSchemeSlabBucketProductMapping WHERE RowID ="+ schSlbSubRowID , null);
+        Cursor cursor = db.rawQuery("SELECT tblSchemeSlabBucketProductMapping.ProductID FROM tblSchemeSlabBucketProductMapping  inner join tblProductList on tblProductList.ProductID=tblSchemeSlabBucketProductMapping.ProductID WHERE RowID ="+ schSlbSubRowID , null);
         try {
             ArrayList<String> CompleteResult = new ArrayList<>();
             if (cursor.getCount() > 0) {
@@ -28852,7 +28852,7 @@ public class DBAdapterKenya
 
     public void insertDistributorLeftOrderId(String distributorNodeIdNodeType,String orderId)
     {
-        open();
+       // open();
 
         ContentValues values=new ContentValues();
 
@@ -28863,7 +28863,7 @@ public class DBAdapterKenya
         db.insert(DATABASE_TABLE_DISTRIBUTOR_LEFTPRODUCT,null,values);
 
 
-        close();
+       // close();
     }
 
     public String getDstBIDOrderId()
